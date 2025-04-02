@@ -4,7 +4,7 @@ public class SalesProductVO {
 	private int salesId;
 	private String productId;
 	private int salesQuantity;
-	private int SalePriceAt;
+	private int salePriceAt;
 	private int costPriceAt;
 
 	public SalesProductVO(int salesId, String productId, int salesQuantity, int salePriceAt, int costPriceAt) {
@@ -12,7 +12,7 @@ public class SalesProductVO {
 		this.salesId = salesId;
 		this.productId = productId;
 		this.salesQuantity = salesQuantity;
-		SalePriceAt = salePriceAt;
+		this.salePriceAt = salePriceAt;
 		this.costPriceAt = costPriceAt;
 	}
 
@@ -46,11 +46,11 @@ public class SalesProductVO {
 	}
 
 	public int getSalePriceAt() {
-		return SalePriceAt;
+		return salePriceAt;
 	}
 
 	public void setSalePriceAt(int salePriceAt) {
-		SalePriceAt = salePriceAt;
+		this.salePriceAt = salePriceAt;
 	}
 
 	public int getCostPriceAt() {
