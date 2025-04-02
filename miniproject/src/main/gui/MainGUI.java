@@ -146,10 +146,5 @@ public class MainGUI extends JFrame{
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
-	
-	
-	// test
-	public static void main(String[] args) {
-		new MainGUI();
-	}
+
 }

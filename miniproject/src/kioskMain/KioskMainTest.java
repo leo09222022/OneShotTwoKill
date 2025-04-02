@@ -1,11 +1,11 @@
 package kioskMain;
 
-import totalsalesproduct.gui.TotalSalesProductGUI;
+import main.gui.MainGUI;
 
 public class KioskMainTest {
 
 	public static void main(String[] args) {
-		TotalSalesProductGUI tspg = new TotalSalesProductGUI();
+		new MainGUI();
 	}
 
 }
