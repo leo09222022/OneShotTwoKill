@@ -1,0 +1,88 @@
+package orders.gui;
+
+import orders.database.*;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+
+public class OrderScreen extends JFrame {
+    private HashMap<Integer, Integer> orderItems = new HashMap<>(); // <상품ID, 수량>
+
+    private JTextField productIdField;
+    private JTextField quantityField;
+    private JTextArea orderListArea;
+
+    public OrderScreen() {
+        setTitle("발주 화면");
+        setSize(400, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new FlowLayout());
+
+        productIdField = new JTextField(10);
+        quantityField = new JTextField(10);
+        JButton addButton = new JButton("추가");
+        JButton orderButton = new JButton("발주");
+        orderListArea = new JTextArea(10, 30);
+        orderListArea.setEditable(false);
+
+        add(new JLabel("상품 ID:"));
+        add(productIdField);
+        add(new JLabel("수량:"));
+        add(quantityField);
+        add(addButton);
+        add(orderButton);
+        add(new JScrollPane(orderListArea));
+
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int productId = Integer.parseInt(productIdField.getText());
+                int quantity = Integer.parseInt(quantityField.getText());
+                orderItems.put(productId, quantity);
+                updateOrderList();
+            }
+        });
+
+        orderButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                placeOrder();
+            }
+        });
+
+        setVisible(true);
+    }
+
+    private void updateOrderList() {
+        orderListArea.setText("");
+        for (Map.Entry<Integer, Integer> entry : orderItems.entrySet()) {
+            orderListArea.append("상품 ID: " + entry.getKey() + ", 수량: " + entry.getValue() + "\n");
+        }
+    }
+
+    private void placeOrder() {
+        if (orderItems.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "상품을 추가해주세요!");
+            return;
+        }
+
+        OrderDAO orderDAO = new OrderDAO();
+        int newOrderId = orderDAO.insertOrder();  // 발주 테이블에 저장 후 발주 ID 반환
+
+        for (Map.Entry<Integer, Integer> entry : orderItems.entrySet()) {
+            orderDAO.insertOrderProduct(newOrderId, entry.getKey(), entry.getValue());
+        }
+
+        JOptionPane.showMessageDialog(this, "발주가 완료되었습니다!");
+        orderItems.clear();
+        updateOrderList();
+    }
+
+    public static void main(String[] args) {
+        new OrderScreen();
+    }
+}

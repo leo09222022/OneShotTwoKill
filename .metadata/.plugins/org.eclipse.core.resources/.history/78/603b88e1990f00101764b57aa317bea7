@@ -1,0 +1,34 @@
+package orders.database;
+
+import orders.database.*;
+
+
+import java.util.Scanner;
+
+public class MainTest {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        OrderDAO orderDAO = new OrderDAO();
+
+        // 1️⃣ 새로운 발주 생성
+        System.out.println("새로운 발주를 생성합니다...");
+        int newOrderId = orderDAO.insertOrder();
+        System.out.println("생성된 발주 ID: " + newOrderId);
+
+        // 2️⃣ 상품 추가
+        while (true) {
+            System.out.print("추가할 상품 ID 입력 (0 입력 시 종료): ");
+            int productId = sc.nextInt();
+            if (productId == 0) break;
+
+            System.out.print("상품 수량 입력: ");
+            int quantity = sc.nextInt();
+
+            orderDAO.insertOrderProduct(newOrderId, productId, quantity);
+            System.out.println("✅ 상품 추가 완료: 상품 ID " + productId + ", 수량 " + quantity);
+        }
+
+        System.out.println("🛒 발주가 완료되었습니다!");
+        sc.close();
+    }
+}
