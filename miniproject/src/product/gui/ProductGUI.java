@@ -1,7 +1,195 @@
 package product.gui;
 
-import javax.swing.JPanel;
+import javax.swing.*;
+import main.gui.ProductManagementGUI;
+import product.database.ProductDAO;
+import product.database.ProductVO;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Random;
 
-public class ProductGUI extends JPanel {
+public class ProductGUI extends JFrame {
+    private JTextField txtProductName, txtCostPrice, txtOptimalStock, txtSalePrice;
+    private JCheckBox chkBeverage, chkSnack, chkCategory1, chkCategory2, chkEtc;
+    private JButton btnRegister, btnCancel;
 
+    public ProductGUI() {
+        // 레이아웃 구성
+        setLayout(new BorderLayout());
+        JPanel p_top = new JPanel();        // 상단
+        JPanel p_center = new JPanel();     // 컨텐츠 영역
+        JPanel p_south = new JPanel();      // 하단
+        JLabel lblExit = new JLabel("관리자 화면 종료");
+        
+        p_top.setBackground(Color.WHITE);
+        p_south.setBackground(Color.WHITE);
+
+        // 상단 영역 : 공통 버튼(뒤로가기)
+        p_top.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JButton btnBack = new JButton("< 뒤로가기");
+        btnBack.setBorderPainted(false);
+        btnBack.setBackground(Color.WHITE);
+        btnBack.setForeground(Color.BLACK);
+        btnBack.setFocusPainted(false);
+        btnBack.addActionListener(e -> {
+            this.setVisible(false);
+            new ProductManagementGUI();
+        });
+        p_top.add(btnBack);
+        add(p_top, BorderLayout.NORTH);
+
+        // 하단 영역 : 공통 레이블(관리자 화면 종료)
+        p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
+        p_south.add(lblExit);
+        add(p_south, BorderLayout.SOUTH);
+
+        setTitle("신규 상품 등록");
+        setSize(375, 660);
+
+        // 메인 컨텐츠 패널 설정
+        p_center.setLayout(null);
+        add(p_center, BorderLayout.CENTER);
+
+        // 제목
+        JLabel lblTitle = new JLabel("[신규 상품 등록]");
+        lblTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
+        lblTitle.setBounds(20, 50, 300, 30);
+        p_center.add(lblTitle);
+
+        // 상품명
+        JLabel lblProductName = new JLabel("상품명");
+        lblProductName.setBounds(20, 100, 100, 20);
+        p_center.add(lblProductName);
+        txtProductName = new JTextField();
+        txtProductName.setBounds(20, 125, 320, 30);
+        p_center.add(txtProductName);
+
+        // 원가
+        JLabel lblCostPrice = new JLabel("원가");
+        lblCostPrice.setBounds(20, 165, 100, 20);
+        p_center.add(lblCostPrice);
+        txtCostPrice = new JTextField();
+        txtCostPrice.setBounds(20, 190, 320, 30);
+        p_center.add(txtCostPrice);
+
+        // 적정재고
+        JLabel lblOptimalStock = new JLabel("적정재고");
+        lblOptimalStock.setBounds(20, 230, 100, 20);
+        p_center.add(lblOptimalStock);
+        txtOptimalStock = new JTextField();
+        txtOptimalStock.setBounds(20, 255, 320, 30);
+        p_center.add(txtOptimalStock);
+
+        // 판매가
+        JLabel lblSalePrice = new JLabel("판매가");
+        lblSalePrice.setBounds(20, 295, 100, 20);
+        p_center.add(lblSalePrice);
+        txtSalePrice = new JTextField();
+        txtSalePrice.setBounds(20, 320, 320, 30);
+        p_center.add(txtSalePrice);
+
+        // 카테고리
+        JLabel lblCategory = new JLabel("카테고리");
+        lblCategory.setBounds(20, 360, 100, 20);
+        p_center.add(lblCategory);
+
+        chkBeverage = new JCheckBox("음료");
+        chkSnack = new JCheckBox("스낵");
+        chkCategory1 = new JCheckBox("유제품");
+        chkCategory2 = new JCheckBox("빙과류");
+        chkEtc = new JCheckBox("기타");
+
+        chkBeverage.setBounds(20, 385, 80, 30);
+        chkSnack.setBounds(100, 385, 80, 30);
+        chkCategory1.setBounds(180, 385, 100, 30);
+        chkCategory2.setBounds(20, 415, 100, 30);
+        chkEtc.setBounds(130, 415, 80, 30);
+
+        p_center.add(chkBeverage);
+        p_center.add(chkSnack);
+        p_center.add(chkCategory1);
+        p_center.add(chkCategory2);
+        p_center.add(chkEtc);
+
+        // 등록 및 취소 버튼 패널
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        btnPanel.setBounds(20, 470, 320, 40);
+
+        btnRegister = new JButton("등록");
+        btnCancel = new JButton("취소");
+        btnRegister.setPreferredSize(new Dimension(150, 40));
+        btnCancel.setPreferredSize(new Dimension(150, 40));
+
+        btnCancel.addActionListener(e -> {
+            this.setVisible(false);
+            new ProductManagementGUI();
+        });
+
+        btnRegister.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                registerProduct();
+            }
+        });
+
+        btnPanel.add(btnRegister);
+        btnPanel.add(btnCancel);
+        p_center.add(btnPanel);
+
+        setVisible(true);
+    }
+
+    private void registerProduct() {
+        String productId = generateRandomProductId();
+        String productName = txtProductName.getText();
+        int costPrice = Integer.parseInt(txtCostPrice.getText());
+        int optimalStock = Integer.parseInt(txtOptimalStock.getText());
+        int salePrice = Integer.parseInt(txtSalePrice.getText());
+        int stock = 1;
+
+        // 카테고리 선택
+        String categoryName = "";
+        if (chkBeverage.isSelected()) categoryName = "음료";
+        else if (chkSnack.isSelected()) categoryName = "스낵";
+        else if (chkCategory1.isSelected()) categoryName = "유제품";
+        else if (chkCategory2.isSelected()) categoryName = "빙과류";
+        else if (chkEtc.isSelected()) categoryName = "기타";
+
+        // 카테고리 ID 조회
+        ProductDAO dao = new ProductDAO();
+        int categoryId = dao.getCategoryIdByName(categoryName);
+
+        // 데이터 객체 생성
+        ProductVO product = new ProductVO(productId, categoryId, productName, optimalStock, stock, costPrice, salePrice, null, null);
+        
+        // DB 저장
+        dao.insertProduct(product);
+
+        // 성공 메시지
+        JOptionPane.showMessageDialog(this, "상품등록이 완료되었습니다.", "등록 완료", JOptionPane.INFORMATION_MESSAGE);
+
+        // 입력 필드 초기화
+        txtProductName.setText("");
+        txtCostPrice.setText("");
+        txtOptimalStock.setText("");
+        txtSalePrice.setText("");
+
+        // 체크박스 초기화
+        chkBeverage.setSelected(false);
+        chkSnack.setSelected(false);
+        chkCategory1.setSelected(false);
+        chkCategory2.setSelected(false);
+        chkEtc.setSelected(false);
+    }
+
+    // 상품 아이디 13자리 랜덤 생성자 
+    private String generateRandomProductId() {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 13; i++) {
+            sb.append(random.nextInt(10));
+        }
+        return sb.toString();
+    }
 }
