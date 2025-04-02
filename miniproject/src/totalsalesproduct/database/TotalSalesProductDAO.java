@@ -28,7 +28,6 @@ public class TotalSalesProductDAO {
 				TotalSalesProductVO vo = new TotalSalesProductVO(productId, productName, salesCount, costPriceAt, salePriceAt, sumSalePrice, profits, profitsRate);
 				list.add(vo);
 			}
-			
 			ConnectionProvider.close(conn, stmt);
 		} catch (Exception e) {
 			System.out.println("예외발생 : " + e);
