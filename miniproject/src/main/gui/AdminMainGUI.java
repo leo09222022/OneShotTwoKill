@@ -13,6 +13,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import totalsalesproduct.gui.TotalSalesProductGUI;
+
 // 공통 레이아웃
 public class AdminMainGUI extends JFrame {
     JTable table;
@@ -70,7 +72,10 @@ public class AdminMainGUI extends JFrame {
         	this.setVisible(false);
         	new ProductManagementGUI();
         });
-        
+        btnSalesManage.addActionListener(e -> {
+        	this.setVisible(false);
+        	new TotalSalesProductGUI();
+        });
         // 버튼에 약간의 여백 추가
         p_center_mid.setBorder(new EmptyBorder(0, 0, 200, 0)); // 하단 여백 추가
         /* [E] 컨텐츠 영역 : p_center_mid ========================================================== */

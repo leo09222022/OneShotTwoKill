@@ -33,7 +33,7 @@ public class ProductManagementGUI extends JFrame {
         JButton btnBack = new JButton("< 뒤로가기");
         JButton btnRegister = new JButton("상품 등록");
         JButton btnModify = new JButton("상품 수정");
-        JButton btnReturn = new JButton("상품 반송");
+        JButton btnReturn = new JButton("상품 발주");
         JLabel lblExit = new JLabel("관리자 화면 종료");
         
         /* [S : 공통] 레이아웃영역  ====================================================== */
