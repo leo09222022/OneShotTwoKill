@@ -1,5 +1,6 @@
 /category/
 /common/
+<<<<<<< HEAD
 /db/
 /kioskMain/
 /main/
@@ -7,3 +8,8 @@
 /product/
 /sales/
 /totalsalesproduct/
+=======
+/main/
+/product/
+/sales/
+>>>>>>> refs/remotes/origin/master
