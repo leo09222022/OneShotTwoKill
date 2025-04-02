@@ -1,0 +1,10 @@
+package vo;
+
+public class OrderProductVO {
+    private int order_id;
+    private int product_id;
+    private int order_quantity;
+
+
+
+}

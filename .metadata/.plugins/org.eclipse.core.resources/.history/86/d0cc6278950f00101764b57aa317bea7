@@ -1,0 +1,5 @@
+package orders.database;
+
+public class OrderProductDAO {
+
+}

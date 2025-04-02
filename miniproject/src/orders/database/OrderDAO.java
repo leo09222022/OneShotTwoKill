@@ -1,5 +1,68 @@
 package orders.database;
 
+import db.ConnectionProvider;
+
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class OrderDAO {
 
+    public void insertOrder(OrderVO order) {
+        String sql = "INSERT INTO orders (ORDER_ID, ORDER_DATE, TOTAL_COST, REMARKS) VALUES (?, SYSDATE, ?, ?)";
+        try (Connection conn = ConnectionProvider.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, order.getOrder_id());
+            pstmt.setInt(2, order.getTotal_cost());
+            pstmt.setString(3, order.getRemarks());
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<OrderVO> getAllOrders() {
+        List<OrderVO> orders = new ArrayList<>();
+        String sql = "SELECT ORDER_ID, ORDER_DATE, TOTAL_COST, REMARKS FROM orders";
+        try (Connection conn = ConnectionProvider.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                orders.add(new OrderVO(
+                        rs.getInt("ORDER_ID"),
+                        rs.getDate("ORDER_DATE"),
+                        rs.getInt("TOTAL_COST"),
+                        rs.getString("REMARKS")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
+
+    public void updateOrder(int orderId, int totalCost, String remarks) {
+        String sql = "UPDATE orders SET TOTAL_COST = ?, REMARKS = ? WHERE ORDER_ID = ?";
+        try (Connection conn = ConnectionProvider.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, totalCost);
+            pstmt.setString(2, remarks);
+            pstmt.setInt(3, orderId);
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteOrder(int orderId) {
+        String sql = "DELETE FROM orders WHERE ORDER_ID = ?";
+        try (Connection conn = ConnectionProvider.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, orderId);
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
