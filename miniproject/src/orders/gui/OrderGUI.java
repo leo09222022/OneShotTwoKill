@@ -1,88 +1,56 @@
-package orders.gui;
-
-import orders.database.*;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.Map;
 
 public class OrderGUI extends JFrame {
-    private HashMap<Integer, Integer> orderItems = new HashMap<>(); // <상품ID, 수량>
-
-    private JTextField productIdField;
-    private JTextField quantityField;
-    private JTextArea orderListArea;
-
     public OrderGUI() {
         setTitle("발주 화면");
-        setSize(400, 400);
+        setSize(360, 640);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new FlowLayout());
+        setLayout(null);
+        
+        // 뒤로가기 버튼
+        JButton backButton = new JButton("< 뒤로가기");
+        backButton.setBounds(20, 20, 80, 30);
+        add(backButton);
 
-        productIdField = new JTextField(10);
-        quantityField = new JTextField(10);
-        JButton addButton = new JButton("추가");
-        JButton orderButton = new JButton("발주");
-        orderListArea = new JTextArea(10, 30);
-        orderListArea.setEditable(false);
+        // 관리자 화면 종료
+        JButton exitButton = new JButton("관리자 화면 종료");
+        exitButton.setBounds(117, 580, 126, 30);
+        add(exitButton);
 
-        add(new JLabel("상품 ID:"));
-        add(productIdField);
-        add(new JLabel("수량:"));
-        add(quantityField);
-        add(addButton);
-        add(orderButton);
-        add(new JScrollPane(orderListArea));
+        // 상품 목록 패널
+        JPanel productPanel = new JPanel();
+        productPanel.setLayout(new GridLayout(6, 4, 10, 10));
+        productPanel.setBounds(20, 100, 320, 300);
+        
+        String[] headers = {"상품명", "현재재고", "적정재고", "발주수량"};
+        for (String header : headers) {
+            JLabel label = new JLabel(header, SwingConstants.CENTER);
+            label.setFont(new Font("Inter", Font.BOLD, 16));
+            productPanel.add(label);
+        }
 
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int productId = Integer.parseInt(productIdField.getText());
-                int quantity = Integer.parseInt(quantityField.getText());
-                orderItems.put(productId, quantity);
-                updateOrderList();
+        // 샘플 데이터
+        String[][] products = {
+            {"콜라", "2개", "10개"},
+            {"사이다", "3개", "8개"},
+            {"커피", "5개", "15개"},
+            {"주스", "4개", "12개"},
+            {"우유", "1개", "5개"}
+        };
+
+        for (String[] product : products) {
+            for (int i = 0; i < 3; i++) {
+                JLabel label = new JLabel(product[i], SwingConstants.CENTER);
+                productPanel.add(label);
             }
-        });
+            JTextField orderField = new JTextField();
+            orderField.setHorizontalAlignment(JTextField.CENTER);
+            productPanel.add(orderField);
+        }
 
-        orderButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                placeOrder();
-            }
-        });
-
+        add(productPanel);
         setVisible(true);
     }
 
-    private void updateOrderList() {
-        orderListArea.setText("");
-        for (Map.Entry<Integer, Integer> entry : orderItems.entrySet()) {
-            orderListArea.append("상품 ID: " + entry.getKey() + ", 수량: " + entry.getValue() + "\n");
-        }
-    }
-
-    private void placeOrder() {
-        if (orderItems.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "상품을 추가해주세요!");
-            return;
-        }
-
-        OrderDAO orderDAO = new OrderDAO();
-        int newOrderId = orderDAO.insertOrder();  // 발주 테이블에 저장 후 발주 ID 반환
-
-        for (Map.Entry<Integer, Integer> entry : orderItems.entrySet()) {
-            orderDAO.insertOrderProduct(newOrderId, entry.getKey(), entry.getValue());
-        }
-
-        JOptionPane.showMessageDialog(this, "발주가 완료되었습니다!");
-        orderItems.clear();
-        updateOrderList();
-    }
-
-    public static void main(String[] args) {
-        new OrderGUI();
-    }
 }
