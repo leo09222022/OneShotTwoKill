@@ -56,6 +56,8 @@ public class Component extends JFrame{
 		// 상+하단 영역 : 레이아웃
 		p_top.setBackground(Color.WHITE);
 		p_south.setBackground(Color.WHITE);
+		p_center_mid.setBackground(Color.WHITE); // 배경화면 설정
+		p_center_btn.setBackground(Color.WHITE); // 배경화면 설정 
 		
 		// 상단 영역 : 공통 버튼( 뒤로가기 )
 		p_top.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -95,6 +97,7 @@ public class Component extends JFrame{
 		labelTitle.setBorder(new EmptyBorder(10, 0, 10, 20)); // 간격넣기
 		labelTitle.setFont(new Font("SansSerif", Font.BOLD, 18));
 		p_center_top_tit.add(labelTitle); // 페이지 타이틀 넣기
+		p_center_top_tit.setBackground(Color.WHITE); // 배경화면 설정
         
 		
 		// 컨텐츠 영역 : 인풋 + 버튼
@@ -103,6 +106,7 @@ public class Component extends JFrame{
         JButton btnTypeSearch = new JButton("검색");
         p_center_top_search.add(textField);
         p_center_top_search.add(btnTypeSearch);
+        p_center_top_search.setBackground(Color.WHITE); // 배경화면 설정
         
         
 		// 컨텐츠 영역 : p_center_top 관련 패널에 넣기
@@ -150,6 +154,7 @@ public class Component extends JFrame{
 		// 체크박스 관련 패널 생성
 		JPanel panel_check_group = new JPanel(); // 패널 생성
         panel_check_group.setLayout(new FlowLayout(FlowLayout.LEFT)); // 체크박스 정렬을 위해 FlowLayout 사용
+        panel_check_group.setBackground(Color.WHITE); // 배경화면 설정
         
 		// 체크박스 배열
         String[] checkTexts = {"음료", "과자", "카테고리1", "카테고리2", "기타"};
@@ -164,8 +169,10 @@ public class Component extends JFrame{
         p_center_mid.add(label); // 체크박스 타이틀 넣기
         for (int i = 0; i < checkTexts.length; i++) {
         	jcb[i] = new JCheckBox(checkTexts[i]);
+        	jcb[i].setBackground(Color.WHITE); // 배경화면 설정
         	panel_check_group.add(jcb[i]);
         }
+       
         
         // 컨텐츠 영역 : p_center_mid 관련 패널에 넣기
         p_center_mid.add(panel_check_group);
