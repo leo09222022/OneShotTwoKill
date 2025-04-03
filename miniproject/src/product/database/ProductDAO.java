@@ -82,6 +82,8 @@ public class ProductDAO {
         }
     }
 
+    // [신규 상품 등록] 화면에서 카테고리 이름을 매개변수로 받아 해당 카테고리 아이디를 
+    // 반환한다. 
     public int getCategoryIdByName(String categoryName) {
         int categoryId = -1;
         String sql = "select category_id from category where category_name = ?";
@@ -170,5 +172,85 @@ public class ProductDAO {
         
         return list;
     }
+    
+    // [상품 수정] 화면에서 수정할 때 필요한 상품들을 전부 출력한다. 
+    public ArrayList<ProductVO> getAllProducts() {
+        ArrayList<ProductVO> productList = new ArrayList<>();
+        String sql = "SELECT * FROM product";
+        
+        try (Connection conn = ConnectionProvider.getConnection();
+
+        	PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            
+            while (rs.next()) {
+                ProductVO product = new ProductVO(
+                    rs.getString("product_id"),
+                    rs.getInt("category_id"),
+                    rs.getString("product_name"),
+                    rs.getInt("optimal_stock"),
+                    rs.getInt("stock"),
+                    rs.getInt("cost_price"),
+                    rs.getInt("sale_price"),
+                    rs.getDate("created_at"),
+                    rs.getDate("updated_at")
+                );
+                productList.add(product);
+            }
+        } catch (Exception e) {
+        	System.out.println("예외발생: " + e.getMessage());
+        }
+        return productList;
+    }
+    
+    // [상품 수정] 화면에서 상품을 이름으로 검색할때 리스트형식으로 반환하여 
+    // 비슷한 이름의 상품들이 있을시 모두 출력한다. 
+    public ArrayList<ProductVO> searchProductsByName(String keyword) {
+        ArrayList<ProductVO> productList = new ArrayList<>();
+        String sql = "SELECT * FROM product WHERE product_name LIKE ?";
+        
+        try (Connection conn = ConnectionProvider.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, "%" + keyword + "%"); // 키워드 포함 검색
+            ResultSet rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+                ProductVO product = new ProductVO(
+                    rs.getString("product_id"),
+                    rs.getInt("category_id"),
+                    rs.getString("product_name"),
+                    rs.getInt("optimal_stock"),
+                    rs.getInt("stock"),
+                    rs.getInt("cost_price"),
+                    rs.getInt("sale_price"),
+                    rs.getDate("created_at"),
+                    rs.getDate("updated_at")
+                );
+                productList.add(product);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return productList;
+    }
+    
+    // [상품 수정]에서 상품 "삭제" 시 현재 재고를 0으로 설정한다. 
+    public void updateStockToZero(String productId) {
+        String sql = "update product set stock = 0 where product_id = ?";
+        
+        try (Connection conn = ConnectionProvider.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, productId);
+            pstmt.executeUpdate();
+            
+        } catch (Exception e) {
+        	System.out.println("예외발생: " + e.getMessage());
+        }
+    }
+
+
+
 }
 

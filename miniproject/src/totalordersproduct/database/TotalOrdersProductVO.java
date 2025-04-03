@@ -7,17 +7,19 @@ public class TotalOrdersProductVO {
 	String productName; //상품명
 	int orderQuantity; // 발주수량
 	Date orderDate; // 발주일
-	int costPriceAt; // 원가
-	int totCostPriceAt; // 총가격
+	int costPriceProduct; // 원가
+	int totCostPriceProduct; // 총가격
+	String remarks; // 비고사항
 	public TotalOrdersProductVO(String productId, String productName, int orderQuantity, Date orderDate,
-			int costPriceAt, int totCostPriceAt) {
+			int costPriceProduct, int totCostPriceProduct, String remarks) {
 		super();
 		this.productId = productId;
 		this.productName = productName;
 		this.orderQuantity = orderQuantity;
 		this.orderDate = orderDate;
-		this.costPriceAt = costPriceAt;
-		this.totCostPriceAt = totCostPriceAt;
+		this.costPriceProduct = costPriceProduct;
+		this.totCostPriceProduct = totCostPriceProduct;
+		this.remarks = remarks;
 	}
 	public String getProductId() {
 		return productId;
@@ -43,20 +45,27 @@ public class TotalOrdersProductVO {
 	public void setOrderDate(Date orderDate) {
 		this.orderDate = orderDate;
 	}
-	public int getCostPriceAt() {
-		return costPriceAt;
+	public int getCostPriceProduct() {
+		return costPriceProduct;
 	}
-	public void setCostPriceAt(int costPriceAt) {
-		this.costPriceAt = costPriceAt;
+	public void setCostPriceProduct(int costPriceProduct) {
+		this.costPriceProduct = costPriceProduct;
 	}
-	public int getTotCostPriceAt() {
-		return totCostPriceAt;
+	public int getTotCostPriceProduct() {
+		return totCostPriceProduct;
 	}
-	public void setTotCostPriceAt(int totCostPriceAt) {
-		this.totCostPriceAt = totCostPriceAt;
+	public void setTotCostPriceProduct(int totCostPriceProduct) {
+		this.totCostPriceProduct = totCostPriceProduct;
+	}
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
 	public TotalOrdersProductVO() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 	
 }
