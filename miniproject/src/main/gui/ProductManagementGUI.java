@@ -63,10 +63,20 @@ public class ProductManagementGUI extends JFrame {
         	dispose(); // 현재 창 닫기
         	new TotalOrdersProductGUI();
         });
-        // 하단 영역 : 공통 레이블( 관리자 화면 종료 )
-        p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
-        p_south.add(lblExit);
-        add(p_south, BorderLayout.SOUTH);
+     // 하단 영역 : 공통 버튼( 메인 화면으로 이동)
+        JButton btnExit = new JButton("메인으로 이동");
+ 		p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
+ 		p_south.add(btnExit);
+ 		add(p_south,BorderLayout.SOUTH);
+ 		btnExit.setBorderPainted(false);
+ 		btnExit.setBackground(Color.WHITE);
+ 		btnExit.setForeground(Color.BLACK);
+ 		btnExit.setFocusPainted(false);
+ 		
+ 		btnExit.addActionListener(e -> {
+ 			dispose();
+ 			new MainGUI();
+ 		});
         /* [E : 공통] 레이아웃영역  ====================================================== */
         
         /* [S] 컨텐츠 영역 : p_center_top ========================================================== */
