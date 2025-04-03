@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import db.ConnectionProvider;
-import totalsalesproduct.database.TotalSalesProductVO;
 
 public class TotalOrdersProductDAO {
 	public ArrayList<TotalOrdersProductVO> selectDailyOrders(String year, String month, String day) {
