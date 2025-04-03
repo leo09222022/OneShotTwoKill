@@ -82,6 +82,29 @@ public class ProductDAO {
         }
     }
 
+    public int getCategoryIdByName(String categoryName) {
+        int categoryId = -1;
+        String sql = "select category_id from category where category_name = ?";
+        
+        try (Connection conn = ConnectionProvider.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, categoryName);
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                categoryId = rs.getInt("category_id");
+            }
+            
+            ConnectionProvider.close(conn, pstmt, rs);
+        } catch (Exception e) {
+            System.out.println("예외 발생: " + e.getMessage());
+        }
+        
+        return categoryId;
+    }
+
+    
     // Product 이름으로 조회
     public ProductVO findByName(String productName) {
         ProductVO product = null;

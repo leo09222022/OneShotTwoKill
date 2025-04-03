@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2025-04-02 14:12:22,300 [Worker-3: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is not available. Remote download required.
 2025-04-02 15:59:01,522 [Worker-62: Periodic workspace save.] ERROR o.e.m.c.i.p.r.ProjectRegistryReader - Can't write workspace state
 java.io.FileNotFoundException: C:\git_desktop\OneShotTwoKill\.metadata\.plugins\org.eclipse.m2e.core\workspaceState.ser (지정된 경로를 찾을 수 없습니다)
@@ -125,3 +126,6 @@ java.io.FileNotFoundException: C:\git_desktop\OneShotTwoKill\.metadata\.plugins\
 	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1205)
 	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+=======
+2025-04-02 15:23:47,364 [Worker-0: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is not available. Remote download required.
+>>>>>>> refs/remotes/origin/master
