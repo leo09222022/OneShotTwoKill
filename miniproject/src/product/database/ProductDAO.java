@@ -105,8 +105,30 @@ public class ProductDAO {
         
         return categoryId;
     }
-
     
+    // [상품 수정] 카테고리 아이디를 입력받아 해당 카테고리 이름을 반환한다. 
+    public String getCategoryNameById(int categoryId) {
+        String categoryName = null;
+        String sql = "select category_name from category where category_id = ?";
+        
+        try (Connection conn = ConnectionProvider.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, categoryId);
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                categoryName = rs.getString("category_name");
+            }
+            
+            ConnectionProvider.close(conn, pstmt, rs);
+        } catch (Exception e) {
+            System.out.println("예외 발생: " + e.getMessage());
+        }
+        
+        return categoryName;
+    }
+
     // Product 이름으로 조회
     public ProductVO findByName(String productName) {
         ProductVO product = null;
@@ -249,8 +271,5 @@ public class ProductDAO {
         	System.out.println("예외발생: " + e.getMessage());
         }
     }
-
-
-
 }
 
