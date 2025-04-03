@@ -24,6 +24,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import sales.gui.SalesGUI;
+
 
 
 // 공통 레이아웃
@@ -90,7 +92,8 @@ public class MainGUI extends JFrame{
         p_center_top.add(p_center_top_tit,BorderLayout.NORTH);
         p_center_top.add(p_center_top_search,BorderLayout.SOUTH);
         btnTypeG.addActionListener(e -> {
-            // 고객화면 호출 메소드 넣기
+        	this.setVisible(false);
+        	new SalesGUI();
         });
         btnExit.addActionListener(e -> {
         	this.setVisible(false);
