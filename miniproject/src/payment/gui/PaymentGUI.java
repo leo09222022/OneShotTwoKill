@@ -2,16 +2,52 @@ package payment.gui;
 
 import java.awt.*;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Date;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import common.gui.Component;
+import payment.database.PaymentDAO;
 import product.database.ProductVO;
+import sales.database.SalesProductVO;
+import sales.database.SalesVO;
 import sales.gui.SalesListGUI;
 
+/*
+1. 받아야 할것
+카드번호
+유효기간
+판매금액
+판매일자
+------------------------------------------------------
+2. 결제진행 클릭시
+카드 받은 내역 + 구매내역 DB로 옮기기
+- 예외처리 >> 하나라도 없으면 진행 안됨
+- 구매내역이 없는경우 결제 화면 못오게 막기
+------------------------------------------------------
+3. 맵으로 묶어서 가져온 결재 리스트
+영수증 화면에 뿌리기
+*/
+
 public class PaymentGUI extends JFrame {
+	PaymentDAO dao = new PaymentDAO();
+//	SalesVO sv =  new SalesVO(salesDate, salesTotal, cardNum, expirationDate, cardVer);	// VO객체 생성
+//    SalesProductVO spv =  new SalesProductVO(salesId); 	// VO객체 생성
+    
+	
+	double random = Math.random();
+	int cardVerInt = (int)(random * 10000000) + 1; // 8자리 출력
+	int salesId = 1234512;
+	String cardVer = String.valueOf(cardVerInt);
+	
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    // String today = LocalDate.now().toString();
+    // Date today = new Date();
+	// Date = (Date.valueOf(LocalDate.now()));
 
     public PaymentGUI(Map<ProductVO, Integer> cartMap) {
     	// 레이아웃 구성
@@ -51,11 +87,11 @@ public class PaymentGUI extends JFrame {
 		
 		
 		// 컨텐츠 영역 : 라벨 + 인풋
-        JTextField[] textFields = new JTextField[4];
-        JLabel[] labels = new JLabel[4];
+        JTextField[] textFields = new JTextField[3];
+        JLabel[] labels = new JLabel[3];
         
         // 라벨 텍스트 배열
-        String[] labelTexts = {"카드번호", "유효기간", "판매금액", "판매일자"};
+        String[] labelTexts = {"카드번호", "유효기간", "판매일자"}; // "판매금액",
         for (int i = 0; i < labelTexts.length; i++) {
             // 라벨영역
         	labels[i] = new JLabel(labelTexts[i]);
@@ -69,18 +105,25 @@ public class PaymentGUI extends JFrame {
             textFields[i].setPreferredSize(new Dimension(350, 28));	// 크기 설정
             textFields[i].setMaximumSize(new Dimension(350, 28));	// 최대 크기 설정
             textFields[i].setAlignmentX(Component.LEFT_ALIGNMENT);	// 왼쪽정렬
+            
+            
+            // JTextField에 오늘 날짜 입력
+            if(i == 2) {
+            	textFields[i].setText(LocalDate.now().format(formatter));
+            	textFields[i].setEditable(false); // 입력방지
+            }
         }
+        
 		
         p_center_mid.setLayout(new BoxLayout(p_center_mid, BoxLayout.Y_AXIS));
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 3; i++) {
 			p_center_mid.add(labels[i]);
 		    p_center_mid.add(textFields[i]);
 		}
-		
     	
     	
 		// 하단 영역 : 버튼( 영수증출력 )
-		JButton btnPrint = new JButton("영수증 출력");
+		JButton btnPrint = new JButton("결제진행");
 		btnPrint.setBorderPainted(false);
 		btnPrint.setBackground(new Color(30, 135, 61));
 		btnPrint.setForeground(Color.WHITE);
@@ -90,12 +133,6 @@ public class PaymentGUI extends JFrame {
     	btnPrint.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
     	btnPrint.setAlignmentX(Component.CENTER_ALIGNMENT);
     	
-    	
-    	 // 결제 버튼 클릭 시 장바구니 출력 (샘플 처리)
-    	btnPrint.addActionListener(e -> {
-            this.setVisible(false);
-            new SalesListGUI(cartMap); // ← 넘겨주는 부분!
-        });
 
 		
 		// 컨텐츠 영역 : p_center_top 관련 패널에 넣기
@@ -114,7 +151,7 @@ public class PaymentGUI extends JFrame {
         labelListTit.setFont(new Font("SansSerif", Font.BOLD, 14));
         scrollPane.setBackground(Color.WHITE);
         scrollPane.getViewport().setBackground(Color.WHITE);
-        scrollPane.setPreferredSize(new Dimension(330, 180));
+        scrollPane.setPreferredSize(new Dimension(330, 195));
         
         itemListPanel.setBackground(Color.WHITE);
         itemListPanel.add(labelListTit);
@@ -135,8 +172,61 @@ public class PaymentGUI extends JFrame {
 
         JLabel totalLabel = new JLabel("총 금액: " + NumberFormat.getInstance().format(totalPrice) + "원", JLabel.CENTER);
         totalLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        totalLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        totalLabel.setBorder(BorderFactory.createEmptyBorder(50, 0, 10, 0));
 
+        
+        
+     // 결제 버튼 클릭 시 장바구니 출력 (샘플 처리)
+    	btnPrint.addActionListener(e -> {
+            this.setVisible(false);
+            new SalesListGUI(cartMap); // ← 넘겨주는 부분!
+            
+            for (int i = 0; i < textFields.length; i++) {
+                String value = textFields[i].getText();  // 입력값 가져오기
+                System.out.println("TextField[" + i + "] 값: " + value);
+            }
+//            String textFields[1] = textCardNum.getText();
+//            String expDate = textExpDate.getText();
+//            String amountStr = textAmount.getText();
+//            
+//          
+            String cardNum = textFields[0].getText();
+            java.sql.Date expirationDate = java.sql.Date.valueOf(textFields[1].getText().trim());
+            // java.sql.Date salesDate = java.sql.Date.valueOf(textFields[2].getText().trim());
+            
+           
+            /*
+            SalesVO sv =  new SalesVO(
+            		null, 
+            		totalPrice, 
+            		cardNum, 
+            		expirationDate, 
+            		cardVer);	// VO객체 생성
+            SalesProductVO spv =  new SalesProductVO(salesId); 	// VO객체 생성
+            
+            dao.insertCardInfo(sv, spv);
+         */
+            
+//            dao.insertCardInfo(
+//            		new SalesVO (
+//            				null,
+//            				sv.getSalesTotal(),
+//                    		sv.getCardNum(),
+//                    		sv.getExpirationDate(),
+//                    		sv.getCardVer())
+//            		,
+//            		new SalesProductVO(
+//            				spv.getProductId()
+//            				)
+//            		);
+            
+            // int re = dao.insert(new BoardVO(0,title,writer,content,null));
+    		/* dao.insert(new BoardVO(0,title,writer,content,null));
+    		 * 0과 null 영역은 sql 에서 결정하게 만들어 놧기때문에 아무거나 넣어도 상관없다.
+    		 */
+            
+        });
+        
         
         
         
