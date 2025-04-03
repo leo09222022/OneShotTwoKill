@@ -1,13 +1,29 @@
 package sales.gui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import payment.gui.PaymentGUI;
 import product.database.ProductVO;
 import sales.database.SalesDAO;
 
@@ -16,7 +32,7 @@ public class SalesGUI extends JFrame {
     JPanel productListPanel;
     JLabel totalLabel;
     JLabel emptyLabel;
-    Map<String, CartItemPanel> cartMap = new HashMap<>();
+    Map<ProductVO, Integer> cartMap = new HashMap<>(); // 상품과 수량을 담는 장바구니 맵
     SalesDAO salesDAO = new SalesDAO();
 
     public SalesGUI() {
@@ -28,7 +44,7 @@ public class SalesGUI extends JFrame {
         JPanel p_center_bottom = new JPanel();
         JPanel p_south = new JPanel();
 
-        // 상단 : 뒤로가기 버튼
+        // 상단: 뒤로가기 버튼
         JButton btnBack = new JButton("< 뒤로가기");
         p_top.setLayout(new FlowLayout(FlowLayout.LEFT));
         p_top.setBackground(Color.WHITE);
@@ -39,7 +55,7 @@ public class SalesGUI extends JFrame {
         p_top.add(btnBack);
         add(p_top, BorderLayout.NORTH);
 
-        // 하단 : 총금액 + 결제하기
+        // 하단: 총 금액 + 결제하기 버튼
         totalLabel = new JLabel("총 금액: 0원", JLabel.CENTER);
         totalLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
         totalLabel.setBorder(new EmptyBorder(10, 0, 5, 0));
@@ -47,10 +63,17 @@ public class SalesGUI extends JFrame {
         JButton payButton = new JButton("결제하기");
         payButton.setPreferredSize(new Dimension(120, 40));
         payButton.setFont(new Font("SansSerif", Font.BOLD, 14));
-        payButton.setBackground(new Color(0, 123, 255));
+        payButton.setBackground(new Color(30, 135, 61));
         payButton.setForeground(Color.WHITE);
         payButton.setFocusPainted(false);
         payButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+
+        // 결제 버튼 클릭 시 장바구니 출력 (샘플 처리)
+        payButton.addActionListener(e -> {
+            this.setVisible(false);
+            new PaymentGUI(cartMap); // ← 넘겨주는 부분!
+        });
+
 
         p_south.setLayout(new BoxLayout(p_south, BoxLayout.Y_AXIS));
         p_south.setBackground(Color.WHITE);
@@ -91,6 +114,7 @@ public class SalesGUI extends JFrame {
         listHeader.add(new JLabel("                가격"));
         listHeader.add(new JLabel(""));
 
+        // 상품 없음 안내 문구
         emptyLabel = new JLabel("상품 바코드를 입력해주세요", JLabel.CENTER);
         emptyLabel.setFont(new Font("SansSerif", Font.ITALIC, 14));
         emptyLabel.setForeground(Color.GRAY);
@@ -102,7 +126,7 @@ public class SalesGUI extends JFrame {
         scrollPane.getViewport().setBackground(Color.WHITE);
         scrollPane.setPreferredSize(new Dimension(330, 300));
 
-        // 상품 목록 타이틀
+        // 상품 목록 타이틀 + 헤더 포함
         JLabel listTitleLabel = new JLabel("상품 목록");
         listTitleLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
         listTitleLabel.setBorder(new EmptyBorder(10, 0, 10, 0));
@@ -120,13 +144,14 @@ public class SalesGUI extends JFrame {
         p_center_bottom.setLayout(new BorderLayout());
         p_center_bottom.add(p_listWrap, BorderLayout.CENTER);
 
-        // 중앙 영역 합치기
+        // 중앙 패널 조합
         p_center.setLayout(new BorderLayout());
         p_center.add(p_center_top, BorderLayout.NORTH);
         p_center.add(p_center_mid, BorderLayout.CENTER);
         p_center.add(p_center_bottom, BorderLayout.SOUTH);
         add(p_center, BorderLayout.CENTER);
 
+        // 바코드 입력 이벤트
         barcodeInput.addActionListener(e -> {
             String barcode = barcodeInput.getText().trim();
             if (!barcode.isEmpty()) {
@@ -140,6 +165,7 @@ public class SalesGUI extends JFrame {
             }
         });
 
+        // 프레임 설정
         setTitle("무인편의점 키오스크 - 사용자 화면");
         setSize(375, 660);
         setVisible(true);
@@ -147,11 +173,12 @@ public class SalesGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    // 상품 추가 또는 수량 증가 처리
     private void addOrUpdateProduct(ProductVO p) {
-        String barcode = p.getProductId();
-        if (cartMap.containsKey(barcode)) {
-            cartMap.get(barcode).increaseQuantity();
+        if (cartMap.containsKey(p)) {
+            cartMap.put(p, cartMap.get(p) + 1);
         } else {
+            cartMap.put(p, 1);
             CartItemPanel itemPanel = new CartItemPanel(p);
             int index = productListPanel.getComponentCount();
             if (index % 2 == 0) {
@@ -159,31 +186,32 @@ public class SalesGUI extends JFrame {
             } else {
                 itemPanel.setBackground(new Color(245, 245, 245));
             }
-            cartMap.put(barcode, itemPanel);
             productListPanel.add(itemPanel);
-            productListPanel.revalidate();
-            productListPanel.repaint();
         }
+        productListPanel.revalidate();
+        productListPanel.repaint();
         updateTotalPrice();
         updateEmptyLabelVisibility();
     }
 
+    // 총 금액 계산
     private void updateTotalPrice() {
         int total = 0;
-        for (CartItemPanel item : cartMap.values()) {
-            total += item.getTotalPrice();
+        for (Map.Entry<ProductVO, Integer> entry : cartMap.entrySet()) {
+            total += entry.getKey().getSalePrice() * entry.getValue();
         }
         NumberFormat nf = NumberFormat.getInstance();
         totalLabel.setText("총 금액: " + nf.format(total) + "원");
     }
 
+    // 상품 없을 경우 안내 문구 표시
     private void updateEmptyLabelVisibility() {
         emptyLabel.setVisible(cartMap.isEmpty());
     }
 
+    // 상품 개별 아이템 패널 정의
     class CartItemPanel extends JPanel {
         ProductVO product;
-        int quantity = 1;
         JLabel quantityLabel, priceLabel;
 
         public CartItemPanel(ProductVO product) {
@@ -195,7 +223,7 @@ public class SalesGUI extends JFrame {
             JLabel nameLabel = new JLabel(product.getProductName());
             nameLabel.setPreferredSize(new Dimension(100, 20));
 
-            quantityLabel = new JLabel(quantity + "개");
+            quantityLabel = new JLabel(cartMap.get(product) + "개");
             priceLabel = new JLabel(NumberFormat.getInstance().format(getTotalPrice()) + "원");
             priceLabel.setPreferredSize(new Dimension(60, 20));
 
@@ -222,18 +250,21 @@ public class SalesGUI extends JFrame {
             deleteBtn.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
 
             plusBtn.addActionListener(e -> {
-                quantity++;
+                cartMap.put(product, cartMap.get(product) + 1);
                 updateLabels();
             });
+
             minusBtn.addActionListener(e -> {
-                if (quantity > 1) {
-                    quantity--;
+                int qty = cartMap.get(product);
+                if (qty > 1) {
+                    cartMap.put(product, qty - 1);
                     updateLabels();
                 }
             });
+
             deleteBtn.addActionListener(e -> {
+                cartMap.remove(product);
                 productListPanel.remove(this);
-                cartMap.remove(product.getProductId());
                 productListPanel.revalidate();
                 productListPanel.repaint();
                 updateEmptyLabelVisibility();
@@ -254,18 +285,13 @@ public class SalesGUI extends JFrame {
         }
 
         void updateLabels() {
-            quantityLabel.setText(quantity + "개");
+            quantityLabel.setText(cartMap.get(product) + "개");
             priceLabel.setText(NumberFormat.getInstance().format(getTotalPrice()) + "원");
             updateTotalPrice();
         }
 
-        void increaseQuantity() {
-            quantity++;
-            updateLabels();
-        }
-
         int getTotalPrice() {
-            return product.getSalePrice() * quantity;
+            return product.getSalePrice() * cartMap.get(product);
         }
     }
 
