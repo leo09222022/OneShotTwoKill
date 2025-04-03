@@ -5,7 +5,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/app/wd/product/21c/dbhomeXE/jdbc/lib/ojdbc8.jar"/>
+	<classpathentry kind="src" path="src"/>	
+	 <classpathentry kind="lib" path="lib/ojdbc8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

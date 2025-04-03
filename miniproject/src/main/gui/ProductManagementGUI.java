@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 
 import totalordersproduct.gui.TotalOrdersProductGUI;
 import product.gui.ProductGUI;
+import product.gui.ProductUpdateGUI;
 
 // 상품 관리 화면
 public class ProductManagementGUI extends JFrame {
@@ -56,11 +57,11 @@ public class ProductManagementGUI extends JFrame {
         
         // 버튼에 이벤트 추가
         btnBack.addActionListener(e -> {
-        	this.setVisible(false);
+        	dispose(); // 현재 창 닫기
         	new AdminMainGUI();
         });
         btnTotalOrders.addActionListener(e -> {
-        	this.setVisible(false);
+        	dispose(); // 현재 창 닫기
         	new TotalOrdersProductGUI();
         });
         // 하단 영역 : 공통 레이블( 관리자 화면 종료 )
@@ -105,6 +106,12 @@ public class ProductManagementGUI extends JFrame {
         btnRegister.addActionListener(e -> {
             this.setVisible(false);
             new ProductGUI(); // 상품 등록 화면 열기
+        });
+        
+        // [상품 수정] 버튼을 누를 시 ProductUpdateGUI.java를 가동시킨다. 
+        btnModify.addActionListener(e -> {
+        	this.setVisible(false);
+        	new ProductUpdateGUI();
         });
 
         // 버튼에 약간의 여백 추가

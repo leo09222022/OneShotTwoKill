@@ -69,11 +69,11 @@ public class AdminMainGUI extends JFrame {
         
         // 버튼에 이벤트 추가
         btnProductManage.addActionListener(e -> {
-        	this.setVisible(false);
+        	dispose(); // 현재 창 닫기
         	new ProductManagementGUI();
         });
         btnSalesManage.addActionListener(e -> {
-        	this.setVisible(false);
+        	dispose(); // 현재 창 닫기
         	new TotalSalesProductGUI();
         });
         // 버튼에 약간의 여백 추가
