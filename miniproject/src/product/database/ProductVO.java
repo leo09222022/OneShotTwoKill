@@ -12,6 +12,21 @@ public class ProductVO {
     private int salePrice;
     private Date createdAt; 
     private Date updatedAt;  
+    
+    // 카트에서 상품 증가를 위한 오버라이딩 SN
+    @Override
+    public boolean equals(Object obj) {
+    	if (this == obj) return true;
+    	if (obj == null || getClass() != obj.getClass()) return false;
+    	ProductVO other = (ProductVO) obj;
+    	return this.getProductId().equals(other.getProductId()); // 또는 getBarcode() 사용
+    }
+
+    @Override
+    public int hashCode() {
+    	return this.getProductId().hashCode(); // 또는 getBarcode().hashCode()
+    }
+   
 
     public ProductVO() {
     	super();

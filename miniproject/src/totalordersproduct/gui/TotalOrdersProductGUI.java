@@ -2,18 +2,14 @@ package totalordersproduct.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,12 +21,10 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-import main.gui.AdminMainGUI;
+import main.gui.MainGUI;
 import main.gui.ProductManagementGUI;
 import totalordersproduct.database.TotalOrdersProductDAO;
 import totalordersproduct.database.TotalOrdersProductVO;
-import totalsalesproduct.database.TotalSalesProductDAO;
-import totalsalesproduct.database.TotalSalesProductVO;
 
 public class TotalOrdersProductGUI extends JFrame {
     JTextField jtf;
@@ -44,7 +38,7 @@ public class TotalOrdersProductGUI extends JFrame {
     ArrayList<TotalOrdersProductVO> list = new ArrayList<TotalOrdersProductVO>(); // 열 데이터
     TotalOrdersProductVO vo = new TotalOrdersProductVO();
     TotalOrdersProductDAO dao = new TotalOrdersProductDAO();
-    
+    JLabel jlb;
     public TotalOrdersProductGUI() {
         setTitle("발주 내역");
         
@@ -57,11 +51,18 @@ public class TotalOrdersProductGUI extends JFrame {
         JPanel p_center_top = new JPanel(); // 중앙 상단 패널 (날짜 입력 및 버튼)
         JPanel p_date_panel = new JPanel(); // 날짜 입력 패널
         JPanel p_button_panel = new JPanel(); // 버튼 패널
+        JPanel p_total_panel = new JPanel(); // 총 가격 패널 (추가)
         JPanel p_center_mid = new JPanel(); // 중앙 중간 패널 (테이블)
         JPanel p_south = new JPanel();      // 하단 패널 (관리자 화면 종료)
         
         // 패널 배경색 설정
         p_top.setBackground(Color.WHITE);
+        p_center.setBackground(Color.WHITE);
+        p_center_top.setBackground(Color.WHITE);
+        p_date_panel.setBackground(Color.WHITE);
+        p_button_panel.setBackground(Color.WHITE);
+        p_total_panel.setBackground(Color.WHITE); // 총 가격 패널 배경색
+        p_center_mid.setBackground(Color.WHITE);
         p_south.setBackground(Color.WHITE);
         
         // 패널 레이아웃 설정
@@ -69,7 +70,8 @@ public class TotalOrdersProductGUI extends JFrame {
         p_center.setLayout(new BorderLayout());
         p_center_top.setLayout(new BoxLayout(p_center_top, BoxLayout.Y_AXIS)); // 수직 배치로 변경
         p_date_panel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        p_button_panel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        p_button_panel.setLayout(new FlowLayout(FlowLayout.CENTER)); // 버튼 가운데 정렬
+        p_total_panel.setLayout(new FlowLayout(FlowLayout.RIGHT)); // 총 가격은 오른쪽 정렬
         p_center_mid.setLayout(new BorderLayout());
         p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
         
@@ -87,23 +89,20 @@ public class TotalOrdersProductGUI extends JFrame {
             new ProductManagementGUI(); // 관리자 메인 화면으로 돌아가기
         });
         
-        // 하단 패널: 관리자 화면 종료 레이블
-        JLabel lblExit = new JLabel("관리자 화면 종료");
-        p_south.add(lblExit);
-        
-        // 레이블에 마우스 이벤트 추가
-        lblExit.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                dispose(); // 현재 창 닫기
-                new main.gui.MainGUI(); // 메인 화면으로 돌아가기
-            }
-            
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                lblExit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-            }
-        });
+        // 하단 영역 : 공통 버튼( 메인 화면으로 이동)
+        JButton btnExit = new JButton("메인으로 이동");
+ 		p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
+ 		p_south.add(btnExit);
+ 		add(p_south,BorderLayout.SOUTH);
+ 		btnExit.setBorderPainted(false);
+ 		btnExit.setBackground(Color.WHITE);
+ 		btnExit.setForeground(Color.BLACK);
+ 		btnExit.setFocusPainted(false);
+ 		
+ 		btnExit.addActionListener(e -> {
+ 			dispose();
+ 			new MainGUI();
+ 		});
         
         // 날짜 입력 패널: 연/월/일 입력 필드와 레이블
         JLabel yearLabel = new JLabel("년");
@@ -128,18 +127,23 @@ public class TotalOrdersProductGUI extends JFrame {
         p_date_panel.add(dayField);
         p_date_panel.add(dayLabel);
         
+        // 조회 버튼
         JButton check = new JButton("조회");
-        
-        // 버튼 패널에 버튼 추가
         p_button_panel.add(check);
         
-        // 중앙 상단 패널에 날짜 패널과 버튼 패널 추가
-        p_center_top.add(p_date_panel);
-        p_center_top.add(p_button_panel);
+        // 총 가격 레이블 (별도의 패널에 추가)
+        jlb = new JLabel("총 가격 : ");
+        p_total_panel.add(jlb);
         
-        // 두 패널 사이에 약간의 여백 추가
+        // 중앙 상단 패널에 각 패널 추가
+        p_center_top.add(p_date_panel);      // 첫 번째 줄: 날짜 입력
+        p_center_top.add(p_button_panel);    // 두 번째 줄: 조회 버튼
+        p_center_top.add(p_total_panel);     // 세 번째 줄: 총 가격
+        
+        // 각 패널에 여백 추가
         p_date_panel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
         p_button_panel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        p_total_panel.setBorder(BorderFactory.createEmptyBorder(5, 0, 10, 0)); // 총 가격 패널에 여백 추가
         
         // 컬럼명 추가
         for(String s : sArr) {
@@ -246,9 +250,9 @@ public class TotalOrdersProductGUI extends JFrame {
                     System.out.println("일별 데이터 로드 완료: " + year + "년 " + month + "월 " + day + "일, " + list.size() + "개의 행");
                 } else {
                     System.out.println("해당 일에 데이터가 없습니다: " + year + "년 " + month + "월 " + day + "일");
+                    jlb.setText("총 가격 : 0원"); // 데이터가 없을 때 총 가격 초기화
                 }
                 
-                System.out.println("일별 데이터 로드 완료: " + year + "년 " + month + "월 " + day + "일, " + list.size() + "개의 행");
             } catch (Exception ex) {
                 System.out.println("일별 데이터 조회 중 오류 발생: " + ex.getMessage());
                 ex.printStackTrace();
@@ -287,6 +291,7 @@ public class TotalOrdersProductGUI extends JFrame {
                 System.out.println("일별 데이터 로드 완료: " + year + "년 " + month + "월 " + day + "일, " + list.size() + "개의 행");
             } else {
                 System.out.println("해당 일에 데이터가 없습니다: " + year + "년 " + month + "월 " + day + "일");
+                jlb.setText("총 가격 : 0원"); // 데이터가 없을 때 총 가격 초기화
             }
             
             System.out.println("일별 데이터 로드 완료: " + year + "년 " + month + "월 " + day + "일, " + list.size() + "개의 행");
@@ -319,7 +324,7 @@ public class TotalOrdersProductGUI extends JFrame {
             System.out.println("표시할 데이터가 없습니다.");
             return;
         }
-        
+        int totalPrice = 0;
         for (TotalOrdersProductVO v : dataList) {
             Vector<Object> row = new Vector<Object>();
             row.add(v.getProductId());
@@ -327,9 +332,14 @@ public class TotalOrdersProductGUI extends JFrame {
             row.add(v.getOrderQuantity());
             row.add(v.getOrderDate());
             row.add(v.getCostPriceProduct());
-            row.add(v.getTotCostPriceProduct());
+            int itemTotalPrice = v.getOrderQuantity() * v.getCostPriceProduct();
+            row.add(itemTotalPrice);
             row.add(v.getRemarks());
+            totalPrice += itemTotalPrice;
             ((DefaultTableModel)jtb.getModel()).addRow(row);
         }
+        
+        // 총 가격 레이블 업데이트
+        jlb.setText("총 가격 : " + totalPrice + "원");
     }
 }
