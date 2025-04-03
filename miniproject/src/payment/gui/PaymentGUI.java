@@ -11,7 +11,7 @@ import product.database.ProductVO;
 public class PaymentGUI extends JFrame {
 
     public PaymentGUI(Map<ProductVO, Integer> cartMap) {
-        setTitle("결제 화면");
+        setTitle("결제 화면!");
         setSize(300, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
