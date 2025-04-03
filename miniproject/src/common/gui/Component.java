@@ -209,6 +209,7 @@ public class Component extends JFrame{
 		setSize(375, 660);
 	    setVisible(true);
 	    setResizable(false); // 리사이즈 제어
+	    setLocationRelativeTo(null); // 화면 정중앙 배치
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 

@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -21,8 +22,9 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import common.gui.Component;
+import product.database.ProductVO;
 
-// import common.gui.Component;
+
 
 // 영수증 출력 화면
 public class SalesListGUI extends JFrame{
@@ -31,7 +33,7 @@ public class SalesListGUI extends JFrame{
 	JLabel Jlabel;
 	
 	// 화면 구성 (생성자)
-	public SalesListGUI() {
+	public SalesListGUI(Map<ProductVO, Integer> cartMap) {
 		// 레이아웃 구성
 		setLayout(new BorderLayout());
 		JPanel p_top = new JPanel();		// 상단
@@ -235,17 +237,10 @@ public class SalesListGUI extends JFrame{
 	
 		
 		/* [유지] 기본세팅 : 항시 소스 맨 밑에 배치 ====================================================== */
-		setTitle("무인편의점 키오스크");
+		setTitle("무인편의점 키오스크 : 영수증");
 		setSize(375, 660);
 	    setVisible(true);
 	    setResizable(false); // 리사이즈 제어
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-
-	
-	
-	// test
-	public static void main(String[] args) {
-		new SalesListGUI();
 	}
 }
