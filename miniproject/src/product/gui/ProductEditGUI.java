@@ -101,6 +101,8 @@ public class ProductEditGUI extends JFrame {
         p_center.add(chkCategory2);
         p_center.add(chkEtc);
 
+        // 카테고리 체크박스가 기존 상품들에 대해 이미 체크가 되어있도록 
+        // 설정한다. 
         setCategoryCheckBoxes();
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
@@ -123,6 +125,8 @@ public class ProductEditGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    // 체크박스가 원래 카테고리와 맞는 옵션으로 체크된 상태로 
+    // 구현한다. 
     private void setCategoryCheckBoxes() {
         ProductDAO dao = new ProductDAO();
         String categoryName = dao.getCategoryNameById(product.getCategoryId());
@@ -155,6 +159,7 @@ public class ProductEditGUI extends JFrame {
         returnToUpdateGUI();
     }
 
+    // 이전 화면으로 돌아간다. 
     private void returnToUpdateGUI() {
         this.setVisible(false);
         new ProductUpdateGUI();
