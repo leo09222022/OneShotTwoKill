@@ -1,9 +1,14 @@
+<<<<<<< HEAD
+=======
+/kioskMain/
+>>>>>>> refs/heads/master
 /main/
 /product/
 /orders/
 /common/
 /kioskMain/
 /sales/
+/totalordersproduct/
 /totalsalesproduct/
 /payment/
 /oracleCommands/

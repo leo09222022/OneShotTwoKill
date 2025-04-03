@@ -6,14 +6,11 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -26,6 +23,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import main.gui.AdminMainGUI;
+import main.gui.MainGUI;
 import totalsalesproduct.database.TotalSalesProductDAO;
 import totalsalesproduct.database.TotalSalesProductVO;
 
@@ -60,6 +58,11 @@ public class TotalSalesProductGUI extends JFrame {
         // 패널 배경색 설정
         p_top.setBackground(Color.WHITE);
         p_south.setBackground(Color.WHITE);
+        p_center_top.setBackground(Color.WHITE);
+        p_date_panel.setBackground(Color.WHITE);
+        p_button_panel.setBackground(Color.WHITE);
+        p_center_mid.setBackground(Color.WHITE);
+        p_south.setBackground(Color.WHITE);
         
         // 패널 레이아웃 설정
         p_top.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -84,23 +87,20 @@ public class TotalSalesProductGUI extends JFrame {
             new AdminMainGUI(); // 관리자 메인 화면으로 돌아가기
         });
         
-        // 하단 패널: 관리자 화면 종료 레이블
-        JLabel lblExit = new JLabel("관리자 화면 종료");
-        p_south.add(lblExit);
-        
-        // 레이블에 마우스 이벤트 추가
-        lblExit.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                dispose(); // 현재 창 닫기
-                new main.gui.MainGUI(); // 메인 화면으로 돌아가기
-            }
-            
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                lblExit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-            }
-        });
+        // 하단 영역 : 공통 버튼( 메인 화면으로 이동)
+        JButton btnExit = new JButton("메인으로 이동");
+ 		p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
+ 		p_south.add(btnExit);
+ 		add(p_south,BorderLayout.SOUTH);
+ 		btnExit.setBorderPainted(false);
+ 		btnExit.setBackground(Color.WHITE);
+ 		btnExit.setForeground(Color.BLACK);
+ 		btnExit.setFocusPainted(false);
+ 		
+ 		btnExit.addActionListener(e -> {
+ 			dispose();
+ 			new MainGUI();
+ 		});
         
         // 날짜 입력 패널: 연/월/일 입력 필드와 레이블
         JLabel yearLabel = new JLabel("년");
@@ -129,6 +129,11 @@ public class TotalSalesProductGUI extends JFrame {
         JButton tot_btn = new JButton("전체");
         JButton month_btn = new JButton("월별");
         JButton day_btn = new JButton("일별");
+        
+        // 버튼 스타일링
+        styleGreenButton(tot_btn);
+        styleGreenButton(month_btn);
+        styleGreenButton(day_btn);
         
         // 버튼 패널에 버튼 추가
         p_button_panel.add(tot_btn);
@@ -237,9 +242,8 @@ public class TotalSalesProductGUI extends JFrame {
         // 버튼 이벤트 처리
         tot_btn.addActionListener(e -> {
             try {
-                // 기존 데이터 삭제
-                rowData.clear();
-                ((DefaultTableModel)jtb.getModel()).setRowCount(0);
+                // 먼저 테이블의 모든 데이터 삭제
+                clearTable();
                 
                 // 새 데이터 가져오기
                 list = dao.selectAllSalesProduct();
@@ -267,17 +271,19 @@ public class TotalSalesProductGUI extends JFrame {
                 
                 System.out.println("월별 검색: " + year + "-" + month);
                 
-                // 기존 데이터 삭제
-                rowData.clear();
-                ((DefaultTableModel)jtb.getModel()).setRowCount(0);
+                // 먼저 테이블의 모든 데이터 삭제
+                clearTable();
                 
                 // 새 데이터 가져오기 - 월별 데이터 필터링
                 list = dao.selectMonthlySalesProduct(year, month);
                 
-                // 데이터 추가
-                addDataToTable(list);
-                
-                System.out.println("월별 데이터 로드 완료: " + year + "년 " + month + "월, " + list.size() + "개의 행");
+                // 데이터가 있는 경우에만 테이블에 추가
+                if (list != null && !list.isEmpty()) {
+                    addDataToTable(list);
+                    System.out.println("월별 데이터 로드 완료: " + year + "년 " + month + "월, " + list.size() + "개의 행");
+                } else {
+                    System.out.println("해당 월에 데이터가 없습니다: " + year + "년 " + month + "월");
+                }
             } catch (Exception ex) {
                 System.out.println("월별 데이터 조회 중 오류 발생: " + ex.getMessage());
                 ex.printStackTrace();
@@ -301,30 +307,34 @@ public class TotalSalesProductGUI extends JFrame {
                 
                 System.out.println("일별 검색: " + year + "-" + month + "-" + day);
                 
-                // 기존 데이터 삭제
-                rowData.clear();
-                ((DefaultTableModel)jtb.getModel()).setRowCount(0);
+                // 먼저 테이블의 모든 데이터 삭제
+                clearTable();
                 
                 // 새 데이터 가져오기 - 일별 데이터 필터링
                 list = dao.selectDailySalesProduct(year, month, day);
                 
-                // 데이터 추가
-                addDataToTable(list);
-                
-                System.out.println("일별 데이터 로드 완료: " + year + "년 " + month + "월 " + day + "일, " + list.size() + "개의 행");
+                // 데이터가 있는 경우에만 테이블에 추가
+                if (list != null && !list.isEmpty()) {
+                    addDataToTable(list);
+                    System.out.println("일별 데이터 로드 완료: " + year + "년 " + month + "월 " + day + "일, " + list.size() + "개의 행");
+                } else {
+                    System.out.println("해당 일에 데이터가 없습니다: " + year + "년 " + month + "월 " + day + "일");
+                }
             } catch (Exception ex) {
                 System.out.println("일별 데이터 조회 중 오류 발생: " + ex.getMessage());
                 ex.printStackTrace();
             }
         });
         
-        // 초기 데이터 로드
-        try {
-            list = dao.selectAllSalesProduct();
-            addDataToTable(list);
-        } catch (Exception ex) {
-            System.out.println("초기 데이터 로드 중 오류 발생: " + ex.getMessage());
-        }
+		// 초기 데이터 로드
+		try {
+		    list = dao.selectAllSalesProduct();
+		    if (list != null && !list.isEmpty()) {
+		        addDataToTable(list);
+		    }
+		} catch (Exception ex) {
+		    System.out.println("초기 데이터 로드 중 오류 발생: " + ex.getMessage());
+		}
         
         // 프레임 설정
         setTitle("무인편의점 키오스크");
@@ -333,6 +343,17 @@ public class TotalSalesProductGUI extends JFrame {
         setVisible(true);
         setResizable(false); // 리사이즈 제어
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // X 버튼 클릭 시 프로그램 종료
+    }
+    
+    // 테이블의 모든 데이터를 지우는 메서드
+    private void clearTable() {
+        // 테이블 모델 가져오기
+        DefaultTableModel model = (DefaultTableModel) jtb.getModel();
+        // 행 수를 0으로 설정하여 모든 행 삭제
+        model.setRowCount(0);
+        // 데이터 목록도 비우기
+        list.clear();
+        rowData.clear();
     }
     
     // 테이블에 데이터 추가하는 메서드
@@ -355,5 +376,19 @@ public class TotalSalesProductGUI extends JFrame {
             
             ((DefaultTableModel)jtb.getModel()).addRow(row);
         }
+    }
+    
+    // 버튼 스타일링 메서드
+    private void styleGreenButton(JButton btn) {
+        btn.setFont(new Font("SansSerif", Font.BOLD, 12));
+        btn.setBackground(new Color(30, 135, 61));
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btn.setOpaque(true);
+        btn.setContentAreaFilled(true);
+        btn.setBorderPainted(false);
+//        btn.setPreferredSize(new Dimension(60, 36));
+//        btn.setMargin(new Insets(2, 4, 2, 4)); 
     }
 }

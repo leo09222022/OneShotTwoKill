@@ -22,7 +22,9 @@ public class ProductGUI extends JFrame {
         JPanel p_south = new JPanel();      // 하단
         JLabel lblExit = new JLabel("관리자 화면 종료");
         
+        // 배경색 흰색으로 수정
         p_top.setBackground(Color.WHITE);
+        p_center.setBackground(Color.WHITE);
         p_south.setBackground(Color.WHITE);
 
         // 상단 영역 : 공통 버튼(뒤로가기)
@@ -105,6 +107,22 @@ public class ProductGUI extends JFrame {
         chkCategory1.setBounds(180, 385, 100, 30);
         chkCategory2.setBounds(20, 415, 100, 30);
         chkEtc.setBounds(130, 415, 80, 30);
+        
+        // 체크박스 스타일링
+//        Font checkFont = new Font("SansSerif", Font.PLAIN, 14);
+        Color primaryColor = new Color(30, 135, 61); // 포인트 컬러
+
+        for (JCheckBox cb : new JCheckBox[]{chkBeverage, chkSnack, chkCategory1, chkCategory2, chkEtc}) {
+//            cb.setFont(checkFont);                  // 글씨 깔끔하게
+            cb.setBackground(Color.WHITE);          // 배경 흰색
+            cb.setForeground(Color.DARK_GRAY);      // 글씨 색 차분하게
+            cb.setFocusPainted(false);              // 포커스 테두리 제거
+            cb.setBorderPainted(false);             // 외곽선 제거
+            cb.setOpaque(true);                     // 배경색 설정 적용되게 함
+            cb.setIconTextGap(10);                  // 체크박스랑 텍스트 간격 조정
+        }
+
+        
 
         p_center.add(chkBeverage);
         p_center.add(chkSnack);
@@ -114,12 +132,31 @@ public class ProductGUI extends JFrame {
 
         // 등록 및 취소 버튼 패널
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        btnPanel.setBackground(Color.WHITE);
         btnPanel.setBounds(20, 470, 320, 40);
 
         btnRegister = new JButton("등록");
         btnCancel = new JButton("취소");
+        
         btnRegister.setPreferredSize(new Dimension(150, 40));
+        btnRegister.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnRegister.setBackground(new Color(30, 135, 61));
+        btnRegister.setForeground(Color.WHITE);
+        btnRegister.setFocusPainted(false);
+        btnRegister.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btnRegister.setOpaque(true);
+        btnRegister.setContentAreaFilled(true);
+        btnRegister.setBorderPainted(false);
+        
         btnCancel.setPreferredSize(new Dimension(150, 40));
+        btnCancel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnCancel.setBackground(Color.WHITE); 
+        btnCancel.setForeground(new Color(30, 135, 61)); 
+        btnCancel.setFocusPainted(false);
+        btnCancel.setBorder(BorderFactory.createLineBorder(new Color(30, 135, 61), 2));
+        btnCancel.setOpaque(true);
+        btnCancel.setContentAreaFilled(true);
+        
 
         btnCancel.addActionListener(e -> {
             this.setVisible(false);
@@ -137,9 +174,14 @@ public class ProductGUI extends JFrame {
         btnPanel.add(btnCancel);
         p_center.add(btnPanel);
 
-        setVisible(true);
-        setResizable(false); // 리사이즈 제어
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	setTitle("신규 상품 등록");
+		setSize(375, 660);
+	    setVisible(true);
+        setLocationRelativeTo(null); // 화면 중앙에 표시
+	    setResizable(false); // 리사이즈 제어
+	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        
     }
 
     private void registerProduct() {
@@ -148,7 +190,7 @@ public class ProductGUI extends JFrame {
         int costPrice = Integer.parseInt(txtCostPrice.getText());
         int optimalStock = Integer.parseInt(txtOptimalStock.getText());
         int salePrice = Integer.parseInt(txtSalePrice.getText());
-        int stock = 1;
+        int stock = 0;
 
         // 카테고리 선택
         String categoryName = "";

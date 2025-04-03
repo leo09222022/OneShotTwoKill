@@ -5,6 +5,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,8 +16,9 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import totalordersproduct.gui.TotalOrdersProductGUI;
 import product.gui.ProductGUI;
+import product.gui.ProductUpdateGUI;
+import totalordersproduct.gui.TotalOrdersProductGUI;
 
 // 상품 관리 화면
 public class ProductManagementGUI extends JFrame {
@@ -31,6 +35,15 @@ public class ProductManagementGUI extends JFrame {
         JPanel p_center_top = new JPanel();  // 상단 타이틀 영역
         JPanel p_center_mid = new JPanel();  // 중앙 버튼 영역
         JPanel p_south = new JPanel();      // 하단
+        
+        // 배경색 설정
+        p_top.setBackground(Color.WHITE);
+        p_center.setBackground(Color.WHITE);
+        p_center_top.setBackground(Color.WHITE);
+        p_center_mid.setBackground(Color.WHITE);
+        p_south.setBackground(Color.WHITE);
+        
+        
         
         // 공통 컴포넌트 구성 : 버튼
         JButton btnBack = new JButton("< 뒤로가기");
@@ -56,27 +69,61 @@ public class ProductManagementGUI extends JFrame {
         
         // 버튼에 이벤트 추가
         btnBack.addActionListener(e -> {
-        	this.setVisible(false);
+        	dispose(); // 현재 창 닫기
         	new AdminMainGUI();
         });
         btnTotalOrders.addActionListener(e -> {
-        	this.setVisible(false);
+        	dispose(); // 현재 창 닫기
         	new TotalOrdersProductGUI();
         });
-        // 하단 영역 : 공통 레이블( 관리자 화면 종료 )
-        p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
-        p_south.add(lblExit);
-        add(p_south, BorderLayout.SOUTH);
+     // 하단 영역 : 공통 버튼( 메인 화면으로 이동)
+        JButton btnExit = new JButton("메인으로 이동");
+ 		p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
+ 		p_south.add(btnExit);
+ 		add(p_south,BorderLayout.SOUTH);
+ 		btnExit.setBorderPainted(false);
+ 		btnExit.setBackground(Color.WHITE);
+ 		btnExit.setForeground(Color.BLACK);
+ 		btnExit.setFocusPainted(false);
+ 		
+ 		btnExit.addActionListener(e -> {
+ 			dispose();
+ 			new MainGUI();
+ 		});
         /* [E : 공통] 레이아웃영역  ====================================================== */
         
         /* [S] 컨텐츠 영역 : p_center_top ========================================================== */
         // 컨텐츠 영역 : 페이지 타이틀
+//        JLabel labelTitle = new JLabel("상품 관리 화면");
+//        labelTitle.setHorizontalAlignment(JLabel.CENTER);
+//        labelTitle.setBorder(new EmptyBorder(50, 0, 50, 0)); // 간격넣기 (상, 좌, 하, 우)
+//        labelTitle.setFont(new Font("SansSerif", Font.BOLD, 24));
+//        p_center_top.setLayout(new BorderLayout());
+//        p_center_top.add(labelTitle, BorderLayout.CENTER); // 페이지 타이틀 넣기
+        
         JLabel labelTitle = new JLabel("상품 관리 화면");
-        labelTitle.setHorizontalAlignment(JLabel.CENTER);
-        labelTitle.setBorder(new EmptyBorder(50, 0, 50, 0)); // 간격넣기 (상, 좌, 하, 우)
         labelTitle.setFont(new Font("SansSerif", Font.BOLD, 24));
-        p_center_top.setLayout(new BorderLayout());
-        p_center_top.add(labelTitle, BorderLayout.CENTER); // 페이지 타이틀 넣기
+        labelTitle.setAlignmentX(CENTER_ALIGNMENT);
+        
+        JLabel shopinfo1 = new JLabel("상품을 관리하고  ");
+        shopinfo1.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        shopinfo1.setAlignmentX(CENTER_ALIGNMENT);
+
+        JLabel shopinfo2 = new JLabel("발주 내역을 확인하세요.");
+        shopinfo2.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        shopinfo2.setAlignmentX(CENTER_ALIGNMENT);
+
+        // 세로 정렬을 위해 BoxLayout 사용
+        p_center_top.setLayout(new BoxLayout(p_center_top, BoxLayout.Y_AXIS));
+        p_center_top.setBorder(new EmptyBorder(80, 0, 20, 0)); // 상하 여백 추가
+
+        // 패널에 라벨 추가
+        p_center_top.add(labelTitle);
+        p_center_top.add(shopinfo1);
+        p_center_top.add(shopinfo2);
+        
+        
+        
         /* [E] 컨텐츠 영역 : p_center_top ========================================================== */
         
         /* [S] 컨텐츠 영역 : p_center_mid ========================================================== */
@@ -91,9 +138,48 @@ public class ProductManagementGUI extends JFrame {
         
         // 모든 버튼에 테두리 설정
         btnRegister.setBorderPainted(true);
+        btnRegister.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnRegister.setBackground(new Color(30, 135, 61));
+        btnRegister.setForeground(Color.WHITE);
+        btnRegister.setFocusPainted(false);
+        btnRegister.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btnRegister.setOpaque(true);
+        btnRegister.setContentAreaFilled(true);
+        btnRegister.setBorderPainted(false);
+
+        
         btnModify.setBorderPainted(true);
+        btnModify.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnModify.setBackground(new Color(30, 135, 61));
+        btnModify.setForeground(Color.WHITE);
+        btnModify.setFocusPainted(false);
+        btnModify.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btnModify.setOpaque(true);
+        btnModify.setContentAreaFilled(true);
+        btnModify.setBorderPainted(false);
+
+        
         btnTotalSales.setBorderPainted(true);
+        btnTotalSales.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnTotalSales.setBackground(new Color(30, 135, 61));
+        btnTotalSales.setForeground(Color.WHITE);
+        btnTotalSales.setFocusPainted(false);
+        btnTotalSales.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btnTotalSales.setOpaque(true);
+        btnTotalSales.setContentAreaFilled(true);
+        btnTotalSales.setBorderPainted(false);
+
+        
         btnTotalOrders.setBorderPainted(true);  // 발주 내역 버튼 테두리 설정
+        btnTotalOrders.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnTotalOrders.setBackground(new Color(30, 135, 61));
+        btnTotalOrders.setForeground(Color.WHITE);
+        btnTotalOrders.setFocusPainted(false);
+        btnTotalOrders.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btnTotalOrders.setOpaque(true);
+        btnTotalOrders.setContentAreaFilled(true);
+        btnTotalOrders.setBorderPainted(false);
+
         
         // 패널에 버튼 추가
         p_center_mid.add(btnRegister);
@@ -105,6 +191,12 @@ public class ProductManagementGUI extends JFrame {
         btnRegister.addActionListener(e -> {
             this.setVisible(false);
             new ProductGUI(); // 상품 등록 화면 열기
+        });
+        
+        // [상품 수정] 버튼을 누를 시 ProductUpdateGUI.java를 가동시킨다. 
+        btnModify.addActionListener(e -> {
+        	this.setVisible(false);
+        	new ProductUpdateGUI();
         });
 
         // 버튼에 약간의 여백 추가
