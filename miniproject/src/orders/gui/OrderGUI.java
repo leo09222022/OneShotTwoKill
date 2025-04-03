@@ -1,18 +1,7 @@
 package orders.gui;
 
 import javax.swing.*;
-
 import javax.swing.table.DefaultTableModel;
-
-import main.gui.OrderReceiptGUI;
-import orders.database.OrderDAO;
-import orders.database.OrderProductDAO;
-import orders.database.OrderProductVO;
-import orders.database.OrderVO;
-import product.database.ProductDAO;
-import product.database.ProductVO;
-import orders.database.OrderRecieptVO;
-import orders.database.OrderRecieptDAO;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -21,112 +10,132 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import main.gui.OrderReceiptGUI;
+import main.gui.ProductManagementGUI;
+import orders.database.OrderDAO;
+import orders.database.OrderProductDAO;
+import orders.database.OrderProductVO;
+import orders.database.OrderVO;
+import orders.database.OrderRecieptVO;
+import orders.database.OrderRecieptDAO;
+import product.database.ProductDAO;
+import product.database.ProductVO;
+
 public class OrderGUI extends JFrame {
-	private DefaultTableModel tableModel;
-	private JTable table;
-	private JComboBox<String> productCombo;
-	private JTextField quantityField;
-	private HashMap<String, Integer> orderCart; // 제품 ID (String)와 수량을 저장할 HashMap
-	private OrderDAO orderDAO;
-	private OrderProductDAO orderProductDAO;
-	private ProductDAO productDAO; // 추가: 상품 목록을 DB에서 가져오기 위한 DAO
+    private DefaultTableModel tableModel;
+    private JTable table;
+    private JComboBox<String> productCombo;
+    private JTextField quantityField;
+    private HashMap<String, Integer> orderCart;
+    private OrderDAO orderDAO;
+    private OrderProductDAO orderProductDAO;
+    private ProductDAO productDAO;
 
-	public OrderGUI() {
-		setTitle("발주 화면");
-		setSize(500, 400);
+    public OrderGUI() {
+        setLayout(new BorderLayout());
+        JPanel p_top = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel p_center = new JPanel(new BorderLayout());
+        JPanel p_south = new JPanel();
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLayout(new BorderLayout());
+        JButton btnBack = new JButton("< 뒤로가기");
+        p_top.add(btnBack);
+        add(p_top, BorderLayout.NORTH);
 
-		// DAO 초기화
-		orderDAO = new OrderDAO();
-		orderProductDAO = new OrderProductDAO();
-		productDAO = new ProductDAO(); // 상품 정보를 가져오기 위한 DAO
+        btnBack.addActionListener(e -> {
+            this.setVisible(false);
+            new ProductManagementGUI();
+        });
 
-		// 1️⃣ 상단 패널 (상품 선택 & 수량 입력)
-		JPanel inputPanel = new JPanel();
-		inputPanel.add(new JLabel("상품 선택:"));
+        orderDAO = new OrderDAO();
+        orderProductDAO = new OrderProductDAO();
+        productDAO = new ProductDAO();
 
-		// 상품 목록을 DB에서 가져오기
-		List<ProductVO> products = orderDAO.getAllProducts(); // productDAO 사용
-		productCombo = new JComboBox<>();
-		for (ProductVO product : products) {
-			productCombo.addItem(product.getProductId() + " " + product.getProductName());
-		}
-		inputPanel.add(productCombo);
+        JPanel inputPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+        inputPanel.add(new JLabel("상품 선택:"));
 
-		inputPanel.add(new JLabel("수량:"));
-		quantityField = new JTextField(5);
-		inputPanel.add(quantityField);
+        productCombo = new JComboBox<>();
+        List<ProductVO> products = orderDAO.getAllProducts();
+        for (ProductVO product : products) {
+            productCombo.addItem(product.getProductId() + " " + product.getProductName());
+        }
+        inputPanel.add(productCombo);
 
-		JButton addButton = new JButton("추가");
-		inputPanel.add(addButton);
+        inputPanel.add(new JLabel("수량 입력:"));
+        quantityField = new JTextField(5);
+        inputPanel.add(quantityField);
+        
+        JButton addButton = new JButton("추가");
+        JPanel addButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        addButtonPanel.add(addButton);
+        
+        p_center.add(inputPanel, BorderLayout.NORTH);
+        p_center.add(addButtonPanel, BorderLayout.CENTER);
 
-		add(inputPanel, BorderLayout.NORTH);
+        String[] columnNames = { "상품 이름", "재고", "적정 재고", "단가", "발주 수량" };
+        tableModel = new DefaultTableModel(columnNames, 0);
+        table = new JTable(tableModel);
+        p_center.add(new JScrollPane(table), BorderLayout.SOUTH);
 
-		// 2️⃣ 중앙 (JTable - 선택한 상품 목록)
-		String[] columnNames = { "상품 ID", "수량" };
-		tableModel = new DefaultTableModel(columnNames, 0);
-		table = new JTable(tableModel);
-		add(new JScrollPane(table), BorderLayout.CENTER);
+        add(p_center, BorderLayout.CENTER);
 
-		// 3️⃣ 하단 (발주 버튼)
-		JButton orderButton = new JButton("발주하기");
-		add(orderButton, BorderLayout.SOUTH);
+        JButton orderButton = new JButton("발주하기");
+        p_south.add(orderButton);
+        add(p_south, BorderLayout.SOUTH);
 
-		// 4️⃣ HashMap 초기화 (장바구니 역할)
-		orderCart = new HashMap<>();
+        orderCart = new HashMap<>();
+        
+        quantityField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addButton.doClick(); // 엔터를 누르면 "추가" 버튼 클릭 이벤트 발생
+            }
+        });
+        
+        
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedProduct = (String) productCombo.getSelectedItem();
+                String productId = selectedProduct.split(" ")[0];
+//                ProductVO product = 
+                int quantity = Integer.parseInt(quantityField.getText());
+                orderCart.put(productId, quantity);
+                tableModel.addRow(new Object[]{"", "", "", "", quantity});
+            }
+        });
 
-		// ✅ "추가" 버튼 이벤트 처리
-		addButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String selectedProduct = (String) productCombo.getSelectedItem();
-				String productId = selectedProduct.split(" ")[0]; // 상품 ID 추출
-				int quantity = Integer.parseInt(quantityField.getText());
+        orderButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int orderId = orderDAO.getNextOrderId();
+                ArrayList<OrderRecieptVO> list = new ArrayList<>();
+                int totalPrice = orderDAO.calculateTotalPrice(orderCart);
+                OrderVO newOrder = new OrderVO(orderId, new java.util.Date(), totalPrice, "발주");
+                orderDAO.insertOrder(newOrder);
+                for (String productId : orderCart.keySet()) {
+                    int quantity = orderCart.get(productId);
+                    OrderProductVO orderProduct = new OrderProductVO(orderId, productId, quantity);
+                    orderProductDAO.insertOrderProduct(orderProduct);
+                    OrderRecieptDAO dao = new OrderRecieptDAO();
+                    OrderRecieptVO vo = dao.receiptsForOrders(orderId, productId, quantity);
+                    list.add(vo);
+                }
+                tableModel.setRowCount(0);
+                orderCart.clear();
+                new OrderReceiptGUI(list);
+                dispose();
+            }
+        });
 
-				orderCart.put(productId, quantity); // HashMap에 저장
-				tableModel.addRow(new Object[] { productId, quantity }); // JTable에 추가
-			}
-		});
+        setTitle("무인편의점 키오스크");
+        setSize(400, 600);
+        setVisible(true);
+        setLocationRelativeTo(null);
+        setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
 
-		// ✅ "발주하기" 버튼 이벤트 처리
-		orderButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// 새로운 ORDER_ID 가져오기
-				int orderId = orderDAO.getNextOrderId();
-				ArrayList<OrderRecieptVO> list = new ArrayList<OrderRecieptVO>();
-				// 총 가격 계산
-				int totalPrice = orderDAO.calculateTotalPrice(orderCart);
-
-				// 새로운 주문 생성 (ORDER_ID, ORDER_DATE, TOTAL_COST, REMARKS)
-				OrderVO newOrder = new OrderVO(orderId, new java.util.Date(), totalPrice, "발주");
-				orderDAO.insertOrder(newOrder); // 새 주문 추가
-
-				// 발주 상품 추가
-				for (String productId : orderCart.keySet()) {
-					int quantity = orderCart.get(productId);
-					OrderProductVO orderProduct = new OrderProductVO(orderId, productId, quantity);
-					orderProductDAO.insertOrderProduct(orderProduct);
-
-					// 상품명, 개수, 원가가격
-					OrderRecieptDAO dao = new OrderRecieptDAO();
-					OrderRecieptVO vo = dao.receiptsForOrders(orderId, productId, quantity);
-//					System.out.println(vo.getOrderId()+" "+vo.getOrderQuantity()+" "+vo.getProductName()+" "+vo.getCostPerProduct());
-					list.add(vo);
-				}
-
-				tableModel.setRowCount(0); // JTable 초기화
-				orderCart.clear(); // HashMap 초기화
-				new OrderReceiptGUI(list);
-				dispose(); // 현재 창 닫기
-			}
-		});
-		setVisible(true);
-	}
-
-	public static void main(String[] args) {
-		new OrderGUI(); // Swing UI 실행
-	}
+    public static void main(String[] args) {
+        new OrderGUI();
+    }
 }
