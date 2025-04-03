@@ -24,8 +24,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import sales.gui.SalesGUI;
-
 
 
 // 공통 레이아웃
@@ -92,8 +90,7 @@ public class MainGUI extends JFrame{
         p_center_top.add(p_center_top_tit,BorderLayout.NORTH);
         p_center_top.add(p_center_top_search,BorderLayout.SOUTH);
         btnTypeG.addActionListener(e -> {
-        	this.setVisible(false);
-        	new SalesGUI();
+            // 고객화면 호출 메소드 넣기
         });
         btnExit.addActionListener(e -> {
         	this.setVisible(false);
@@ -108,9 +105,7 @@ public class MainGUI extends JFrame{
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		
 		// 버튼 스타일 설정
-		btnTypeG.setPreferredSize(new Dimension(120, 28)); // 버튼 사이즈 설정
-		btnTypeG.setBackground(Color.GRAY);
-		btnTypeG.setForeground(Color.WHITE);
+		btnTypeG.setPreferredSize(new Dimension(200, 40)); // 버튼 사이즈 설정
 		
 		// 패널에 버튼 추가
 		buttonPanel.add(btnTypeG);
@@ -145,6 +140,7 @@ public class MainGUI extends JFrame{
 		setTitle("무인편의점 키오스크");
 		setSize(375, 660);
 	    setVisible(true);
+        setLocationRelativeTo(null); // 화면 중앙에 표시
 	    setResizable(false); // 리사이즈 제어
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}

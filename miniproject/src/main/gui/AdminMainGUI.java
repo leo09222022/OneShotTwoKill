@@ -91,6 +91,7 @@ public class AdminMainGUI extends JFrame {
         setTitle("무인편의점 키오스크");
         setSize(375, 660);
         setVisible(true);
+        setLocationRelativeTo(null); // 화면 중앙에 표시
         setResizable(false); // 리사이즈 제어
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
