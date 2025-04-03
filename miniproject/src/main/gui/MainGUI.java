@@ -67,7 +67,9 @@ public class MainGUI extends JFrame{
 		btnTypeG.setForeground(Color.WHITE);
 		btnTypeG.setFocusPainted(false);
 		btnTypeG.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-		
+		btnTypeG.setOpaque(true);
+		btnTypeG.setContentAreaFilled(true);
+		btnTypeG.setBorderPainted(false);
 		
 		
 		

@@ -76,6 +76,9 @@ public class SalesGUI extends JFrame {
 		payButton.setForeground(Color.WHITE);
 		payButton.setFocusPainted(false);
 		payButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+		payButton.setOpaque(true);
+		payButton.setContentAreaFilled(true);
+		payButton.setBorderPainted(false);
 
 		// 결제 버튼 클릭 시 장바구니 출력 (샘플 처리)
 		payButton.addActionListener(e -> {

@@ -117,6 +117,10 @@ public class AdminMainGUI extends JFrame {
         btnProductManage.setBackground(new Color(30, 135, 61));
         btnProductManage.setForeground(Color.WHITE);
         btnProductManage.setFocusPainted(false);
+        btnProductManage.setOpaque(true);
+        btnProductManage.setContentAreaFilled(true);
+        btnProductManage.setBorderPainted(false);
+
         btnProductManage.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 //        btnProductManage.setPreferredSize(new Dimension(200, 40));
 //        btnProductManage.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -132,6 +136,10 @@ public class AdminMainGUI extends JFrame {
         btnSalesManage.setForeground(Color.WHITE);
         btnSalesManage.setFocusPainted(false);
         btnSalesManage.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btnSalesManage.setOpaque(true);
+        btnSalesManage.setContentAreaFilled(true);
+        btnSalesManage.setBorderPainted(false);
+
         
         // 패널에 버튼 추가
         p_center_mid.add(btnProductManage);

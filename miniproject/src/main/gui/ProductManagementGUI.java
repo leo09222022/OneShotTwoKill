@@ -143,6 +143,10 @@ public class ProductManagementGUI extends JFrame {
         btnRegister.setForeground(Color.WHITE);
         btnRegister.setFocusPainted(false);
         btnRegister.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btnRegister.setOpaque(true);
+        btnRegister.setContentAreaFilled(true);
+        btnRegister.setBorderPainted(false);
+
         
         btnModify.setBorderPainted(true);
         btnModify.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -150,6 +154,10 @@ public class ProductManagementGUI extends JFrame {
         btnModify.setForeground(Color.WHITE);
         btnModify.setFocusPainted(false);
         btnModify.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btnModify.setOpaque(true);
+        btnModify.setContentAreaFilled(true);
+        btnModify.setBorderPainted(false);
+
         
         btnTotalSales.setBorderPainted(true);
         btnTotalSales.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -157,6 +165,10 @@ public class ProductManagementGUI extends JFrame {
         btnTotalSales.setForeground(Color.WHITE);
         btnTotalSales.setFocusPainted(false);
         btnTotalSales.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btnTotalSales.setOpaque(true);
+        btnTotalSales.setContentAreaFilled(true);
+        btnTotalSales.setBorderPainted(false);
+
         
         btnTotalOrders.setBorderPainted(true);  // 발주 내역 버튼 테두리 설정
         btnTotalOrders.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -164,6 +176,10 @@ public class ProductManagementGUI extends JFrame {
         btnTotalOrders.setForeground(Color.WHITE);
         btnTotalOrders.setFocusPainted(false);
         btnTotalOrders.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btnTotalOrders.setOpaque(true);
+        btnTotalOrders.setContentAreaFilled(true);
+        btnTotalOrders.setBorderPainted(false);
+
         
         // 패널에 버튼 추가
         p_center_mid.add(btnRegister);
