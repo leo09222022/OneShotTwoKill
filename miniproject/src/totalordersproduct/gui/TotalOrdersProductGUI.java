@@ -181,7 +181,6 @@ public class TotalOrdersProductGUI extends JFrame {
         jtb.getColumnModel().getColumn(4).setPreferredWidth(70);  // 판매가
         jtb.getColumnModel().getColumn(5).setPreferredWidth(100); // 총수익
         jtb.getColumnModel().getColumn(6).setPreferredWidth(100); // 순이익
-        jtb.getColumnModel().getColumn(7).setPreferredWidth(70);  // 이익률
         
         
         // 숫자 열에 오른쪽 정렬 렌더러 적용
@@ -217,7 +216,7 @@ public class TotalOrdersProductGUI extends JFrame {
         
         check.addActionListener(e -> {
             try {
-                // 입력된 연/월/일 값 가져오기
+            	// 입력된 연/월/일 값 가져오기
                 String year = yearField.getText().trim();
                 String month = monthField.getText().trim();
                 String day = dayField.getText().trim();
@@ -232,15 +231,22 @@ public class TotalOrdersProductGUI extends JFrame {
                 
                 System.out.println("일별 검색: " + year + "-" + month + "-" + day);
                 
-                // 기존 데이터 삭제
-                rowData.clear();
-                ((DefaultTableModel)jtb.getModel()).setRowCount(0);
+                
+                // 먼저 테이블의 모든 데이터 삭제
+                clearTable();
+                
                 
                 // 새 데이터 가져오기 - 일별 데이터 필터링
-                list = dao.selectDailySalesProduct(year, month, day);
+                list = dao.selectDailyOrders(year, month, day);
                 
-                // 데이터 추가
-                addDataToTable(list);
+                
+                // 데이터가 있는 경우에만 테이블에 추가
+                if (list != null && !list.isEmpty()) {
+                    addDataToTable(list);
+                    System.out.println("일별 데이터 로드 완료: " + year + "년 " + month + "월 " + day + "일, " + list.size() + "개의 행");
+                } else {
+                    System.out.println("해당 일에 데이터가 없습니다: " + year + "년 " + month + "월 " + day + "일");
+                }
                 
                 System.out.println("일별 데이터 로드 완료: " + year + "년 " + month + "월 " + day + "일, " + list.size() + "개의 행");
             } catch (Exception ex) {
@@ -251,10 +257,42 @@ public class TotalOrdersProductGUI extends JFrame {
         
         // 초기 데이터 로드
         try {
-            list = dao.selectAllSalesProduct();
-            addDataToTable(list);
+            // 입력된 연/월/일 값 가져오기
+            String year = yearField.getText().trim();
+            String month = monthField.getText().trim();
+            String day = dayField.getText().trim();
+            
+            // 한 자리 월/일은 앞에 0 추가
+            if (month.length() == 1) {
+                month = "0" + month;
+            }
+            if (day.length() == 1) {
+                day = "0" + day;
+            }
+            
+            System.out.println("일별 검색: " + year + "-" + month + "-" + day);
+            
+            
+            // 먼저 테이블의 모든 데이터 삭제
+            clearTable();
+            
+            
+            // 새 데이터 가져오기 - 일별 데이터 필터링
+            list = dao.selectDailyOrders(year, month, day);
+            
+            
+            // 데이터가 있는 경우에만 테이블에 추가
+            if (list != null && !list.isEmpty()) {
+                addDataToTable(list);
+                System.out.println("일별 데이터 로드 완료: " + year + "년 " + month + "월 " + day + "일, " + list.size() + "개의 행");
+            } else {
+                System.out.println("해당 일에 데이터가 없습니다: " + year + "년 " + month + "월 " + day + "일");
+            }
+            
+            System.out.println("일별 데이터 로드 완료: " + year + "년 " + month + "월 " + day + "일, " + list.size() + "개의 행");
         } catch (Exception ex) {
-            System.out.println("초기 데이터 로드 중 오류 발생: " + ex.getMessage());
+            System.out.println("일별 데이터 조회 중 오류 발생: " + ex.getMessage());
+            ex.printStackTrace();
         }
         
         // 프레임 설정
@@ -265,25 +303,32 @@ public class TotalOrdersProductGUI extends JFrame {
         setResizable(false); // 리사이즈 제어
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // X 버튼 클릭 시 프로그램 종료
     }
-    
+    // 테이블의 모든 데이터를 지우는 메서드
+    private void clearTable() {
+        // 테이블 모델 가져오기
+        DefaultTableModel model = (DefaultTableModel) jtb.getModel();
+        // 행 수를 0으로 설정하여 모든 행 삭제
+        model.setRowCount(0);
+        // 데이터 목록도 비우기
+        list.clear();
+        rowData.clear();
+    }
     // 테이블에 데이터 추가하는 메서드
-    private void addDataToTable(ArrayList<TotalSalesProductVO> dataList) {
+    private void addDataToTable(ArrayList<TotalOrdersProductVO> dataList) {
         if (dataList == null || dataList.isEmpty()) {
             System.out.println("표시할 데이터가 없습니다.");
             return;
         }
         
-        for (TotalSalesProductVO v : dataList) {
+        for (TotalOrdersProductVO v : dataList) {
             Vector<Object> row = new Vector<Object>();
             row.add(v.getProductId());
             row.add(v.getProductName());
-            row.add(v.getSalesCount());
-            row.add(v.getCostPriceAt());
-            row.add(v.getSalePriceAt());
-            row.add(v.getSumSalePrice());
-            row.add(v.getProfits());
-            row.add(v.getProfitsRate());
-            
+            row.add(v.getOrderQuantity());
+            row.add(v.getOrderDate());
+            row.add(v.getCostPriceProduct());
+            row.add(v.getTotCostPriceProduct());
+            row.add(v.getRemarks());
             ((DefaultTableModel)jtb.getModel()).addRow(row);
         }
     }

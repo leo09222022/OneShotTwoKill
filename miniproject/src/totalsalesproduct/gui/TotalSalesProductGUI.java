@@ -321,15 +321,15 @@ public class TotalSalesProductGUI extends JFrame {
             }
         });
         
-        // 초기 데이터 로드
-        try {
-            list = dao.selectAllSalesProduct();
-            if (list != null && !list.isEmpty()) {
-                addDataToTable(list);
-            }
-        } catch (Exception ex) {
-            System.out.println("초기 데이터 로드 중 오류 발생: " + ex.getMessage());
-        }
+		// 초기 데이터 로드
+		try {
+		    list = dao.selectAllSalesProduct();
+		    if (list != null && !list.isEmpty()) {
+		        addDataToTable(list);
+		    }
+		} catch (Exception ex) {
+		    System.out.println("초기 데이터 로드 중 오류 발생: " + ex.getMessage());
+		}
         
         // 프레임 설정
         setTitle("무인편의점 키오스크");
