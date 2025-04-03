@@ -93,7 +93,7 @@ public class MainGUI extends JFrame{
             // 고객화면 호출 메소드 넣기
         });
         btnExit.addActionListener(e -> {
-        	this.setVisible(false);
+        	dispose(); // 현재 창 닫기
         	new AdminMainGUI();
         });
 		/* [수정] 빨간 구역으로 회색버튼 이동 ====================================================== */

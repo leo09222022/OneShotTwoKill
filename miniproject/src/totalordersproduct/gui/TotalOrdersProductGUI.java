@@ -27,6 +27,8 @@ import javax.swing.table.DefaultTableModel;
 
 import main.gui.AdminMainGUI;
 import main.gui.ProductManagementGUI;
+import totalordersproduct.database.TotalOrdersProductDAO;
+import totalordersproduct.database.TotalOrdersProductVO;
 import totalsalesproduct.database.TotalSalesProductDAO;
 import totalsalesproduct.database.TotalSalesProductVO;
 
@@ -38,13 +40,13 @@ public class TotalOrdersProductGUI extends JFrame {
     Vector<Vector<Object>> rowData = new Vector<Vector<Object>>();
     private JScrollPane jsp; // 테이블을 위한 스크롤 팬
     private JTable jtb; // 데이터 표시를 위한 테이블
-    String[] sArr = {"바코드", "상품명", "판매량", "원가", "판매가", "총수익", "순이익", "이익률"}; // 행이름
-    ArrayList<TotalSalesProductVO> list = new ArrayList<TotalSalesProductVO>(); // 열 데이터
-    TotalSalesProductVO vo = new TotalSalesProductVO();
-    TotalSalesProductDAO dao = new TotalSalesProductDAO();
+    String[] sArr = {"바코드", "상품명", "발주수량", "발주일", "원가", "총가격", "비고사항"}; // 행이름
+    ArrayList<TotalOrdersProductVO> list = new ArrayList<TotalOrdersProductVO>(); // 열 데이터
+    TotalOrdersProductVO vo = new TotalOrdersProductVO();
+    TotalOrdersProductDAO dao = new TotalOrdersProductDAO();
     
     public TotalOrdersProductGUI() {
-        setTitle("매출관리");
+        setTitle("발주 내역");
         
         // 전체 레이아웃 설정
         setLayout(new BorderLayout());
@@ -181,25 +183,6 @@ public class TotalOrdersProductGUI extends JFrame {
         jtb.getColumnModel().getColumn(6).setPreferredWidth(100); // 순이익
         jtb.getColumnModel().getColumn(7).setPreferredWidth(70);  // 이익률
         
-        // 이익률 열에 특별한 렌더러 적용 (소수점 두 자리 + % 표시)
-        DefaultTableCellRenderer percentRenderer = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, 
-                    boolean isSelected, boolean hasFocus, int row, int column) {
-                
-                Component comp = super.getTableCellRendererComponent(
-                    table, value, isSelected, hasFocus, row, column);
-                
-                if (value instanceof Double) {
-                    double doubleValue = (Double) value;
-                    setText(String.format("%.2f%%", doubleValue));
-                }
-                
-                return comp;
-            }
-        };
-        percentRenderer.setHorizontalAlignment(JLabel.RIGHT);
-        jtb.getColumnModel().getColumn(7).setCellRenderer(percentRenderer);
         
         // 숫자 열에 오른쪽 정렬 렌더러 적용
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();

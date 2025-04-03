@@ -9,6 +9,7 @@ public class TotalOrdersProductVO {
 	Date orderDate; // 발주일
 	int costPriceAt; // 원가
 	int totCostPriceAt; // 총가격
+	String remarks; // 비고사항
 	public TotalOrdersProductVO(String productId, String productName, int orderQuantity, Date orderDate,
 			int costPriceAt, int totCostPriceAt) {
 		super();
