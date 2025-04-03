@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import totalordersproduct.gui.TotalOrdersProductGUI;
+import product.gui.ProductGUI;
 
 // 상품 관리 화면
 public class ProductManagementGUI extends JFrame {
@@ -100,6 +101,12 @@ public class ProductManagementGUI extends JFrame {
         p_center_mid.add(btnTotalSales);
         p_center_mid.add(btnTotalOrders);  // 발주 내역 버튼 추가
         
+        // [신규 상품 등록] 버튼을 누를 시 ProductGUI.java를 가동시킨다. 
+        btnRegister.addActionListener(e -> {
+            this.setVisible(false);
+            new ProductGUI(); // 상품 등록 화면 열기
+        });
+
         // 버튼에 약간의 여백 추가
         p_center_mid.setBorder(new EmptyBorder(0, 0, 100, 0)); // 하단 여백 추가
         /* [E] 컨텐츠 영역 : p_center_mid ========================================================== */
@@ -119,4 +126,5 @@ public class ProductManagementGUI extends JFrame {
 	    setResizable(false); // 리사이즈 제어
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
+   
 }
