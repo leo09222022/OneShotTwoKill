@@ -13,6 +13,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import totalordersproduct.gui.TotalOrdersProductGUI;
 import product.gui.ProductGUI;
 
 // 상품 관리 화면
@@ -35,7 +36,8 @@ public class ProductManagementGUI extends JFrame {
         JButton btnBack = new JButton("< 뒤로가기");
         JButton btnRegister = new JButton("상품 등록");
         JButton btnModify = new JButton("상품 수정");
-        JButton btnReturn = new JButton("상품 반송");
+        JButton btnTotalSales = new JButton("상품 발주");
+        JButton btnTotalOrders = new JButton("발주 내역");
         JLabel lblExit = new JLabel("관리자 화면 종료");
         
         /* [S : 공통] 레이아웃영역  ====================================================== */
@@ -56,6 +58,10 @@ public class ProductManagementGUI extends JFrame {
         btnBack.addActionListener(e -> {
         	this.setVisible(false);
         	new AdminMainGUI();
+        });
+        btnTotalOrders.addActionListener(e -> {
+        	this.setVisible(false);
+        	new TotalOrdersProductGUI();
         });
         // 하단 영역 : 공통 레이블( 관리자 화면 종료 )
         p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -80,17 +86,20 @@ public class ProductManagementGUI extends JFrame {
         // 버튼 스타일 설정 - 테두리가 있는 흰색 버튼으로 설정
         btnRegister.setPreferredSize(new Dimension(200, 40)); // 버튼 사이즈 설정
         btnModify.setPreferredSize(new Dimension(200, 40));   // 버튼 사이즈 설정
-        btnReturn.setPreferredSize(new Dimension(200, 40));   // 버튼 사이즈 설정
+        btnTotalSales.setPreferredSize(new Dimension(200, 40));   // 버튼 사이즈 설정
+        btnTotalOrders.setPreferredSize(new Dimension(200, 40));  // 발주 내역 버튼 사이즈 설정
         
         // 모든 버튼에 테두리 설정
         btnRegister.setBorderPainted(true);
         btnModify.setBorderPainted(true);
-        btnReturn.setBorderPainted(true);
+        btnTotalSales.setBorderPainted(true);
+        btnTotalOrders.setBorderPainted(true);  // 발주 내역 버튼 테두리 설정
         
         // 패널에 버튼 추가
         p_center_mid.add(btnRegister);
         p_center_mid.add(btnModify);
-        p_center_mid.add(btnReturn);
+        p_center_mid.add(btnTotalSales);
+        p_center_mid.add(btnTotalOrders);  // 발주 내역 버튼 추가
         
         // [신규 상품 등록] 버튼을 누를 시 ProductGUI.java를 가동시킨다. 
         btnRegister.addActionListener(e -> {
@@ -109,12 +118,13 @@ public class ProductManagementGUI extends JFrame {
         p_center.add(p_center_mid, BorderLayout.CENTER);
         add(p_center, BorderLayout.CENTER);    
         
-        /* [유지] 기본세팅 : 항시 소스 맨 밑에 배치 ====================================================== */
-        setTitle("무인편의점 키오스크");
-        setSize(375, 660);
-        setVisible(true);
-        setResizable(false); // 리사이즈 제어
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		/* [유지] 기본세팅 : 항시 소스 맨 밑에 배치 ====================================================== */
+		setTitle("무인편의점 키오스크");
+		setSize(375, 660);
+	    setVisible(true);
+        setLocationRelativeTo(null); // 화면 중앙에 표시
+	    setResizable(false); // 리사이즈 제어
+	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
    
 }
