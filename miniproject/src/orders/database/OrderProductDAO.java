@@ -20,7 +20,7 @@ public class OrderProductDAO {
             e.printStackTrace();
         }
     }
-
+//
 //    public List<OrderProductVO> getOrderProductsByOrderId(int orderId) {
 //        List<OrderProductVO> orderProducts = new ArrayList<>();
 //        String sql = "SELECT ORDER_ID, PRODUCT_ID, ORDER_QUANTITY FROM OrderProduct WHERE ORDER_ID = ?";
