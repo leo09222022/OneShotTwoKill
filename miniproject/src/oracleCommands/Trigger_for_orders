@@ -1,0 +1,10 @@
+CREATE OR REPLACE TRIGGER trg_update_stock_after_order
+AFTER INSERT ON orders_product
+FOR EACH ROW
+BEGIN
+    -- 주문된 상품의 수량만큼 재고를 증가
+    UPDATE product
+    SET stock = stock + :NEW.ORDER_QUANTITY
+    WHERE product_id = :NEW.product_id;
+END;
+/
