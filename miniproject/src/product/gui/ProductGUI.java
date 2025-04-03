@@ -138,6 +138,8 @@ public class ProductGUI extends JFrame {
         p_center.add(btnPanel);
 
         setVisible(true);
+        setResizable(false); // 리사이즈 제어
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private void registerProduct() {
