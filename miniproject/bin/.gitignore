@@ -1,4 +1,13 @@
+<<<<<<< HEAD
 /kioskMain/
 /main/
 /totalsalesproduct/
 /totalordersproduct/
+=======
+/sales/
+/product/
+/main/
+/kioskMain/
+/totalordersproduct/
+/totalsalesproduct/
+>>>>>>> refs/remotes/origin/Sena
