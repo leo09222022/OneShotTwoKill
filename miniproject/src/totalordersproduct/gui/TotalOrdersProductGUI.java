@@ -253,7 +253,6 @@ public class TotalOrdersProductGUI extends JFrame {
                     jlb.setText("총 가격 : 0원"); // 데이터가 없을 때 총 가격 초기화
                 }
                 
-                System.out.println("일별 데이터 로드 완료: " + year + "년 " + month + "월 " + day + "일, " + list.size() + "개의 행");
             } catch (Exception ex) {
                 System.out.println("일별 데이터 조회 중 오류 발생: " + ex.getMessage());
                 ex.printStackTrace();
