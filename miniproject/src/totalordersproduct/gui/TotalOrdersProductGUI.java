@@ -2,18 +2,14 @@ package totalordersproduct.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,12 +21,9 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-import main.gui.AdminMainGUI;
 import main.gui.ProductManagementGUI;
 import totalordersproduct.database.TotalOrdersProductDAO;
 import totalordersproduct.database.TotalOrdersProductVO;
-import totalsalesproduct.database.TotalSalesProductDAO;
-import totalsalesproduct.database.TotalSalesProductVO;
 
 public class TotalOrdersProductGUI extends JFrame {
     JTextField jtf;
