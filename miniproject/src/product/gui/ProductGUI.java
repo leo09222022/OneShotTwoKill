@@ -148,7 +148,7 @@ public class ProductGUI extends JFrame {
         int costPrice = Integer.parseInt(txtCostPrice.getText());
         int optimalStock = Integer.parseInt(txtOptimalStock.getText());
         int salePrice = Integer.parseInt(txtSalePrice.getText());
-        int stock = 1;
+        int stock = 0;
 
         // 카테고리 선택
         String categoryName = "";
