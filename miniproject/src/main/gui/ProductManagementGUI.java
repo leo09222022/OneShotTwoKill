@@ -56,11 +56,11 @@ public class ProductManagementGUI extends JFrame {
         
         // 버튼에 이벤트 추가
         btnBack.addActionListener(e -> {
-        	this.setVisible(false);
+        	dispose(); // 현재 창 닫기
         	new AdminMainGUI();
         });
         btnTotalOrders.addActionListener(e -> {
-        	this.setVisible(false);
+        	dispose(); // 현재 창 닫기
         	new TotalOrdersProductGUI();
         });
         // 하단 영역 : 공통 레이블( 관리자 화면 종료 )
