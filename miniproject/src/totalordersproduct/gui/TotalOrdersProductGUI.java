@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class TotalOrdersProductGUI extends JFrame {
         p_center_top.setLayout(new BoxLayout(p_center_top, BoxLayout.Y_AXIS)); // 수직 배치로 변경
         p_date_panel.setLayout(new FlowLayout(FlowLayout.CENTER));
         p_button_panel.setLayout(new FlowLayout(FlowLayout.CENTER)); // 버튼 가운데 정렬
-        p_total_panel.setLayout(new FlowLayout(FlowLayout.RIGHT)); // 총 가격은 오른쪽 정렬
+        p_total_panel.setLayout(new FlowLayout(FlowLayout.CENTER)); // 가운데 정렬로 변경
         p_center_mid.setLayout(new BorderLayout());
         p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
         
@@ -130,6 +131,18 @@ public class TotalOrdersProductGUI extends JFrame {
         // 조회 버튼
         JButton check = new JButton("조회");
         p_button_panel.add(check);
+        
+        // 버튼 스타일 추가
+        check.setFont(new Font("SansSerif", Font.BOLD, 12));
+        check.setBackground(new Color(30, 135, 61));
+        check.setForeground(Color.WHITE);
+        check.setFocusPainted(false);
+        check.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        check.setOpaque(true);
+        check.setContentAreaFilled(true);
+        check.setBorderPainted(false);
+        
+        
         
         // 총 가격 레이블 (별도의 패널에 추가)
         jlb = new JLabel("총 가격 : ");

@@ -120,9 +120,13 @@ public class ProductEditGUI extends JFrame {
         btnPanel.add(btnCancel);
         p_center.add(btnPanel);
 
-        setVisible(true);
-        setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	setTitle("신규상품등록");
+		setSize(375, 660);
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setVisible(true);
+	
     }
 
     // 체크박스가 원래 카테고리와 맞는 옵션으로 체크된 상태로 

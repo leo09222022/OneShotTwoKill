@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -127,6 +129,11 @@ public class TotalSalesProductGUI extends JFrame {
         JButton tot_btn = new JButton("전체");
         JButton month_btn = new JButton("월별");
         JButton day_btn = new JButton("일별");
+        
+        // 버튼 스타일링
+        styleGreenButton(tot_btn);
+        styleGreenButton(month_btn);
+        styleGreenButton(day_btn);
         
         // 버튼 패널에 버튼 추가
         p_button_panel.add(tot_btn);
@@ -369,5 +376,19 @@ public class TotalSalesProductGUI extends JFrame {
             
             ((DefaultTableModel)jtb.getModel()).addRow(row);
         }
+    }
+    
+    // 버튼 스타일링 메서드
+    private void styleGreenButton(JButton btn) {
+        btn.setFont(new Font("SansSerif", Font.BOLD, 12));
+        btn.setBackground(new Color(30, 135, 61));
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btn.setOpaque(true);
+        btn.setContentAreaFilled(true);
+        btn.setBorderPainted(false);
+//        btn.setPreferredSize(new Dimension(60, 36));
+//        btn.setMargin(new Insets(2, 4, 2, 4)); 
     }
 }
