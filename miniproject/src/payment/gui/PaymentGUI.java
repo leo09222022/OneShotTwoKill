@@ -5,7 +5,9 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.time.format.DateTimeParseException;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -35,20 +37,18 @@ import sales.gui.SalesListGUI;
 
 public class PaymentGUI extends JFrame {
 	PaymentDAO dao = new PaymentDAO();
-//	SalesVO sv =  new SalesVO(salesDate, salesTotal, cardNum, expirationDate, cardVer);	// VO객체 생성
-//    SalesProductVO spv =  new SalesProductVO(salesId); 	// VO객체 생성
     
-	
+	// 카드 승인번호 랜덤 출력 
 	double random = Math.random();
-	int cardVerInt = (int)(random * 10000000) + 1; // 8자리 출력
-	int salesId = 1234512;
+	int cardVerInt = 10000000 + (int)(random * 90000000); // 8자리 출력
 	String cardVer = String.valueOf(cardVerInt);
 	
+	// 구매 날짜 변환  
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    // String today = LocalDate.now().toString();
-    // Date today = new Date();
-	// Date = (Date.valueOf(LocalDate.now()));
 
+	// 총합계 : 지역 변수로 사용시 내부에서 자유롭게 사용하기 어려움이 있어, 맴버변수로 변환 
+    int totalPrice = 0;
+	
     public PaymentGUI(Map<ProductVO, Integer> cartMap) {
     	// 레이아웃 구성
     	setLayout(new BorderLayout());
@@ -155,9 +155,9 @@ public class PaymentGUI extends JFrame {
         
         itemListPanel.setBackground(Color.WHITE);
         itemListPanel.add(labelListTit);
-        
-        int totalPrice = 0;
 
+        
+        List<SalesProductVO> spvList = new ArrayList<>();
         for (Map.Entry<ProductVO, Integer> entry : cartMap.entrySet()) {
             ProductVO product = entry.getKey();
             int quantity = entry.getValue();
@@ -168,63 +168,92 @@ public class PaymentGUI extends JFrame {
                     NumberFormat.getInstance().format(price) + "원");
             label.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
             itemListPanel.add(label);
+            
+         
+            // 구매 상품 한 건씩 넣기 
+            SalesProductVO spv = new SalesProductVO(
+                null,                      	// sales_id
+                product.getProductId(),		// product_id
+                quantity,					// sales_quantity
+                product.getSalePrice(),		// sale_price_at
+                product.getCostPrice()		// cost_price_at
+            );
+            spvList.add(spv);
         }
-
+        
+        
         JLabel totalLabel = new JLabel("총 금액: " + NumberFormat.getInstance().format(totalPrice) + "원", JLabel.CENTER);
         totalLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
         totalLabel.setBorder(BorderFactory.createEmptyBorder(50, 0, 10, 0));
 
         
         
-     // 결제 버튼 클릭 시 장바구니 출력 (샘플 처리)
+        // 결제 버튼 클릭 시 장바구니 내역 전달 
     	btnPrint.addActionListener(e -> {
-            this.setVisible(false);
-            new SalesListGUI(cartMap); // ← 넘겨주는 부분!
-            
+            // S : textFields 입력값가져오기 
             for (int i = 0; i < textFields.length; i++) {
-                String value = textFields[i].getText();  // 입력값 가져오기
+                String value = textFields[i].getText();
                 System.out.println("TextField[" + i + "] 값: " + value);
             }
-//            String textFields[1] = textCardNum.getText();
-//            String expDate = textExpDate.getText();
-//            String amountStr = textAmount.getText();
-//            
-//          
             String cardNum = textFields[0].getText();
-            java.sql.Date expirationDate = java.sql.Date.valueOf(textFields[1].getText().trim());
-            // java.sql.Date salesDate = java.sql.Date.valueOf(textFields[2].getText().trim());
+            java.sql.Date expirationDate;       
+            // E : textFields 입력값가져오기 
             
-           
-            /*
+            // 카드번호 길이 유효성 검사 
+            if (cardNum.length() != 16) {
+                JOptionPane.showMessageDialog(this, "카드 번호를 확인해 주세요 (16자리 입력)");
+                return;
+            }
+            
+            // 카드 유효일자 유효성 검사 (과거 날짜 방지) 
+            try {
+            	String inputDate = textFields[1].getText().trim();
+            	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            	LocalDate parsedDate = LocalDate.parse(inputDate, formatter);
+	        	
+            	// 과거 날짜 방지 
+	            if(parsedDate.isBefore(LocalDate.now())) {
+	            	JOptionPane.showMessageDialog(this, "카드 유효일자는 오늘 이후의 날짜로 입력해 주세요.");
+	                return;	
+	            }
+	            
+	            expirationDate = java.sql.Date.valueOf(parsedDate); // DB용 변환
+	        	// expirationDate = java.sql.Date.valueOf(textFields[1].getText().trim()); 
+            } catch (DateTimeParseException ex) {
+                JOptionPane.showMessageDialog(this, "카드 유효일자를 올바른 형식(yyyy-mm-dd)으로 입력해 주세요.");
+                return;
+            }
+            
+            
+            // VO객체 생성
             SalesVO sv =  new SalesVO(
-            		null, 
-            		totalPrice, 
-            		cardNum, 
-            		expirationDate, 
-            		cardVer);	// VO객체 생성
-            SalesProductVO spv =  new SalesProductVO(salesId); 	// VO객체 생성
+            		null,				// sales_id
+            		null,				// sales_date
+            		totalPrice, 		// sales_total
+            		cardNum, 			// card_num
+            		expirationDate, 	// expiration_date
+            		cardVer);			// card_ver
+           
+            // 구매내역 인서트 &  salesId 받기 
+            int salesId = dao.insertCardInfo(sv);
+
+            // salesId 받기 실패시 (= 저장실패시)  
+            if (salesId <= 0) {
+                JOptionPane.showMessageDialog(this, "결제 저장 실패");
+                return;
+            }
             
-            dao.insertCardInfo(sv, spv);
-         */
+            // 판매 ID를 판매상품 VO에 넣어주기
+            for (SalesProductVO spv : spvList) {
+                spv.setSalesId(salesId);
+            }
             
-//            dao.insertCardInfo(
-//            		new SalesVO (
-//            				null,
-//            				sv.getSalesTotal(),
-//                    		sv.getCardNum(),
-//                    		sv.getExpirationDate(),
-//                    		sv.getCardVer())
-//            		,
-//            		new SalesProductVO(
-//            				spv.getProductId()
-//            				)
-//            		);
+            // 구매내역의 아이템별 정보 인서트 
+            dao.insertCardProduct(spvList);
             
-            // int re = dao.insert(new BoardVO(0,title,writer,content,null));
-    		/* dao.insert(new BoardVO(0,title,writer,content,null));
-    		 * 0과 null 영역은 sql 에서 결정하게 만들어 놧기때문에 아무거나 넣어도 상관없다.
-    		 */
-            
+            // 모든 처리 완료 후 
+            this.setVisible(false);
+            new SalesListGUI(cartMap); // ← 넘겨주는 부분!
         });
         
         
