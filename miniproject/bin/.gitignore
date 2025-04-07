@@ -1,7 +1,1 @@
-/kioskMain/
-/main/
-/product/
-/sales/
-/totalordersproduct/
-/totalsalesproduct/
-/orders/
+*.class
