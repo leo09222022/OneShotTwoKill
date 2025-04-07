@@ -1,3 +1,5 @@
+*.class
+/.gitignore
 /common/
 /kioskMain/
 /login/
