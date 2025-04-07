@@ -1,13 +1,19 @@
 package sales.database;
 
 public class SalesProductVO {
-	private int salesId;
+	private Integer salesId;
 	private String productId;
 	private int salesQuantity;
 	private int salePriceAt;
 	private int costPriceAt;
 
-	public SalesProductVO(int salesId, String productId, int salesQuantity, int salePriceAt, int costPriceAt) {
+	/* 2025-04-05 왕시은 
+	 * salesId 시퀀스로 전달시 int로 되어 있으면
+	 * GUI에서 기본값으 null을 설정해 두면
+	 * 값을 받지 못함. 
+	 * 하여 int -> Integer로 변경
+	 */
+	public SalesProductVO(Integer salesId, String productId, int salesQuantity, int salePriceAt, int costPriceAt) {
 		super();
 		this.salesId = salesId;
 		this.productId = productId;
@@ -21,11 +27,11 @@ public class SalesProductVO {
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getSalesId() {
+	public Integer getSalesId() {
 		return salesId;
 	}
 
-	public void setSalesId(int salesId) {
+	public void setSalesId(Integer salesId) {
 		this.salesId = salesId;
 	}
 
