@@ -7,6 +7,7 @@ import javax.swing.border.EmptyBorder;
 import orders.database.OrderReceiptVO;
 import totalordersproduct.gui.TotalOrdersProductGUI;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 public class OrderReceiptGUI extends JFrame {
@@ -17,6 +18,9 @@ public class OrderReceiptGUI extends JFrame {
         setLayout(new BorderLayout());
         JPanel p_top = new JPanel();
         JPanel p_center = new JPanel();
+        JPanel p_center_top = new JPanel();
+        JPanel p_center_mid = new JPanel();
+        JPanel p_center_btm = new JPanel();
         JPanel p_south = new JPanel();
 
         // 공통 컴포넌트 : 버튼
@@ -49,55 +53,65 @@ public class OrderReceiptGUI extends JFrame {
 
         // 하단 영역 : 공통 버튼( 메인 화면으로 이동)
         JButton btnExit = new JButton("메인으로 이동");
- 		p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
- 		p_south.add(btnExit);
- 		add(p_south,BorderLayout.SOUTH);
- 		btnExit.setBorderPainted(false);
- 		btnExit.setBackground(Color.WHITE);
- 		btnExit.setForeground(Color.BLACK);
- 		btnExit.setFocusPainted(false);
- 		
- 		btnExit.addActionListener(e -> {
- 			dispose();
- 			new MainGUI();
- 		});
- 		
- 
+        p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
+        p_south.add(btnExit);
+        add(p_south, BorderLayout.SOUTH);
+        btnExit.setBorderPainted(false);
+        btnExit.setBackground(Color.WHITE);
+        btnExit.setForeground(Color.BLACK);
+        btnExit.setFocusPainted(false);
+
+        btnExit.addActionListener(e -> {
+            dispose();
+            new MainGUI();
+        });
+
         /* [E : 공통] 레이아웃 ====================================================== */
 
         /* [S] 컨텐츠 영역 : 중앙 정렬 ========================================================== */
-        JPanel receiptPanel = new JPanel();
-        receiptPanel.setLayout(new BoxLayout(receiptPanel, BoxLayout.Y_AXIS));
-        receiptPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        p_center.setLayout(new BorderLayout());
+        p_center.setBackground(Color.WHITE);
 
-        // 타이틀 (발주 영수증)
+        // [S] p_center_top : 타이틀
+        p_center_top.setLayout(new FlowLayout(FlowLayout.CENTER));
+        p_center_top.setBackground(Color.WHITE);
         JLabel labelTitle = new JLabel("발주 영수증");
-        labelTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        labelTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
-        receiptPanel.add(labelTitle);
-        receiptPanel.add(Box.createVerticalStrut(10)); // 간격 추가
+        labelTitle.setFont(new Font("SansSerif", Font.BOLD, 22));
+        p_center_top.add(labelTitle);
+        /* [E] p_center_top */
 
-        // 상품 목록 표시
+        // [S] p_center_mid : 발주 상품 리스트
+        p_center_mid.setLayout(new BoxLayout(p_center_mid, BoxLayout.Y_AXIS));
+        p_center_mid.setBackground(Color.WHITE);
+        p_center_mid.setBorder(new EmptyBorder(10, 30, 10, 30));
+
         int totalPrice = 0;
         for (OrderReceiptVO vo : orderList) {
-            JLabel labelItem = new JLabel(vo.getProductName() + " - " + vo.getOrderQuantity() + "개 - " + vo.getCostPerProduct() + "원");
+            int itemTotal = vo.getCostPerProduct();
+            JLabel labelItem = new JLabel(vo.getProductName() + " - " + vo.getOrderQuantity() + "개 - " + NumberFormat.getInstance().format(itemTotal) + "원");
+            labelItem.setFont(new Font("SansSerif", Font.PLAIN, 16));
             labelItem.setAlignmentX(Component.CENTER_ALIGNMENT);
-            receiptPanel.add(labelItem);
-            totalPrice += vo.getCostPerProduct(); // 총 가격 계산
+            p_center_mid.add(labelItem);
+            p_center_mid.add(Box.createVerticalStrut(5)); // 간격
+
+            totalPrice += itemTotal;
         }
+        /* [E] p_center_mid */
 
-        receiptPanel.add(Box.createVerticalStrut(10)); // 간격 추가
+        // [S] p_center_btm : 총 가격 영역
+        p_center_btm.setLayout(new FlowLayout(FlowLayout.CENTER));
+        p_center_btm.setBackground(Color.WHITE);
+        totalPriceLabel = new JLabel("총 가격: " + NumberFormat.getInstance().format(totalPrice) + " 원");
+        totalPriceLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+        p_center_btm.add(totalPriceLabel);
+        /* [E] p_center_btm */
 
-        // 총 가격 표시
-        totalPriceLabel = new JLabel("총 가격: " + totalPrice + " 원");
-        totalPriceLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
-        totalPriceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        receiptPanel.add(totalPriceLabel);
-
-        // 중앙 정렬 패널에 추가
-        p_center.setLayout(new FlowLayout(FlowLayout.CENTER));
-        p_center.add(receiptPanel);
+        // [공통] 중앙 패널 묶기
+        p_center.add(p_center_top, BorderLayout.NORTH);
+        p_center.add(p_center_mid, BorderLayout.CENTER);
+        p_center.add(p_center_btm, BorderLayout.SOUTH);
         add(p_center, BorderLayout.CENTER);
+        /* [E] 컨텐츠 영역 : 중앙 정렬 ========================================================== */
 
         /* [유지] 기본 세팅 ====================================================== */
         setTitle("무인편의점 키오스크");

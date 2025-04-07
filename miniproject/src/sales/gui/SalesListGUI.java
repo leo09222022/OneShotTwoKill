@@ -85,7 +85,8 @@ public class SalesListGUI extends JFrame{
 		receipt_details_top.setBackground(Color.WHITE); // 배경화면 설정
 		
 		JPanel receipt_details_btm = new JPanel(); // 패널 생성
-     	receipt_details_btm.setLayout(new GridLayout(2, 2, 5, 5)); // 2행 2열, 여백 5px
+//     	receipt_details_btm.setLayout(new GridLayout(2, 2, 5, 5)); // 2행 2열, 여백 5px
+		receipt_details_btm.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
      	receipt_details_btm.setBackground(Color.WHITE); // 배경화면 설정
 //     	receipt_details_btm.setPreferredSize(new Dimension(0, 50)); // 너비: 0이면 레이아웃에 따라 자동, 높이: 50픽셀
 
@@ -105,7 +106,7 @@ public class SalesListGUI extends JFrame{
         
         // 주소 줄바꿈 처리
 //        JLabel addressLabel = new JLabel("서울특별시 종로구 우정국로 2길 21 대왕빌딩 7층");
-        JLabel addressLabel = new JLabel("<html>" + "서울특별시 종로구 우정국로 2길 21 대왕빌딩 7층" + "</html>");
+        JLabel addressLabel = new JLabel("<html>" + "서울특별시 종로구 우정국로 2길 21<br> 대왕빌딩 7층" + "</html>");
         
         titLabel.setBorder(new EmptyBorder(5, 5, 0, 5)); 
         storeLabel.setBorder(new EmptyBorder(5, 65, 5, 5));
@@ -161,7 +162,7 @@ public class SalesListGUI extends JFrame{
         String now = LocalDateTime.now().format(formatter);
         JLabel saleDateLabel = new JLabel("[판매] " + now);
         titCardLabel.setHorizontalAlignment(JLabel.CENTER);
-        titCardLabel.setAlignmentX(SalesListGUI.CENTER_ALIGNMENT);
+        titCardLabel.setAlignmentX(SalesListGUI.LEFT_ALIGNMENT);
         titCardLabel.setBorder(new EmptyBorder(5, 0, 5, 0));
         saleDateLabel.setBorder(new EmptyBorder(5, 5, 5, 10));
         titCardLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
@@ -263,9 +264,7 @@ public class SalesListGUI extends JFrame{
         p_center_btm.setBackground(Color.WHITE); // 배경화면 설정
      	/* [E] 컨텐츠 영역 : p_center_btm ========================================================== */
 	
-		
-        
-     	
+		          	
      	
         /* [공통] 버튼영역  ====================================================== */
 		// 컨텐츠 영역 : 버튼
@@ -284,7 +283,7 @@ public class SalesListGUI extends JFrame{
         p_center.add(p_center_btm,BorderLayout.SOUTH);
         p_south.add(p_south_btn,BorderLayout.NORTH);
         p_south.setBackground(Color.WHITE); // 배경화면 설정
-        
+           
         
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setBorder(new EmptyBorder(10, 10, 10, 10)); // 여백 조절
@@ -306,5 +305,8 @@ public class SalesListGUI extends JFrame{
 	    setVisible(true);
 	    setResizable(false); // 리사이즈 제어
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    setLocationRelativeTo(null); // 화면 중앙에 표시
+	    
+	    
 	}
 }
