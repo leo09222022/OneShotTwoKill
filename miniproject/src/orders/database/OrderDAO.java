@@ -28,7 +28,7 @@ public class OrderDAO {
 	// 모든 상품 조회
 	public List<ProductVO> getAllProducts() {
 		List<ProductVO> productList = new ArrayList<>();
-		String sql = "SELECT product_id, product_name, optimal_stock, stock FROM product";
+		String sql = "SELECT product_id, product_name, optimal_stock, cost_price, stock FROM product";
 
 		try (Connection conn = ConnectionProvider.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql);	
@@ -39,6 +39,7 @@ public class OrderDAO {
 				product.setProductId(rs.getString("product_id"));
 				product.setProductName(rs.getString("product_name"));
 				product.setOptimalStock(rs.getInt("optimal_stock"));
+				product.setCostPrice(rs.getInt("cost_price"));
 				product.setStock(rs.getInt("stock"));
 
 				productList.add(product);
@@ -84,7 +85,7 @@ System.out.println("getProductById error: "+e.getMessage());
 //	 상품명으로 검색
 	public List<ProductVO> searchByName(String name) {
 		List<ProductVO> productList = new ArrayList<>();
-		String sql = "SELECT product_id, product_name, optimal_stock, stock FROM product WHERE product_name LIKE ?";
+		String sql = "SELECT product_id, product_name, optimal_stock, price, stock FROM product WHERE product_name LIKE ?";
 
 		try (Connection conn = ConnectionProvider.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -95,6 +96,7 @@ System.out.println("getProductById error: "+e.getMessage());
 					ProductVO product = new ProductVO();
 					product.setProductId(rs.getString("product_id"));
 					product.setProductName(rs.getString("product_name"));
+					product.setCostPrice(rs.getInt("cost_price"));
 					product.setOptimalStock(rs.getInt("optimal_stock"));
 					product.setStock(rs.getInt("stock"));
 
