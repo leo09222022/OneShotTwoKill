@@ -249,29 +249,40 @@ public class OrderGUI extends JFrame {
         public ButtonEditor(JCheckBox checkBox) {
             super(checkBox);
             button = new JButton("X");
-            button.addActionListener(e -> fireEditingStopped());
+
+            // 버튼 클릭 리스너
+            button.addActionListener(e -> {
+                isPushed = true;
+                fireEditingStopped();  // 우선 편집 종료
+            });
         }
 
+        @Override
         public Component getTableCellEditorComponent(JTable table, Object value,
                                                      boolean isSelected, int row, int column) {
-            this.row = row;
+            this.row = row;  // 삭제할 row 기억해두기
             isPushed = true;
             return button;
         }
 
+        @Override
         public Object getCellEditorValue() {
             if (isPushed) {
-                // productId는 테이블에서 1번째 열 (column index 1)
-                String productId = (String) table.getValueAt(row, 1);
-                
-                // 해시맵에서 제거
-                orderCart.remove(productId);
-                
-                // 테이블에서 해당 행 삭제
-                tableModel.removeRow(row);
+                isPushed = false;
+
+                // JTable 편집 종료 후 안전하게 삭제하도록 예약
+                SwingUtilities.invokeLater(() -> {
+                    if (row >= 0 && row < tableModel.getRowCount()) {
+                        String productId = (String) tableModel.getValueAt(row, 1);  // 상품 ID는 1번 컬럼
+                        orderCart.remove(productId);  // 장바구니에서 제거
+                        tableModel.removeRow(row);   // 테이블에서 제거
+                    }
+                });
             }
-            isPushed = false;
             return "X";
         }
     }
+
+
+
 }
