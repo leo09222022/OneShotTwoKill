@@ -6,14 +6,11 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -26,6 +23,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import main.gui.AdminMainGUI;
+import main.gui.MainGUI;
 import totalsalesproduct.database.TotalSalesProductDAO;
 import totalsalesproduct.database.TotalSalesProductVO;
 
@@ -60,6 +58,11 @@ public class TotalSalesProductGUI extends JFrame {
         // 패널 배경색 설정
         p_top.setBackground(Color.WHITE);
         p_south.setBackground(Color.WHITE);
+        p_center_top.setBackground(Color.WHITE);
+        p_date_panel.setBackground(Color.WHITE);
+        p_button_panel.setBackground(Color.WHITE);
+        p_center_mid.setBackground(Color.WHITE);
+        p_south.setBackground(Color.WHITE);
         
         // 패널 레이아웃 설정
         p_top.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -84,23 +87,20 @@ public class TotalSalesProductGUI extends JFrame {
             new AdminMainGUI(); // 관리자 메인 화면으로 돌아가기
         });
         
-        // 하단 패널: 관리자 화면 종료 레이블
-        JLabel lblExit = new JLabel("관리자 화면 종료");
-        p_south.add(lblExit);
-        
-        // 레이블에 마우스 이벤트 추가
-        lblExit.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                dispose(); // 현재 창 닫기
-                new main.gui.MainGUI(); // 메인 화면으로 돌아가기
-            }
-            
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                lblExit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-            }
-        });
+        // 하단 영역 : 공통 버튼( 메인 화면으로 이동)
+        JButton btnExit = new JButton("메인으로 이동");
+ 		p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
+ 		p_south.add(btnExit);
+ 		add(p_south,BorderLayout.SOUTH);
+ 		btnExit.setBorderPainted(false);
+ 		btnExit.setBackground(Color.WHITE);
+ 		btnExit.setForeground(Color.BLACK);
+ 		btnExit.setFocusPainted(false);
+ 		
+ 		btnExit.addActionListener(e -> {
+ 			dispose();
+ 			new MainGUI();
+ 		});
         
         // 날짜 입력 패널: 연/월/일 입력 필드와 레이블
         JLabel yearLabel = new JLabel("년");
@@ -129,6 +129,11 @@ public class TotalSalesProductGUI extends JFrame {
         JButton tot_btn = new JButton("전체");
         JButton month_btn = new JButton("월별");
         JButton day_btn = new JButton("일별");
+        
+        // 버튼 스타일링
+        styleGreenButton(tot_btn);
+        styleGreenButton(month_btn);
+        styleGreenButton(day_btn);
         
         // 버튼 패널에 버튼 추가
         p_button_panel.add(tot_btn);
@@ -371,5 +376,19 @@ public class TotalSalesProductGUI extends JFrame {
             
             ((DefaultTableModel)jtb.getModel()).addRow(row);
         }
+    }
+    
+    // 버튼 스타일링 메서드
+    private void styleGreenButton(JButton btn) {
+        btn.setFont(new Font("SansSerif", Font.BOLD, 12));
+        btn.setBackground(new Color(30, 135, 61));
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btn.setOpaque(true);
+        btn.setContentAreaFilled(true);
+        btn.setBorderPainted(false);
+//        btn.setPreferredSize(new Dimension(60, 36));
+//        btn.setMargin(new Insets(2, 4, 2, 4)); 
     }
 }
