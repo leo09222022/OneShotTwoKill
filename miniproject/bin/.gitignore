@@ -1,8 +1,9 @@
+/common/
 /kioskMain/
+/login/
 /main/
-/product/
+/orders/
+/payment/
 /sales/
 /totalordersproduct/
 /totalsalesproduct/
-/common/
-/payment/
