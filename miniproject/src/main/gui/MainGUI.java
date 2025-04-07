@@ -26,6 +26,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import login.gui.LoginGUI;
 import sales.gui.SalesGUI;
 
 
@@ -131,7 +132,7 @@ public class MainGUI extends JFrame{
         });
         btnExit.addActionListener(e -> {
         	dispose(); // 현재 창 닫기
-        	new AdminMainGUI();
+        	new LoginGUI();
         });
 		/* [수정] 빨간 구역으로 회색버튼 이동 ====================================================== */
 		// 중앙 패널 설정 - BorderLayout으로 변경하여 보다 정확한 위치 조정

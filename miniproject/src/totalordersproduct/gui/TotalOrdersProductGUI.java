@@ -62,7 +62,7 @@ public class TotalOrdersProductGUI extends JFrame {
         p_center_top.setBackground(Color.WHITE);
         p_date_panel.setBackground(Color.WHITE);
         p_button_panel.setBackground(Color.WHITE);
-        p_total_panel.setBackground(Color.WHITE); // 총 가격 패널 배경색
+        p_total_panel.setBackground(Color.WHITE);
         p_center_mid.setBackground(Color.WHITE);
         p_south.setBackground(Color.WHITE);
         
