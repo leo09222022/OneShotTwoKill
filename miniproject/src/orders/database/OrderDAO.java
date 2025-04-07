@@ -31,7 +31,7 @@ public class OrderDAO {
 		String sql = "SELECT product_id, product_name, optimal_stock, stock FROM product";
 
 		try (Connection conn = ConnectionProvider.getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(sql);
+				PreparedStatement pstmt = conn.prepareStatement(sql);	
 				ResultSet rs = pstmt.executeQuery()) {
 
 			while (rs.next()) {
@@ -50,6 +50,37 @@ public class OrderDAO {
 		return productList;
 	}
 
+	
+//	상품ID로 정보가져오기
+	public ProductVO getProductById(String productId) {
+		ProductVO product = null;
+		try {
+			String sql = "select * from product where product_id=?";
+			Connection conn = ConnectionProvider.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, productId);
+			
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				product = new ProductVO();
+				product.setProductId(rs.getString("product_id"));
+				product.setProductName(rs.getString("product_name"));
+				product.setStock(rs.getInt("stock"));
+				product.setOptimalStock(rs.getInt("optimal_stock"));
+				product.setCostPrice(rs.getInt("cost_price"));
+				
+			}
+			
+			
+		} catch (Exception e) {
+System.out.println("getProductById error: "+e.getMessage());
+		}
+		
+		return product;
+	}
+	
+	
 //	 상품명으로 검색
 	public List<ProductVO> searchByName(String name) {
 		List<ProductVO> productList = new ArrayList<>();

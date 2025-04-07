@@ -97,10 +97,27 @@ public class OrderGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String selectedProduct = (String) productCombo.getSelectedItem();
                 String productId = selectedProduct.split(" ")[0];
-//                ProductVO product = 
+
                 int quantity = Integer.parseInt(quantityField.getText());
-                orderCart.put(productId, quantity);
-                tableModel.addRow(new Object[]{"", "", "", "", quantity});
+                
+                // db에서 해당 상품 정보 가져오기
+                ProductVO product = orderDAO.getProductById(productId);
+                if(product != null) {
+                	String productName = product.getProductName();
+                	int stock = product.getStock();
+                	int optimalStock = product.getOptimalStock();
+                	int cost = product.getCostPrice();
+                	
+                	// hashmap에 저장
+                	orderCart.put(productId, quantity);
+                	tableModel.addRow(new Object[]{productName, stock, optimalStock, cost, quantity});
+                	
+                	quantityField.setText("");
+                }else {
+                	JOptionPane.showMessageDialog(null, "상품 정보를 찾을 수 없습니다.");
+                	
+                }
+                
             }
         });
 
