@@ -1,4 +1,15 @@
 *.class
 /.gitignore
+/common/
+/kioskMain/
+/login/
+/main/
 /orders/
+<<<<<<< HEAD
+=======
+/payment/
+/sales/
+/totalordersproduct/
+/totalsalesproduct/
+>>>>>>> branch 'master' of https://github.com/leo09222022/OneShotTwoKill.git
 /product/
