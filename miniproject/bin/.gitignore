@@ -1,1 +1,5 @@
 *.class
+/main/
+/login/
+/totalordersproduct/
+/totalsalesproduct/
