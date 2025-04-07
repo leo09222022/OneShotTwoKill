@@ -152,7 +152,17 @@ public class LoginGUI extends JFrame{
 	    		 errorLabel.setVisible(true); // 오류 메시지 표시
 	    	 }
 	     });
-	     
+	     // 엔터 키 이벤트 추가
+	     Jinput.addActionListener(e -> {
+	         // 로그인 버튼과 동일한 동작 실행
+	         if(Jinput.getText().equals("1234")) {
+	             dispose(); // 현재 창 닫기
+	             new AdminMainGUI();
+	         } else {
+	             Jinput.setText("");
+	             errorLabel.setVisible(true); // 오류 메시지 표시
+	         }
+	     });
 	     // 버튼에 약간의 여백 추가
 	     p_center_mid.setBorder(new EmptyBorder(0, 0, 250, 0)); // 하단 여백 추가
         /* [E] 컨텐츠 영역 : p_center_mid ========================================================== */
