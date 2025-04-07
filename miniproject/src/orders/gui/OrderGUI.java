@@ -1,289 +1,377 @@
+// OrderGUI.java
 package orders.gui;
 
-import javax.swing.*;
-import javax.swing.table.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import main.gui.MainGUI;
 import main.gui.OrderReceiptGUI;
 import main.gui.ProductManagementGUI;
-import orders.database.*;
-import product.database.*;
+import orders.database.OrderDAO;
+import orders.database.OrderProductDAO;
+import orders.database.OrderProductVO;
+import orders.database.OrderReceiptDAO;
+import orders.database.OrderReceiptVO;
+import orders.database.OrderVO;
+import product.database.ProductDAO;
+import product.database.ProductVO;
+
 
 public class OrderGUI extends JFrame {
-    private DefaultTableModel tableModel;
-    private JTable table;
-    private JComboBox<String> productCombo;
-    private JTextField quantityField;
-    private HashMap<String, Integer> orderCart;
-    private OrderDAO orderDAO;
-    private OrderProductDAO orderProductDAO;
-    private ProductDAO productDAO;
+ private DefaultTableModel tableModel;
+ private JTable table;
+ private JComboBox<String> productCombo;
+ private JTextField quantityField;
+ private HashMap<String, Integer> orderCart;
+ private OrderDAO orderDAO;
+ private OrderProductDAO orderProductDAO;
+ private ProductDAO productDAO;
 
-    public OrderGUI() {
-        setLayout(new BorderLayout());
-        JPanel p_top = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JPanel p_center = new JPanel(new BorderLayout());
-        JPanel p_south = new JPanel();
+ public OrderGUI() {
+     orderDAO = new OrderDAO();
+     orderProductDAO = new OrderProductDAO();
+     productDAO = new ProductDAO();
 
-        JButton btnBack = new JButton("< 뒤로가기");
-        p_top.add(btnBack);
-        add(p_top, BorderLayout.NORTH);
+     setLayout(new BorderLayout());
+     JPanel p_top = new JPanel(new FlowLayout(FlowLayout.LEFT));
+     JPanel p_center = new JPanel(new BorderLayout());
+     JPanel p_south = new JPanel();
 
-        btnBack.addActionListener(e -> {
-            this.setVisible(false);
-            new ProductManagementGUI();
-        });
+     p_top.setBackground(Color.WHITE);
+     p_center.setBackground(Color.WHITE);
+     p_south.setBackground(Color.WHITE);
 
-        JButton btnExit = new JButton("메인으로 이동");
-        p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
-        p_south.add(btnExit);
-        add(p_south, BorderLayout.SOUTH);
-        btnExit.setBorderPainted(false);
-        btnExit.setBackground(Color.WHITE);
-        btnExit.setForeground(Color.BLACK);
-        btnExit.setFocusPainted(false);
+     // 🔹 상단 영역 (뒤로가기 버튼)
+     JButton btnBack = new JButton("< 뒤로가기");
+     btnBack.setBorderPainted(false);
+     btnBack.setBackground(Color.WHITE);
+     btnBack.setForeground(Color.BLACK);
+     btnBack.setFocusPainted(false);
+     btnBack.addActionListener(e -> {
+         this.setVisible(false);
+         new ProductManagementGUI();
+     });
+     p_top.add(btnBack);
+     add(p_top, BorderLayout.NORTH);
 
-        btnExit.addActionListener(e -> {
-            dispose();
-            new MainGUI();
-        });
+     // 🔹 하단 영역 (메인으로 이동 버튼 & 발주 버튼)
+     JButton btnExit = new JButton("메인으로 이동");
+     btnExit.setBorderPainted(false);
+     btnExit.setBackground(Color.WHITE);
+     btnExit.setForeground(Color.BLACK);
+     btnExit.setFocusPainted(false);
+     btnExit.addActionListener(e -> {
+         dispose();
+         new MainGUI();
+     });
 
-        orderDAO = new OrderDAO();
-        orderProductDAO = new OrderProductDAO();
-        productDAO = new ProductDAO();
+     JButton orderButton = new JButton("발주하기");
+     orderButton.setPreferredSize(new Dimension(150, 40));
+     orderButton.setFont(new Font("SansSerif", Font.BOLD, 14));
+     orderButton.setBackground(new Color(30, 135, 61));
+     orderButton.setForeground(Color.WHITE);
+     orderButton.setFocusPainted(false);
+     orderButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+     orderButton.setOpaque(true);
+     orderButton.setContentAreaFilled(true);
+     orderButton.setBorderPainted(false);
+//     orderButton.setPreferredSize(new Dimension(100, 30));
+//     orderButton.setBackground(new Color(30, 135, 61));
+//     orderButton.setForeground(Color.WHITE);
+//     orderButton.setFocusPainted(false);
+//     orderButton.setBorderPainted(false);
 
-        JPanel inputPanel = new JPanel(new GridLayout(2, 1, 3, 3));
-     // 상품 선택 라인
-        JPanel productLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        productLine.add(new JLabel("상품 선택:"));
+//     p_south.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+//     p_south.add(btnExit);
+//     p_south.add(orderButton);
+     p_south.setLayout(new BoxLayout(p_south, BoxLayout.Y_AXIS));
 
-        // 🔹 콤보박스 크기 조절
-        productCombo = new JComboBox<>();
-        productCombo.setPreferredSize(new Dimension(160, 25));
-        List<ProductVO> products = orderDAO.getAllProducts();
-        for (ProductVO product : products) {
-            productCombo.addItem(product.getProductId() + " " + product.getProductName());
-        }
-        productLine.add(productCombo);
+     // 버튼 사이 간격 조절
+     orderButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+     btnExit.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // 🔹 재고채우기 버튼 폭 줄이기
-        JButton fillStockButton = new JButton("채우기");
-        fillStockButton.setPreferredSize(new Dimension(90, 25));
-        productLine.add(fillStockButton);
+     p_south.add(Box.createVerticalStrut(8));   // 🔹 발주하기 버튼 위 간격
+     p_south.add(orderButton);
+     p_south.add(Box.createVerticalStrut(4)); // 버튼 사이 간격
+     p_south.add(btnExit);
 
-        // 수량 입력 라인
-        JPanel quantityLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        quantityLine.add(new JLabel("수량 입력:"));
+     
+     add(p_south, BorderLayout.SOUTH);
 
-        // 🔹 수량 필드 폭 줄이기
-        quantityField = new JTextField();
-        quantityField.setPreferredSize(new Dimension(50, 25));
-        quantityLine.add(quantityField);
+     // 🔹 중앙 입력 영역
+     JPanel inputPanel = new JPanel();
+     JLabel lblTitle = new JLabel("[상품 발주]");
+     JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+     titlePanel.setBackground(Color.WHITE);
+     titlePanel.add(lblTitle);
+     titlePanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 20));
+     inputPanel.add(titlePanel);
 
-        // 🔹 추가 버튼 폭 줄이기
-        JButton addButton = new JButton("추가");
-        addButton.setPreferredSize(new Dimension(60, 25));
-        quantityLine.add(addButton);
+     lblTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
+//     lblTitle.setBorder(new EmptyBorder(0, 0, 10, 0));
+//     lblTitle.setHorizontalAlignment(SwingConstants.LEFT); // JLabel 내부 텍스트도 왼쪽 정렬
+//     lblTitle.setAlignmentX(Component.LEFT_ALIGNMENT); // 패널 내에서 왼쪽 정렬
 
+     inputPanel.setBackground(Color.WHITE);
+     inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+     inputPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 10, 20));
 
-        p_center.add(inputPanel, BorderLayout.NORTH);
-        
-        inputPanel.add(productLine);
-        inputPanel.add(quantityLine);
+     // 🔹 상품 선택 라벨
+     JPanel productLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+     productLabelPanel.setBackground(Color.WHITE);
+     productLabelPanel.add(new JLabel("상품 선택:"));
 
-        String[] columnNames = {"삭제","상품 ID", "상품 이름", "재고", "적정 재고", "단가", "발주 수량"};
-        tableModel = new DefaultTableModel(columnNames, 0) {
-            public boolean isCellEditable(int row, int column) {
-                return column == 0;
-            }
-        };
+     // 🔹 콤보박스 + 채우기 버튼 한 줄로 묶기
+     JPanel comboWithButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+     comboWithButtonPanel.setBackground(Color.WHITE);
 
-        table = new JTable(tableModel);
-     // 삭제 버튼 컬럼 폭 조절 (0번 컬럼)
-        table.getColumnModel().getColumn(0).setPreferredWidth(50);
-        table.getColumnModel().getColumn(0).setMaxWidth(50);
-        table.getColumnModel().getColumn(0).setMinWidth(50);
-     // 상품 ID컬럼 숨기기
-        table.getColumnModel().getColumn(1).setMinWidth(0);
-        table.getColumnModel().getColumn(1).setMaxWidth(0);
-        table.getColumnModel().getColumn(1).setWidth(0);
-     // 상품 재고 컬럼 폭 조절 (3번 컬럼)
-        table.getColumnModel().getColumn(3).setPreferredWidth(50);
-        table.getColumnModel().getColumn(3).setMaxWidth(50);
-        table.getColumnModel().getColumn(3).setMinWidth(50);
-     // 상품 재고 컬럼 폭 조절 (4번 컬럼)
-        table.getColumnModel().getColumn(4).setPreferredWidth(60);
-        table.getColumnModel().getColumn(4).setMaxWidth(60);
-        table.getColumnModel().getColumn(4).setMinWidth(60);
-     // 상품 재고 컬럼 폭 조절 (7번 컬럼)   
-        table.getColumnModel().getColumn(6).setPreferredWidth(55);
-        table.getColumnModel().getColumn(6).setMaxWidth(55);
-        table.getColumnModel().getColumn(6).setMinWidth(55);
-        
-        table.getColumnModel().getColumn(0).setCellRenderer(new ButtonRenderer());
-        table.getColumnModel().getColumn(0).setCellEditor(new ButtonEditor(new JCheckBox()));
-        p_center.add(new JScrollPane(table), BorderLayout.SOUTH);
-        add(p_center, BorderLayout.CENTER);
+     productCombo = new JComboBox<>();
+     productCombo.setPreferredSize(new Dimension(210, 25));
+     List<ProductVO> products = orderDAO.getAllProducts();
+     for (ProductVO product : products) {
+         productCombo.addItem(product.getProductId() + " " + product.getProductName());
+     }
+     comboWithButtonPanel.add(productCombo);
 
-        JButton orderButton = new JButton("발주하기");
-        p_south.add(orderButton);
+     JButton fillStockButton = new JButton("채우기");
+     fillStockButton.setPreferredSize(new Dimension(90, 25));
+     fillStockButton.setFont(new Font("SansSerif", Font.BOLD, 12));
+     fillStockButton.setBackground(new Color(30, 135, 61));
+     fillStockButton.setForeground(Color.WHITE);
+     fillStockButton.setFocusPainted(false);
+     fillStockButton.setOpaque(true);
+     fillStockButton.setContentAreaFilled(true);
+     fillStockButton.setBorderPainted(false);
+     comboWithButtonPanel.add(fillStockButton);
 
-        orderCart = new HashMap<>();
+     // 🔹 수량 입력 라벨 (한 줄)
+     JPanel quantityLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+     quantityLabelPanel.setBackground(Color.WHITE);
+     quantityLabelPanel.add(new JLabel("수량 입력:"));
 
-        quantityField.addActionListener(e -> addButton.doClick());
+     // 🔹 수량 입력 필드 + 버튼 (한 줄)
+     JPanel quantityInputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+     quantityInputPanel.setBackground(Color.WHITE);
+     quantityField = new JTextField();
+     quantityField.setPreferredSize(new Dimension(210, 25));
+     quantityInputPanel.add(quantityField);
 
-        addButton.addActionListener(e -> {
-            String selectedProduct = (String) productCombo.getSelectedItem();
-            String productId = selectedProduct.split(" ")[0];
-            int quantity = Integer.parseInt(quantityField.getText());
+     JButton addButton = new JButton("추가");
+     addButton.setPreferredSize(new Dimension(90, 25));
+     addButton.setFont(new Font("SansSerif", Font.BOLD, 12));
+     addButton.setBackground(new Color(30, 135, 61));
+     addButton.setForeground(Color.WHITE);
+     addButton.setFocusPainted(false);
+     addButton.setOpaque(true);
+     addButton.setContentAreaFilled(true);
+     addButton.setBorderPainted(false);
+     quantityInputPanel.add(addButton);
 
-            if (orderCart.containsKey(productId)) {
-                JOptionPane.showMessageDialog(null, "이미 발주 리스트에 있는 상품입니다");
-                return;
-            }
+     // 🔹 입력 패널에 하나씩 순서대로 추가
+//     inputPanel.add(lblTitle);
+     inputPanel.add(productLabelPanel);
+     inputPanel.add(comboWithButtonPanel);
+     inputPanel.add(quantityLabelPanel);
+     inputPanel.add(quantityInputPanel);
+     p_center.add(inputPanel, BorderLayout.NORTH);
 
-            
-            ProductVO product = orderDAO.getProductById(productId);
-            if (product != null) {
-                String productName = product.getProductName();
-                int stock = product.getStock();
-                int optimalStock = product.getOptimalStock();
-                int cost = product.getCostPrice();
+     // 🔹 테이블 영역
+     String[] columnNames = {"삭제", "상품 ID", "상품 이름", "재고", "적정 재고", "단가", "발주 수량"};
+     tableModel = new DefaultTableModel(columnNames, 0) {
+         public boolean isCellEditable(int row, int column) {
+             return column == 0;
+         }
+     };
 
-                
-                orderCart.put(productId, quantity);
-                tableModel.addRow(new Object[]{"삭제", productId,productName, stock, optimalStock, cost, quantity});
-                quantityField.setText("");
-            } else {
-                JOptionPane.showMessageDialog(null, "상품 정보를 찾을 수 없습니다.");
-            }
-        });
-        
-        fillStockButton.addActionListener(e -> {
-            List<ProductVO> allProducts = orderDAO.getAllProducts();
-            int addedCount = 0;
+     table = new JTable(tableModel);
+     table.setRowHeight(28);
+     table.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 12));
 
-            for (ProductVO product : allProducts) {
-                String productId = product.getProductId();
+     // 🔹 테이블 컬럼 설정 (기존 주석 유지)
+     table.getColumnModel().getColumn(0).setPreferredWidth(50); // 삭제 버튼 컬럼 폭 조절 (0번 컬럼)
+     table.getColumnModel().getColumn(1).setMinWidth(0); // 상품 ID컬럼 숨기기
+     table.getColumnModel().getColumn(1).setMaxWidth(0);
+     table.getColumnModel().getColumn(1).setWidth(0);
+     table.getColumnModel().getColumn(3).setPreferredWidth(50); // 상품 재고 컬럼 폭 조절 (3번 컬럼)
+     table.getColumnModel().getColumn(4).setPreferredWidth(60); // 상품 재고 컬럼 폭 조절 (4번 컬럼)
+     table.getColumnModel().getColumn(6).setPreferredWidth(55); // 상품 재고 컬럼 폭 조절 (7번 컬럼)
 
-                // 이미 추가된 상품은 스킵
-                if (orderCart.containsKey(productId)) continue;
+     table.getColumnModel().getColumn(0).setCellRenderer(new ButtonRenderer());
+     table.getColumnModel().getColumn(0).setCellEditor(new ButtonEditor(new JCheckBox()));
+     JScrollPane scrollPane = new JScrollPane(table);
+     p_center.add(scrollPane, BorderLayout.CENTER);
 
-                int stock = product.getStock();
-                int optimalStock = product.getOptimalStock();
-                int cost = product.getCostPrice();
-                String productName = product.getProductName();
+     add(p_center, BorderLayout.CENTER);
 
-                if (stock < optimalStock) {
-                    int quantityToOrder = optimalStock - stock;
-                    orderCart.put(productId, quantityToOrder);
-                    tableModel.addRow(new Object[]{"삭제", productId, productName, stock, optimalStock, cost, quantityToOrder});
-                    addedCount++;
-                }
-            }
+     // 🔹 기능 로직
+     orderCart = new HashMap<>();
+     quantityField.addActionListener(e -> addButton.doClick());
 
-            if (addedCount == 0) {
-                JOptionPane.showMessageDialog(null, "추가할 상품이 없습니다");
-            } else {
-                JOptionPane.showMessageDialog(null, addedCount + "개의 상품을 자동으로 발주 리스트에 추가했습니다");
-            }
-        });
+     addButton.addActionListener(e -> {
+         String selectedProduct = (String) productCombo.getSelectedItem();
+         String productId = selectedProduct.split(" ")[0];
+         int quantity = Integer.parseInt(quantityField.getText());
 
+         if (orderCart.containsKey(productId)) {
+             JOptionPane.showMessageDialog(null, "이미 발주 리스트에 있는 상품입니다");
+             return;
+         }
 
-        orderButton.addActionListener(e -> {
-        	    if (orderCart.isEmpty()) {
-        	        JOptionPane.showMessageDialog(null, "발주 리스트가 비어 있습니다!");
-        	        return;
-        	    }
-        	    Date date = new java.util.Date();
-        	    System.out.println(date);
-            int orderId = orderDAO.getNextOrderId();
-            ArrayList<OrderReceiptVO> list = new ArrayList<>();
-            int totalPrice = orderDAO.calculateTotalPrice(orderCart);
-            OrderVO newOrder = new OrderVO(orderId, date , totalPrice, "발주");
-            orderDAO.insertOrder(newOrder);
-            for (String productId : orderCart.keySet()) {
-                int quantity = orderCart.get(productId);
-                OrderProductVO orderProduct = new OrderProductVO(orderId, productId, quantity);
-                orderProductDAO.insertOrderProduct(orderProduct);
-                OrderReceiptDAO dao = new OrderReceiptDAO();
-                OrderReceiptVO vo = dao.receiptsForOrders(orderId, productId, quantity);
-                list.add(vo);
-            }
-            tableModel.setRowCount(0);
-            orderCart.clear();
-            new OrderReceiptGUI(list);
-            dispose();
-        });
+         ProductVO product = orderDAO.getProductById(productId);
+         if (product != null) {
+             String productName = product.getProductName();
+             int stock = product.getStock();
+             int optimalStock = product.getOptimalStock();
+             int cost = product.getCostPrice();
 
-        setTitle("무인편의점 키오스크");
-        setSize(400, 600);
-        setVisible(true);
-        setLocationRelativeTo(null);
-        setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
+             orderCart.put(productId, quantity);
+             tableModel.addRow(new Object[]{"삭제", productId, productName, stock, optimalStock, cost, quantity});
+             quantityField.setText("");
+         } else {
+             JOptionPane.showMessageDialog(null, "상품 정보를 찾을 수 없습니다.");
+         }
+     });
 
-    public static void main(String[] args) {
-        new OrderGUI();
-    }
+     fillStockButton.addActionListener(e -> {
+         List<ProductVO> allProducts = orderDAO.getAllProducts();
+         int addedCount = 0;
 
-    class ButtonRenderer extends JButton implements TableCellRenderer {
-        public ButtonRenderer() {
-            setText("X");
-        }
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                                                       boolean isSelected, boolean hasFocus, int row, int column) {
-            return this;
-        }
-    }
+         for (ProductVO product : allProducts) {
+             String productId = product.getProductId();
+             if (orderCart.containsKey(productId)) continue;
 
-    class ButtonEditor extends DefaultCellEditor {
-        private JButton button;
-        private int row;
-        private boolean isPushed;
+             int stock = product.getStock();
+             int optimalStock = product.getOptimalStock();
+             int cost = product.getCostPrice();
+             String productName = product.getProductName();
 
-        public ButtonEditor(JCheckBox checkBox) {
-            super(checkBox);
-            button = new JButton("X");
+             if (stock < optimalStock) {
+                 int quantityToOrder = optimalStock - stock;
+                 orderCart.put(productId, quantityToOrder);
+                 tableModel.addRow(new Object[]{"삭제", productId, productName, stock, optimalStock, cost, quantityToOrder});
+                 addedCount++;
+             }
+         }
 
-            // 버튼 클릭 리스너
-            button.addActionListener(e -> {
-                isPushed = true;
-                fireEditingStopped();  // 우선 편집 종료
-            });
-        }
+         if (addedCount == 0) {
+             JOptionPane.showMessageDialog(null, "추가할 상품이 없습니다");
+         } else {
+             JOptionPane.showMessageDialog(null, addedCount + "개의 상품을 자동으로 발주 리스트에 추가했습니다");
+         }
+     });
 
-        @Override
-        public Component getTableCellEditorComponent(JTable table, Object value,
-                                                     boolean isSelected, int row, int column) {
-            this.row = row;  // 삭제할 row 기억해두기
-            isPushed = true;
-            return button;
-        }
+     orderButton.addActionListener(e -> {
+         if (orderCart.isEmpty()) {
+             JOptionPane.showMessageDialog(null, "발주 리스트가 비어 있습니다!");
+             return;
+         }
+         Date date = new java.util.Date();
+         int orderId = orderDAO.getNextOrderId();
+         ArrayList<OrderReceiptVO> list = new ArrayList<>();
+         int totalPrice = orderDAO.calculateTotalPrice(orderCart);
+         OrderVO newOrder = new OrderVO(orderId, date, totalPrice, "발주");
+         orderDAO.insertOrder(newOrder);
+         for (String productId : orderCart.keySet()) {
+             int quantity = orderCart.get(productId);
+             OrderProductVO orderProduct = new OrderProductVO(orderId, productId, quantity);
+             orderProductDAO.insertOrderProduct(orderProduct);
+             OrderReceiptDAO dao = new OrderReceiptDAO();
+             OrderReceiptVO vo = dao.receiptsForOrders(orderId, productId, quantity);
+             list.add(vo);
+         }
+         tableModel.setRowCount(0);
+         orderCart.clear();
+         new OrderReceiptGUI(list);
+         dispose();
+     });
 
-        @Override
-        public Object getCellEditorValue() {
-            if (isPushed) {
-                isPushed = false;
+     setTitle("무인편의점 키오스크");
+     setSize(375, 660);
+     setVisible(true);
+     setLocationRelativeTo(null);
+     setResizable(false);
+     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+ }
 
-                // JTable 편집 종료 후 안전하게 삭제하도록 예약
-                SwingUtilities.invokeLater(() -> {
-                    if (row >= 0 && row < tableModel.getRowCount()) {
-                        String productId = (String) tableModel.getValueAt(row, 1);  // 상품 ID는 1번 컬럼
-                        orderCart.remove(productId);  // 장바구니에서 제거
-                        tableModel.removeRow(row);   // 테이블에서 제거
-                    }
-                });
-            }
-            return "X";
-        }
-    }
+ public static void main(String[] args) {
+     new OrderGUI();
+ }
 
+ // 🔹 삭제 버튼 렌더러
+ class ButtonRenderer extends JButton implements TableCellRenderer {
+     public ButtonRenderer() {
+         setText("X");
+     }
 
+     public Component getTableCellRendererComponent(JTable table, Object value,
+                                                    boolean isSelected, boolean hasFocus, int row, int column) {
+         return this;
+     }
+ }
 
+ // 🔹 삭제 버튼 편집기
+ class ButtonEditor extends DefaultCellEditor {
+     private JButton button;
+     private int row;
+     private boolean isPushed;
+
+     public ButtonEditor(JCheckBox checkBox) {
+         super(checkBox);
+         button = new JButton("X");
+
+         button.addActionListener(e -> {
+             isPushed = true;
+             fireEditingStopped();
+         });
+     }
+
+     @Override
+     public Component getTableCellEditorComponent(JTable table, Object value,
+                                                  boolean isSelected, int row, int column) {
+         this.row = row;
+         isPushed = true;
+         return button;
+     }
+
+     @Override
+     public Object getCellEditorValue() {
+         if (isPushed) {
+             isPushed = false;
+             SwingUtilities.invokeLater(() -> {
+                 if (row >= 0 && row < tableModel.getRowCount()) {
+                     String productId = (String) tableModel.getValueAt(row, 1);
+                     orderCart.remove(productId);
+                     tableModel.removeRow(row);
+                 }
+             });
+         }
+         return "X";
+     }
+ }
 }
