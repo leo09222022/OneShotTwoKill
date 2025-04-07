@@ -8,11 +8,13 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox; 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,15 +32,20 @@ import totalsalesproduct.database.TotalSalesProductVO;
 public class TotalSalesProductGUI extends JFrame {
     JTextField jtf;
     JLabel jlabel;
-    JTextField yearField, monthField, dayField; // 연/월/일 입력 필드 추가
+    JComboBox<String> yearCombo, monthCombo, dayCombo; 
     Vector<String> colNames = new Vector<String>();
     Vector<Vector<Object>> rowData = new Vector<Vector<Object>>();
-    private JScrollPane jsp; // 테이블을 위한 스크롤 팬
-    private JTable jtb; // 데이터 표시를 위한 테이블
-    String[] sArr = {"바코드", "상품명", "판매량", "원가", "판매가", "총수익", "순이익", "이익률"}; // 행이름
-    ArrayList<TotalSalesProductVO> list = new ArrayList<TotalSalesProductVO>(); // 열 데이터
+    private JScrollPane jsp;
+    private JTable jtb;
+    String[] sArr = {"바코드", "상품명", "판매량", "원가", "판매가", "총수익", "순이익", "이익률"};
+    ArrayList<TotalSalesProductVO> list = new ArrayList<TotalSalesProductVO>();
     TotalSalesProductVO vo = new TotalSalesProductVO();
     TotalSalesProductDAO dao = new TotalSalesProductDAO();
+    
+    // 추가: 날짜 입력 컴포넌트를 제어하기 위한 패널
+    private JPanel p_date_panel;
+    private JLabel yearLabel, monthLabel, dayLabel;
+    private JButton searchBtn;
     
     public TotalSalesProductGUI() {
         setTitle("매출관리");
@@ -47,13 +54,13 @@ public class TotalSalesProductGUI extends JFrame {
         setLayout(new BorderLayout());
         
         // 패널 생성
-        JPanel p_top = new JPanel();        // 상단 패널 (뒤로가기 버튼)
-        JPanel p_center = new JPanel();     // 중앙 패널 (컨텐츠 영역)
-        JPanel p_center_top = new JPanel(); // 중앙 상단 패널 (날짜 입력 및 버튼)
-        JPanel p_date_panel = new JPanel(); // 날짜 입력 패널
-        JPanel p_button_panel = new JPanel(); // 버튼 패널
-        JPanel p_center_mid = new JPanel(); // 중앙 중간 패널 (테이블)
-        JPanel p_south = new JPanel();      // 하단 패널 (관리자 화면 종료)
+        JPanel p_top = new JPanel();
+        JPanel p_center = new JPanel();
+        JPanel p_center_top = new JPanel();
+        p_date_panel = new JPanel(); // 패널 클래스 멤버로 변경
+        JPanel p_button_panel = new JPanel();
+        JPanel p_center_mid = new JPanel();
+        JPanel p_south = new JPanel();
         
         // 패널 배경색 설정
         p_top.setBackground(Color.WHITE);
@@ -67,7 +74,7 @@ public class TotalSalesProductGUI extends JFrame {
         // 패널 레이아웃 설정
         p_top.setLayout(new FlowLayout(FlowLayout.LEFT));
         p_center.setLayout(new BorderLayout());
-        p_center_top.setLayout(new BoxLayout(p_center_top, BoxLayout.Y_AXIS)); // 수직 배치로 변경
+        p_center_top.setLayout(new BoxLayout(p_center_top, BoxLayout.Y_AXIS));
         p_date_panel.setLayout(new FlowLayout(FlowLayout.CENTER));
         p_button_panel.setLayout(new FlowLayout(FlowLayout.CENTER));
         p_center_mid.setLayout(new BorderLayout());
@@ -83,62 +90,95 @@ public class TotalSalesProductGUI extends JFrame {
         
         // 뒤로가기 버튼 이벤트 처리
         btnBack.addActionListener(e -> {
-            dispose(); // 현재 창 닫기
-            new AdminMainGUI(); // 관리자 메인 화면으로 돌아가기
+            dispose();
+            new AdminMainGUI();
         });
         
         // 하단 영역 : 공통 버튼( 메인 화면으로 이동)
         JButton btnExit = new JButton("메인으로 이동");
- 		p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
- 		p_south.add(btnExit);
- 		add(p_south,BorderLayout.SOUTH);
- 		btnExit.setBorderPainted(false);
- 		btnExit.setBackground(Color.WHITE);
- 		btnExit.setForeground(Color.BLACK);
- 		btnExit.setFocusPainted(false);
- 		
- 		btnExit.addActionListener(e -> {
- 			dispose();
- 			new MainGUI();
- 		});
+        p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
+        p_south.add(btnExit);
+        add(p_south,BorderLayout.SOUTH);
+        btnExit.setBorderPainted(false);
+        btnExit.setBackground(Color.WHITE);
+        btnExit.setForeground(Color.BLACK);
+        btnExit.setFocusPainted(false);
         
-        // 날짜 입력 패널: 연/월/일 입력 필드와 레이블
-        JLabel yearLabel = new JLabel("년");
-        JLabel monthLabel = new JLabel("월");
-        JLabel dayLabel = new JLabel("일");
+        btnExit.addActionListener(e -> {
+            dispose();
+            new MainGUI();
+        });
         
-        yearField = new JTextField(4); // 연도 입력 필드 (4자리)
-        monthField = new JTextField(2); // 월 입력 필드 (2자리)
-        dayField = new JTextField(2); // 일 입력 필드 (2자리)
+        // 날짜 레이블 초기화
+        yearLabel = new JLabel("년");
+        monthLabel = new JLabel("월");
+        dayLabel = new JLabel("일");
         
-        // 기본값 설정 - 현재 연도와 월, 일
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        yearField.setText(String.valueOf(cal.get(java.util.Calendar.YEAR)));
-        monthField.setText(String.format("%02d", cal.get(java.util.Calendar.MONTH) + 1));
-        dayField.setText(String.format("%02d", cal.get(java.util.Calendar.DAY_OF_MONTH)));
+        // 현재 날짜 가져오기
+        Calendar cal = Calendar.getInstance();
+        int currentYear = cal.get(Calendar.YEAR);
+        int currentMonth = cal.get(Calendar.MONTH) + 1;
+        int currentDay = cal.get(Calendar.DAY_OF_MONTH);
         
-        // 날짜 입력 패널에 컴포넌트 추가
-        p_date_panel.add(yearField);
-        p_date_panel.add(yearLabel);
-        p_date_panel.add(monthField);
-        p_date_panel.add(monthLabel);
-        p_date_panel.add(dayField);
-        p_date_panel.add(dayLabel);
+        // 연도 ComboBox 설정 - 현재 연도부터 5년 전까지
+        Vector<String> years = new Vector<>();
+        for (int year = currentYear; year >= currentYear - 5; year--) {
+            years.add(String.valueOf(year));
+        }
+        yearCombo = new JComboBox<>(years);
+        yearCombo.setPreferredSize(new Dimension(80, 25));
         
-        // 버튼 생성
-        JButton tot_btn = new JButton("전체");
+        // 월 ComboBox 설정
+        Vector<String> months = new Vector<>();
+        for (int month = 1; month <= 12; month++) {
+            months.add(String.format("%02d", month));
+        }
+        monthCombo = new JComboBox<>(months);
+        monthCombo.setPreferredSize(new Dimension(60, 25));
+        
+        // 일 ComboBox 설정
+        updateDayCombo(currentYear, currentMonth);
+        
+        // 현재 날짜로 기본값 설정
+        yearCombo.setSelectedItem(String.valueOf(currentYear));
+        monthCombo.setSelectedItem(String.format("%02d", currentMonth));
+        dayCombo.setSelectedItem(String.format("%02d", currentDay));
+        
+        // 연도나 월이 변경되면 일(day) ComboBox 업데이트
+        yearCombo.addActionListener(e -> {
+            updateDayCombo(
+                Integer.parseInt((String)yearCombo.getSelectedItem()),
+                Integer.parseInt((String)monthCombo.getSelectedItem())
+            );
+        });
+        
+        monthCombo.addActionListener(e -> {
+            updateDayCombo(
+                Integer.parseInt((String)yearCombo.getSelectedItem()),
+                Integer.parseInt((String)monthCombo.getSelectedItem())
+            );
+        });
+        
+        // 검색 버튼 추가
+        searchBtn = new JButton("검색");
+        styleGreenButton(searchBtn);
+        
+        // 버튼 생성 - 전체 버튼을 년별 버튼으로 변경
+        JButton year_btn = new JButton("년별");  // 전체 -> 년별로 변경
         JButton month_btn = new JButton("월별");
         JButton day_btn = new JButton("일별");
         
         // 버튼 스타일링
-        styleGreenButton(tot_btn);
+        styleGreenButton(year_btn);
         styleGreenButton(month_btn);
         styleGreenButton(day_btn);
         
         // 버튼 패널에 버튼 추가
-        p_button_panel.add(tot_btn);
+        p_button_panel.add(year_btn);
         p_button_panel.add(month_btn);
         p_button_panel.add(day_btn);
+        
+        // 기본적으로 날짜 입력 패널은 비어있음 (초기 상태에는 날짜 입력 필드가 보이지 않음)
         
         // 중앙 상단 패널에 날짜 패널과 버튼 패널 추가
         p_center_top.add(p_date_panel);
@@ -157,38 +197,34 @@ public class TotalSalesProductGUI extends JFrame {
         DefaultTableModel model = new DefaultTableModel(rowData, colNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // 셀 편집 불가능하게 설정
+                return false;
             }
             
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                // 각 열의 데이터 타입 지정
                 if (columnIndex >= 2 && columnIndex <= 6) {
-                    return Integer.class; // 판매수량, 원가, 판매가, 총 판매수익, 순이익
+                    return Integer.class;
                 } else if (columnIndex == 7) {
-                    return Double.class; // 이익률
+                    return Double.class;
                 }
-                return String.class; // 나머지는 문자열
+                return String.class;
             }
         };
         
         // 테이블 생성 및 설정
         jtb = new JTable(model);
-        jtb.getTableHeader().setReorderingAllowed(false); // 열 이동 불가
-        
-        // 테이블 크기 설정 - 이 부분이 중요
-        // 테이블 자체의 크기를 고정값으로 설정하지 않고, 스크롤 팬의 크기에 맞게 자동 조정되도록 함
-        jtb.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // 자동 리사이즈 비활성화
+        jtb.getTableHeader().setReorderingAllowed(false);
+        jtb.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         
         // 각 열의 너비 설정
-        jtb.getColumnModel().getColumn(0).setPreferredWidth(70);  // 바코드
-        jtb.getColumnModel().getColumn(1).setPreferredWidth(150); // 상품명
-        jtb.getColumnModel().getColumn(2).setPreferredWidth(70);  // 판매량
-        jtb.getColumnModel().getColumn(3).setPreferredWidth(70);  // 원가
-        jtb.getColumnModel().getColumn(4).setPreferredWidth(70);  // 판매가
-        jtb.getColumnModel().getColumn(5).setPreferredWidth(100); // 총수익
-        jtb.getColumnModel().getColumn(6).setPreferredWidth(100); // 순이익
-        jtb.getColumnModel().getColumn(7).setPreferredWidth(70);  // 이익률
+        jtb.getColumnModel().getColumn(0).setPreferredWidth(70);
+        jtb.getColumnModel().getColumn(1).setPreferredWidth(150);
+        jtb.getColumnModel().getColumn(2).setPreferredWidth(70);
+        jtb.getColumnModel().getColumn(3).setPreferredWidth(70);
+        jtb.getColumnModel().getColumn(4).setPreferredWidth(70);
+        jtb.getColumnModel().getColumn(5).setPreferredWidth(100);
+        jtb.getColumnModel().getColumn(6).setPreferredWidth(100);
+        jtb.getColumnModel().getColumn(7).setPreferredWidth(70);
         
         // 이익률 열에 특별한 렌더러 적용 (소수점 두 자리 + % 표시)
         DefaultTableCellRenderer percentRenderer = new DefaultTableCellRenderer() {
@@ -219,11 +255,7 @@ public class TotalSalesProductGUI extends JFrame {
         
         // 스크롤 패널에 테이블 추가
         jsp = new JScrollPane(jtb);
-        
-        // 스크롤 패널의 크기를 창 크기보다 작게 설정
-        jsp.setPreferredSize(new Dimension(350, 380)); // 스크롤 패널 크기 조정 (작은 화면에 맞게)
-        
-        // 스크롤바 항상 표시
+        jsp.setPreferredSize(new Dimension(350, 380));
         jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         
@@ -240,118 +272,179 @@ public class TotalSalesProductGUI extends JFrame {
         add(p_south, BorderLayout.SOUTH);
         
         // 버튼 이벤트 처리
-        tot_btn.addActionListener(e -> {
-            try {
-                // 먼저 테이블의 모든 데이터 삭제
-                clearTable();
-                
-                // 새 데이터 가져오기
-                list = dao.selectAllSalesProduct();
-                
-                // 데이터 추가
-                addDataToTable(list);
-                
-                System.out.println("데이터 로드 완료: " + list.size() + "개의 행");
-            } catch (Exception ex) {
-                System.out.println("전체 데이터 로드 중 오류 발생: " + ex.getMessage());
-                ex.printStackTrace();
-            }
+        year_btn.addActionListener(e -> {
+            // 년별 버튼 클릭 시, 연도만 선택할 수 있게 설정
+            updateDatePanel(true, false, false);
         });
         
         month_btn.addActionListener(e -> {
-            try {
-                // 입력된 연/월 값 가져오기
-                String year = yearField.getText().trim();
-                String month = monthField.getText().trim();
-                
-                // 한 자리 월은 앞에 0 추가
-                if (month.length() == 1) {
-                    month = "0" + month;
-                }
-                
-                System.out.println("월별 검색: " + year + "-" + month);
-                
-                // 먼저 테이블의 모든 데이터 삭제
-                clearTable();
-                
-                // 새 데이터 가져오기 - 월별 데이터 필터링
-                list = dao.selectMonthlySalesProduct(year, month);
-                
-                // 데이터가 있는 경우에만 테이블에 추가
-                if (list != null && !list.isEmpty()) {
-                    addDataToTable(list);
-                    System.out.println("월별 데이터 로드 완료: " + year + "년 " + month + "월, " + list.size() + "개의 행");
-                } else {
-                    System.out.println("해당 월에 데이터가 없습니다: " + year + "년 " + month + "월");
-                }
-            } catch (Exception ex) {
-                System.out.println("월별 데이터 조회 중 오류 발생: " + ex.getMessage());
-                ex.printStackTrace();
-            }
+            // 월별 버튼 클릭 시, 연도와 월 선택할 수 있게 설정
+            updateDatePanel(true, true, false);
         });
         
         day_btn.addActionListener(e -> {
+            // 일별 버튼 클릭 시, 연도, 월, 일 모두 선택할 수 있게 설정
+            updateDatePanel(true, true, true);
+        });
+        
+        searchBtn.addActionListener(e -> {
             try {
-                // 입력된 연/월/일 값 가져오기
-                String year = yearField.getText().trim();
-                String month = monthField.getText().trim();
-                String day = dayField.getText().trim();
+                // 현재 어떤 날짜 필드가 표시되어 있는지 확인
+                boolean yearVisible = p_date_panel.isAncestorOf(yearCombo);
+                boolean monthVisible = p_date_panel.isAncestorOf(monthCombo);
+                boolean dayVisible = p_date_panel.isAncestorOf(dayCombo);
                 
-                // 한 자리 월/일은 앞에 0 추가
-                if (month.length() == 1) {
-                    month = "0" + month;
+                String year = null;
+                String month = null;
+                String day = null;
+                
+                // 표시된 필드의 값만 가져옴
+                if (yearVisible) {
+                    year = (String) yearCombo.getSelectedItem();
                 }
-                if (day.length() == 1) {
-                    day = "0" + day;
+                
+                if (monthVisible) {
+                    month = (String) monthCombo.getSelectedItem();
                 }
                 
-                System.out.println("일별 검색: " + year + "-" + month + "-" + day);
+                if (dayVisible) {
+                    day = (String) dayCombo.getSelectedItem();
+                }
                 
-                // 먼저 테이블의 모든 데이터 삭제
+                // 테이블 초기화
                 clearTable();
                 
-                // 새 데이터 가져오기 - 일별 데이터 필터링
-                list = dao.selectDailySalesProduct(year, month, day);
-                
-                // 데이터가 있는 경우에만 테이블에 추가
-                if (list != null && !list.isEmpty()) {
-                    addDataToTable(list);
-                    System.out.println("일별 데이터 로드 완료: " + year + "년 " + month + "월 " + day + "일, " + list.size() + "개의 행");
-                } else {
-                    System.out.println("해당 일에 데이터가 없습니다: " + year + "년 " + month + "월 " + day + "일");
+                // 어떤 검색을 할지 결정 (년별, 월별, 일별)
+                if (dayVisible) {
+                    // 일별 검색
+                    System.out.println("일별 검색: " + year + "-" + month + "-" + day);
+                    list = dao.selectDailySalesProduct(year, month, day);
+                    
+                    if (list != null && !list.isEmpty()) {
+                        addDataToTable(list);
+                        System.out.println("일별 데이터 로드 완료: " + year + "년 " + month + "월 " + day + "일, " + list.size() + "개의 행");
+                    } else {
+                        System.out.println("해당 일에 데이터가 없습니다: " + year + "년 " + month + "월 " + day + "일");
+                    }
+                } else if (monthVisible) {
+                    // 월별 검색
+                    System.out.println("월별 검색: " + year + "-" + month);
+                    list = dao.selectMonthlySalesProduct(year, month);
+                    
+                    if (list != null && !list.isEmpty()) {
+                        addDataToTable(list);
+                        System.out.println("월별 데이터 로드 완료: " + year + "년 " + month + "월, " + list.size() + "개의 행");
+                    } else {
+                        System.out.println("해당 월에 데이터가 없습니다: " + year + "년 " + month + "월");
+                    }
+                } else if (yearVisible) {
+                    // 년별 검색 (새 기능)
+                    System.out.println("연도별 검색: " + year);
+                    list = dao.selectYearlySalesProduct(year); // 이 메서드를 DAO에 추가해야 함
+                    
+                    if (list != null && !list.isEmpty()) {
+                        addDataToTable(list);
+                        System.out.println("연도별 데이터 로드 완료: " + year + "년, " + list.size() + "개의 행");
+                    } else {
+                        System.out.println("해당 연도에 데이터가 없습니다: " + year + "년");
+                    }
                 }
             } catch (Exception ex) {
-                System.out.println("일별 데이터 조회 중 오류 발생: " + ex.getMessage());
+                System.out.println("데이터 조회 중 오류 발생: " + ex.getMessage());
                 ex.printStackTrace();
             }
         });
         
-		// 초기 데이터 로드
-		try {
-		    list = dao.selectAllSalesProduct();
-		    if (list != null && !list.isEmpty()) {
-		        addDataToTable(list);
-		    }
-		} catch (Exception ex) {
-		    System.out.println("초기 데이터 로드 중 오류 발생: " + ex.getMessage());
-		}
+        // 초기 데이터 로드
+        try {
+            list = dao.selectAllSalesProduct();
+            if (list != null && !list.isEmpty()) {
+                addDataToTable(list);
+            }
+        } catch (Exception ex) {
+            System.out.println("초기 데이터 로드 중 오류 발생: " + ex.getMessage());
+        }
         
         // 프레임 설정
         setTitle("무인편의점 키오스크");
-        setSize(375, 660);  // 다른 화면과 같은 크기로 조정
-        setLocationRelativeTo(null); // 화면 중앙에 표시
+        setSize(375, 660);
+        setLocationRelativeTo(null);
         setVisible(true);
-        setResizable(false); // 리사이즈 제어
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // X 버튼 클릭 시 프로그램 종료
+        setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    
+    // 날짜 패널 업데이트 메서드 (표시할 필드 설정)
+    private void updateDatePanel(boolean showYear, boolean showMonth, boolean showDay) {
+        // 패널 초기화
+        p_date_panel.removeAll();
+        
+        // 지정된 컴포넌트만 추가
+        if (showYear) {
+            p_date_panel.add(yearCombo);
+            p_date_panel.add(yearLabel);
+        }
+        
+        if (showMonth) {
+            p_date_panel.add(monthCombo);
+            p_date_panel.add(monthLabel);
+        }
+        
+        if (showDay) {
+            p_date_panel.add(dayCombo);
+            p_date_panel.add(dayLabel);
+        }
+        
+        // 어떤 필드라도 표시되면 검색 버튼 추가
+        if (showYear || showMonth || showDay) {
+            p_date_panel.add(searchBtn);
+        }
+        
+        // 패널 갱신
+        p_date_panel.revalidate();
+        p_date_panel.repaint();
+    }
+    
+    // 연/월에 따라 일(day) ComboBox를 업데이트하는 메서드
+    private void updateDayCombo(int year, int month) {
+        String selectedDay = null;
+        if (dayCombo != null && dayCombo.getSelectedItem() != null) {
+            selectedDay = (String) dayCombo.getSelectedItem();
+        }
+        
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, month - 1, 1);
+        int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        
+        Vector<String> days = new Vector<>();
+        for (int day = 1; day <= lastDay; day++) {
+            days.add(String.format("%02d", day));
+        }
+        
+        if (dayCombo == null) {
+            dayCombo = new JComboBox<>(days);
+            dayCombo.setPreferredSize(new Dimension(60, 25));
+        } else {
+            dayCombo.removeAllItems();
+            for (String day : days) {
+                dayCombo.addItem(day);
+            }
+        }
+        
+        if (selectedDay != null) {
+            int day = Integer.parseInt(selectedDay);
+            if (day <= lastDay) {
+                dayCombo.setSelectedItem(selectedDay);
+            } else {
+                dayCombo.setSelectedItem(String.format("%02d", lastDay));
+            }
+        }
     }
     
     // 테이블의 모든 데이터를 지우는 메서드
     private void clearTable() {
-        // 테이블 모델 가져오기
         DefaultTableModel model = (DefaultTableModel) jtb.getModel();
-        // 행 수를 0으로 설정하여 모든 행 삭제
         model.setRowCount(0);
-        // 데이터 목록도 비우기
         list.clear();
         rowData.clear();
     }
@@ -388,7 +481,5 @@ public class TotalSalesProductGUI extends JFrame {
         btn.setOpaque(true);
         btn.setContentAreaFilled(true);
         btn.setBorderPainted(false);
-//        btn.setPreferredSize(new Dimension(60, 36));
-//        btn.setMargin(new Insets(2, 4, 2, 4)); 
     }
 }

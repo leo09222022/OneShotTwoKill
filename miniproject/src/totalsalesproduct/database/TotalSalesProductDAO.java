@@ -103,6 +103,40 @@ public class TotalSalesProductDAO {
 		}
 		return list;
 	}
+	// TotalSalesProductDAO 클래스에 추가해야 할 메서드 예시
+	public ArrayList<TotalSalesProductVO> selectYearlySalesProduct(String year) {
+	    ArrayList<TotalSalesProductVO> list = new ArrayList<TotalSalesProductVO>();
+	    String sql = "select product_id, (select product_name from product p where sp.product_id = p.product_id) 제품명, "
+	        + " sum(sales_quantity) ,cost_price_at, sale_price_at from sales_product sp, sales s"
+	        + " where s.sales_id = sp.sales_id and"
+	        + " TO_CHAR(s.sales_date, 'YYYY') = ?"
+	        + " group by product_id, sale_price_at, cost_price_at";
+	    try {
+	        Connection conn = ConnectionProvider.getConnection();
+	        PreparedStatement pstmt = conn.prepareStatement(sql);
+
+	        // 연도만 설정
+	        pstmt.setString(1, year);
+
+	        ResultSet rs = pstmt.executeQuery();
+	        while(rs.next()) {
+	            String productId = rs.getString(1);
+	            String productName = rs.getString(2);
+	            int salesCount = rs.getInt(3);
+	            int costPriceAt = rs.getInt(4);
+	            int salePriceAt = rs.getInt(5);
+	            int sumSalePrice = salePriceAt * salesCount;
+	            int profits = (salePriceAt - costPriceAt) * salesCount;
+	            double profitsRate = ((double)profits / sumSalePrice) * 100;
+	            TotalSalesProductVO vo = new TotalSalesProductVO(productId, productName, salesCount, costPriceAt, salePriceAt, sumSalePrice, profits, profitsRate);
+	            list.add(vo);
+	        }
+	        ConnectionProvider.close(conn, pstmt, rs);
+	    } catch (Exception e) {
+	        System.out.println("예외발생 : " + e);
+	    }
+	    return list;
+	}
 	
 	
 	
