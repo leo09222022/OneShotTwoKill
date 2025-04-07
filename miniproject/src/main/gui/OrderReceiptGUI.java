@@ -22,7 +22,7 @@ public class OrderReceiptGUI extends JFrame {
         // 공통 컴포넌트 : 버튼
         JButton btnBack = new JButton("< 뒤로가기");
         JButton btnTotalOrders = new JButton("확인");
-        JLabel lblExit = new JLabel("관리자 화면 종료");
+        JLabel lblExit = new JLabel("메인으로 이동");
 
         /* [S : 공통] 레이아웃 ====================================================== */
         p_top.setBackground(Color.WHITE);
@@ -47,10 +47,22 @@ public class OrderReceiptGUI extends JFrame {
             new TotalOrdersProductGUI();
         });
 
-        // 하단 영역 : "발주 내역" 텍스트
-        p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
-        p_south.add(lblExit);
-        add(p_south, BorderLayout.SOUTH);
+        // 하단 영역 : 공통 버튼( 메인 화면으로 이동)
+        JButton btnExit = new JButton("메인으로 이동");
+ 		p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
+ 		p_south.add(btnExit);
+ 		add(p_south,BorderLayout.SOUTH);
+ 		btnExit.setBorderPainted(false);
+ 		btnExit.setBackground(Color.WHITE);
+ 		btnExit.setForeground(Color.BLACK);
+ 		btnExit.setFocusPainted(false);
+ 		
+ 		btnExit.addActionListener(e -> {
+ 			dispose();
+ 			new MainGUI();
+ 		});
+ 		
+ 
         /* [E : 공통] 레이아웃 ====================================================== */
 
         /* [S] 컨텐츠 영역 : 중앙 정렬 ========================================================== */

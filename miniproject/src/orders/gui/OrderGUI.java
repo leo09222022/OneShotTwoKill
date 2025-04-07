@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import main.gui.MainGUI;
 import main.gui.OrderReceiptGUI;
 import main.gui.ProductManagementGUI;
 import orders.database.OrderDAO;
@@ -45,6 +46,21 @@ public class OrderGUI extends JFrame {
             this.setVisible(false);
             new ProductManagementGUI();
         });
+        
+        // 하단 영역 : 공통 버튼( 메인 화면으로 이동)
+        JButton btnExit = new JButton("메인으로 이동");
+ 		p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
+ 		p_south.add(btnExit);
+ 		add(p_south,BorderLayout.SOUTH);
+ 		btnExit.setBorderPainted(false);
+ 		btnExit.setBackground(Color.WHITE);
+ 		btnExit.setForeground(Color.BLACK);
+ 		btnExit.setFocusPainted(false);
+ 		
+ 		btnExit.addActionListener(e -> {
+ 			dispose();
+ 			new MainGUI();
+ 		});
 
         orderDAO = new OrderDAO();
         orderProductDAO = new OrderProductDAO();

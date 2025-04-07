@@ -16,6 +16,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import orders.gui.OrderGUI;
 import product.gui.ProductGUI;
 import product.gui.ProductUpdateGUI;
 import totalordersproduct.gui.TotalOrdersProductGUI;
@@ -197,6 +198,12 @@ public class ProductManagementGUI extends JFrame {
         btnModify.addActionListener(e -> {
         	this.setVisible(false);
         	new ProductUpdateGUI();
+        });
+        
+        // [상품 발주] 버튼을 누를 시 OrderGUI.java를 가동시킨다. 
+        btnTotalSales.addActionListener(e -> {
+            this.setVisible(false);
+            new OrderGUI(); // 상품 등록 화면 열기
         });
 
         // 버튼에 약간의 여백 추가
