@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -48,6 +50,14 @@ public class SalesListGUI extends JFrame{
 		
 		// 공통 컴포넌트 구성 : 버튼
 		JButton btnTypeG = new JButton("영수증 출력");
+		btnTypeG.setFont(new Font("SansSerif", Font.BOLD, 14));
+		btnTypeG.setBackground(new Color(30, 135, 61));
+		btnTypeG.setForeground(Color.WHITE);
+		btnTypeG.setFocusPainted(false);
+		btnTypeG.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+		btnTypeG.setOpaque(true);
+		btnTypeG.setContentAreaFilled(true);
+		btnTypeG.setBorderPainted(false);
 		
 		
 		
@@ -77,6 +87,8 @@ public class SalesListGUI extends JFrame{
 		JPanel receipt_details_btm = new JPanel(); // 패널 생성
      	receipt_details_btm.setLayout(new GridLayout(2, 2, 5, 5)); // 2행 2열, 여백 5px
      	receipt_details_btm.setBackground(Color.WHITE); // 배경화면 설정
+//     	receipt_details_btm.setPreferredSize(new Dimension(0, 50)); // 너비: 0이면 레이아웃에 따라 자동, 높이: 50픽셀
+
      	
         
         // 컨텐츠 영역 : 페이지 타이틀 + 상단 공통 정보
@@ -90,7 +102,11 @@ public class SalesListGUI extends JFrame{
         JLabel titLabel = new JLabel("코스타 편의점");
         JLabel storeLabel = new JLabel("종각점 #12345");
         JLabel callLabel = new JLabel("012-3456-7890");
-        JLabel addressLabel = new JLabel("서울특별시 종로구 우정국로 2길 21 대왕빌딩 7층");
+        
+        // 주소 줄바꿈 처리
+//        JLabel addressLabel = new JLabel("서울특별시 종로구 우정국로 2길 21 대왕빌딩 7층");
+        JLabel addressLabel = new JLabel("<html>" + "서울특별시 종로구 우정국로 2길 21 대왕빌딩 7층" + "</html>");
+        
         titLabel.setBorder(new EmptyBorder(5, 5, 0, 5)); 
         storeLabel.setBorder(new EmptyBorder(5, 65, 5, 5));
         callLabel.setBorder(new EmptyBorder(0, 5, 5, 5));
@@ -123,7 +139,10 @@ public class SalesListGUI extends JFrame{
         /* [S] 컨텐츠 영역 : p_center_mid ========================================================== */
         // 컨텐츠 영역 : p_center_mid 관련 패널 생성
         JPanel p_center_mid_top = new JPanel(); // 패널 생성
-        p_center_mid_top.setLayout(new GridLayout(0, 1, 5, 5)); // 2행 1열, 여백 5px 
+//        p_center_mid_top.setLayout(new GridLayout(0, 1, 5, 5)); // 2행 1열, 여백 5px
+        p_center_mid_top.setLayout(new BoxLayout(p_center_mid_top, BoxLayout.Y_AXIS));
+
+
         p_center_mid_top.setBackground(Color.WHITE); // 배경화면 설정
         
         JPanel receipt_mid_list = new JPanel(); // 패널 생성 
@@ -141,8 +160,9 @@ public class SalesListGUI extends JFrame{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd (E) HH:mm:ss");
         String now = LocalDateTime.now().format(formatter);
         JLabel saleDateLabel = new JLabel("[판매] " + now);
+        titCardLabel.setHorizontalAlignment(JLabel.CENTER);
         titCardLabel.setAlignmentX(SalesListGUI.CENTER_ALIGNMENT);
-        titCardLabel.setBorder(new EmptyBorder(5, 160, 5, 140));
+        titCardLabel.setBorder(new EmptyBorder(5, 0, 5, 0));
         saleDateLabel.setBorder(new EmptyBorder(5, 5, 5, 10));
         titCardLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
         saleDateLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
@@ -194,9 +214,20 @@ public class SalesListGUI extends JFrame{
         // JTable을 JScrollPane에 추가 (스크롤 가능하게 함)
         JScrollPane scrollPane = new JScrollPane(table);        
         scrollPane.setBorder(null); // 테두리 제거 
-        
+        scrollPane.setPreferredSize(new Dimension(0, 300));
 
+        titCardLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        saleDateLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+
+        
+        
+     // 절취선 라벨
+        JLabel cutLineLabel = new JLabel("-------------------------------------------");
+        cutLineLabel.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        cutLineLabel.setHorizontalAlignment(JLabel.CENTER);
+        
         // 프레임에 추가
+        p_center_mid_top.add(cutLineLabel);
         p_center_mid_top.add(titCardLabel);
         p_center_mid_top.add(saleDateLabel);
         receipt_mid_list.add(scrollPane);
@@ -253,8 +284,20 @@ public class SalesListGUI extends JFrame{
         p_center.add(p_center_btm,BorderLayout.SOUTH);
         p_south.add(p_south_btn,BorderLayout.NORTH);
         p_south.setBackground(Color.WHITE); // 배경화면 설정
-		add(p_center,BorderLayout.CENTER);	
-		add(p_south,BorderLayout.SOUTH);
+        
+        
+        JPanel contentWrapper = new JPanel(new BorderLayout());
+        contentWrapper.setBorder(new EmptyBorder(10, 10, 10, 10)); // 여백 조절
+        contentWrapper.setBackground(Color.WHITE); 
+        contentWrapper.add(p_center, BorderLayout.CENTER);
+        contentWrapper.add(p_south, BorderLayout.SOUTH);
+
+        add(contentWrapper, BorderLayout.CENTER);
+        
+        
+        
+//		add(p_center,BorderLayout.CENTER);	
+//		add(p_south,BorderLayout.SOUTH);
 	
 		
 		/* [유지] 기본세팅 : 항시 소스 맨 밑에 배치 ====================================================== */
