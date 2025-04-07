@@ -126,7 +126,7 @@ public class ProductUpdateGUI extends JFrame {
     // 모든 상품 정보 나열 
     public void loadProducts() {
         productPanel.removeAll();
-        List<ProductVO> products = productDAO.getAllProducts();
+        List<ProductVO> products = productDAO.findAll();
         for (ProductVO product : products) {
             addProductRow(product);
         }
