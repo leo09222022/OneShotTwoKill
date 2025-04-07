@@ -46,6 +46,7 @@ public class ProductUpdateGUI extends JFrame {
         lblTitle.setBorder(new EmptyBorder(20, 0, 10, 0));
         lblTitle.setBackground(Color.WHITE);
         lblTitle.setOpaque(true);
+        lblTitle.setBounds(20, 50, 300, 30);
 //        p_center.add(lblTitle, BorderLayout.NORTH);
 
 
