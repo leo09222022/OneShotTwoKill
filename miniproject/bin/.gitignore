@@ -1,14 +1,2 @@
-<<<<<<< HEAD
-/product/
-/sales/
-/totalordersproduct/
-/totalsalesproduct/
-/common/
-/main/
 /orders/
-/payment/
-/kioskMain/
-/login/
-=======
-*.class
->>>>>>> refs/remotes/origin/master
+/product/
