@@ -78,7 +78,7 @@ public class TotalSalesProductGUI extends JFrame {
         btnBack.setBorderPainted(false);
         btnBack.setBackground(Color.WHITE);
         btnBack.setForeground(Color.BLACK);
-        btnBack.setFocusPainted(false);
+        btnBack.setFocusPainted(false); // 버튼이 포커스를 받았을 때(예: 키보드로 선택되었을 때) 특별한 표시를 하지 않도록 설정합니다.
         p_top.add(btnBack);
         
         // 뒤로가기 버튼 이벤트 처리
@@ -92,10 +92,10 @@ public class TotalSalesProductGUI extends JFrame {
  		p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
  		p_south.add(btnExit);
  		add(p_south,BorderLayout.SOUTH);
- 		btnExit.setBorderPainted(false);
+ 		btnExit.setBorderPainted(false); // 테두리를 그리지 않도록 설정
  		btnExit.setBackground(Color.WHITE);
  		btnExit.setForeground(Color.BLACK);
- 		btnExit.setFocusPainted(false);
+ 		btnExit.setFocusPainted(false); // 버튼이 포커스를 받았을 때(예: 키보드로 선택되었을 때) 특별한 표시를 하지 않도록 설정합니다.
  		
  		btnExit.addActionListener(e -> {
  			dispose();
