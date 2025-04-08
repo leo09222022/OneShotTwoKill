@@ -46,6 +46,7 @@ public class ProductUpdateGUI extends JFrame {
         lblTitle.setBorder(new EmptyBorder(20, 20, 10, 20));
         lblTitle.setBackground(Color.WHITE);
         lblTitle.setOpaque(true);
+        lblTitle.setBounds(20, 50, 300, 30);
 //        p_center.add(lblTitle, BorderLayout.NORTH);
 
 
@@ -127,7 +128,7 @@ public class ProductUpdateGUI extends JFrame {
     // 모든 상품 정보 나열 
     public void loadProducts() {
         productPanel.removeAll();
-        List<ProductVO> products = productDAO.getAllProducts();
+        List<ProductVO> products = productDAO.findAll();
         for (ProductVO product : products) {
             addProductRow(product);
         }
@@ -155,6 +156,9 @@ public class ProductUpdateGUI extends JFrame {
         btnEdit.setFocusPainted(false);
         btnEdit.setBorderPainted(false);
         btnEdit.setMargin(new Insets(2, 4, 2, 4)); 
+        btnEdit.setOpaque(true);
+        btnEdit.setContentAreaFilled(true);
+        btnEdit.setBorderPainted(false);
 
 
         btnDelete.setPreferredSize(new Dimension(20, 20));

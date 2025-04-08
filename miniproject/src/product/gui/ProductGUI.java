@@ -185,12 +185,33 @@ public class ProductGUI extends JFrame {
     }
 
     private void registerProduct() {
-        String productId = generateRandomProductId();
-        String productName = txtProductName.getText();
-        int costPrice = Integer.parseInt(txtCostPrice.getText());
-        int optimalStock = Integer.parseInt(txtOptimalStock.getText());
-        int salePrice = Integer.parseInt(txtSalePrice.getText());
+    	
+    	String productName = txtProductName.getText().trim();
+        String costPriceStr = txtCostPrice.getText().trim();
+        String optimalStockStr = txtOptimalStock.getText().trim();
+        String salePriceStr = txtSalePrice.getText().trim();
+
+        // 공백 검증
+        if (productName.isEmpty() || costPriceStr.isEmpty() || 
+            optimalStockStr.isEmpty() || salePriceStr.isEmpty() || 
+            !(chkBeverage.isSelected() || chkSnack.isSelected() || chkCategory1.isSelected() || 
+              chkCategory2.isSelected() || chkEtc.isSelected())) {
+            
+            JOptionPane.showMessageDialog(this, "상품정보를 모두 올바르게 설정해주십시오.", "입력 오류", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // 파싱
+        int costPrice = Integer.parseInt(costPriceStr);
+        int optimalStock = Integer.parseInt(optimalStockStr);
+        int salePrice = Integer.parseInt(salePriceStr);
         int stock = 0;
+        
+        String productId = generateRandomProductId();
+        productName = txtProductName.getText();
+        costPrice = Integer.parseInt(txtCostPrice.getText());
+        optimalStock = Integer.parseInt(txtOptimalStock.getText());
+        salePrice = Integer.parseInt(txtSalePrice.getText());
 
         // 카테고리 선택
         String categoryName = "";
