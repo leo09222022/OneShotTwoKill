@@ -1,9 +1,5 @@
 *.class
 /.gitignore
-/category/
-/common/
-/db/
-/kioskMain/
 /login/
 /main/
 /orders/
