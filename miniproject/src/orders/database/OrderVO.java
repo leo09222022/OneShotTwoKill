@@ -52,5 +52,5 @@ public class OrderVO {
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
-
+	
 }

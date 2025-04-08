@@ -42,8 +42,8 @@ public class ProductUpdateGUI extends JFrame {
 
         // 제목줄
         lblTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
-        lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTitle.setBorder(new EmptyBorder(20, 0, 10, 0));
+//        lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
+        lblTitle.setBorder(new EmptyBorder(20, 20, 10, 20));
         lblTitle.setBackground(Color.WHITE);
         lblTitle.setOpaque(true);
 //        p_center.add(lblTitle, BorderLayout.NORTH);
@@ -103,6 +103,7 @@ public class ProductUpdateGUI extends JFrame {
         p_center.add(searchPanel, BorderLayout.CENTER);
 
         productPanel = new JPanel();
+        productPanel.setBorder(new EmptyBorder(0, 10, 0, 10));
         productPanel.setLayout(new BoxLayout(productPanel, BoxLayout.Y_AXIS));
         productPanel.setBackground(Color.WHITE);
         
