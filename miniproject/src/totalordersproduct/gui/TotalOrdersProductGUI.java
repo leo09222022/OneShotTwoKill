@@ -2,6 +2,7 @@ package totalordersproduct.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -21,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -59,6 +61,14 @@ public class TotalOrdersProductGUI extends JFrame {
         JPanel p_total_panel = new JPanel();
         JPanel p_center_mid = new JPanel();
         JPanel p_south = new JPanel();
+        
+        // 타이틀
+  		JLabel labelTitle = new JLabel("발주 내역");
+  		labelTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
+  		labelTitle.setBorder(new EmptyBorder(0, 0, 10, 0));
+  		labelTitle.setAlignmentX(Component.CENTER_ALIGNMENT); // 수평 가운데 정렬 추가
+  		p_center_top.setBackground(Color.WHITE);
+  		p_center_top.add(labelTitle);
         
         // 패널 배경색 설정
         p_top.setBackground(Color.WHITE);

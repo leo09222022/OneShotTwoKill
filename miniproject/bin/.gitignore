@@ -1,1 +1,10 @@
 *.class
+/common/
+/main/
+/orders/
+/payment/
+/sales/
+/totalordersproduct/
+/totalsalesproduct/
+/kioskMain/
+/login/

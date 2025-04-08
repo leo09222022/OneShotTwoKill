@@ -6,7 +6,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Vector;
@@ -21,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -61,6 +61,14 @@ public class TotalSalesProductGUI extends JFrame {
         JPanel p_button_panel = new JPanel();
         JPanel p_center_mid = new JPanel();
         JPanel p_south = new JPanel();
+        
+        // 타이틀
+ 		JLabel labelTitle = new JLabel("매출 관리");
+ 		labelTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
+ 		labelTitle.setBorder(new EmptyBorder(0, 0, 10, 0));
+ 		labelTitle.setAlignmentX(Component.CENTER_ALIGNMENT); // 수평 가운데 정렬 추가
+ 		p_center_top.setBackground(Color.WHITE);
+ 		p_center_top.add(labelTitle);
         
         // 패널 배경색 설정
         p_top.setBackground(Color.WHITE);
@@ -122,9 +130,8 @@ public class TotalSalesProductGUI extends JFrame {
         
         // 연도 ComboBox 설정 - 현재 연도부터 5년 전까지
         Vector<String> years = new Vector<>();
-        for (int year = currentYear; year >= currentYear - 5; year--) {
-            years.add(String.valueOf(year));
-        }
+        years.add(String.valueOf(2025));
+        years.add(String.valueOf(2024));
         yearCombo = new JComboBox<>(years);
         yearCombo.setPreferredSize(new Dimension(80, 25));
         
@@ -408,37 +415,37 @@ public class TotalSalesProductGUI extends JFrame {
     // 연/월에 따라 일(day) ComboBox를 업데이트하는 메서드
     private void updateDayCombo(int year, int month) {
         String selectedDay = null;
-        if (dayCombo != null && dayCombo.getSelectedItem() != null) {
+        if (dayCombo != null && dayCombo.getSelectedItem() != null) { // 콤보박스에 선택된 일을 저장해주는 기능
             selectedDay = (String) dayCombo.getSelectedItem();
         }
         
+        // 해당월의 마지막날짜를 계산해주는 기능
         Calendar cal = Calendar.getInstance();
-        cal.set(year, month - 1, 1);
-        int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        cal.set(year, month - 1, 1); // Calendar 클래스의 월은 0부터 시작하므로 -1 적용
+        int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH); // 해당월에 마지막 일을 구하는 기능
         
         Vector<String> days = new Vector<>();
-        for (int day = 1; day <= lastDay; day++) {
+        for (int day = 1; day <= lastDay; day++) { // 콤보 박스를 만들기위한 vector에 1부터 마지막 날짜까지 추가하는 for문 
             days.add(String.format("%02d", day));
         }
         
-        if (dayCombo == null) {
+        if (dayCombo == null) { // 일 선택 콤보박스가 없다면 생성
             dayCombo = new JComboBox<>(days);
             dayCombo.setPreferredSize(new Dimension(60, 25));
-        } else {
+        } else { // 일 선택 콤보박스가 있다면 지우고 다시생성
             dayCombo.removeAllItems();
             for (String day : days) {
                 dayCombo.addItem(day);
             }
         }
-        
-        if (selectedDay != null) {
+        if (selectedDay != null) { // 다른 월을 선택했을때 이전 선택한 일을 유지시키는 기능
             int day = Integer.parseInt(selectedDay);
-            if (day <= lastDay) {
+            if (day <= lastDay) { // 바뀐 달에 해당 일이 있을경우
                 dayCombo.setSelectedItem(selectedDay);
-            } else {
+            } else { // 바뀐달에 해당 일이 없을 경우 마지막 일을 선택
                 dayCombo.setSelectedItem(String.format("%02d", lastDay));
             }
-        }
+        } 
     }
     
     // 테이블의 모든 데이터를 지우는 메서드
