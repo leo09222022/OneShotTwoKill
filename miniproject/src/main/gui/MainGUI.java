@@ -36,7 +36,7 @@ public class MainGUI extends JFrame{
 	JTable table;
 	JTextField Jinput;
 	JLabel Jlabel;
-	JLabel welcomeLabel = new JLabel("<html><center>환영합니다<br>OSOK 편의점 입니다</center></html>");
+	JLabel welcomeLabel = new JLabel("<html><center>환영합니다<br>OSTK 편의점 입니다</center></html>");
 	
 	// 화면 구성 (생성자)
 	public MainGUI() {
@@ -59,7 +59,7 @@ public class MainGUI extends JFrame{
 		
 		// 공통 컴포넌트 구성 : 버튼
 		JButton btnTypeG = new JButton("시작하기");
-		JButton btnExit = new JButton("관리자화면");
+		JButton btnExit = new JButton("관리자로그인");
 		
 		// 버튼 스타일
 		btnTypeG.setPreferredSize(new Dimension(120, 40));
@@ -177,7 +177,7 @@ public class MainGUI extends JFrame{
 	
 		
 		/* [유지] 기본세팅 : 항시 소스 맨 밑에 배치 ====================================================== */
-		setTitle("무인편의점 키오스크");
+		setTitle("OSTK 편의점");
 		setSize(375, 660);
 	    setVisible(true);
         setLocationRelativeTo(null); // 화면 중앙에 표시

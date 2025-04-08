@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Vector;
@@ -24,6 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import common.gui.Component;
 import main.gui.MainGUI;
 import main.gui.ProductManagementGUI;
 import totalordersproduct.database.TotalOrdersProductDAO;
@@ -171,6 +170,7 @@ public class TotalOrdersProductGUI extends JFrame {
         p_button_panel.add(check);
         
         // 버튼 스타일 추가
+        check.setPreferredSize(new Dimension(150, 40));
         check.setFont(new Font("SansSerif", Font.BOLD, 12));
         check.setBackground(new Color(30, 135, 61));
         check.setForeground(Color.WHITE);
@@ -183,6 +183,27 @@ public class TotalOrdersProductGUI extends JFrame {
         // 총 가격 레이블
         jlb = new JLabel("총 가격 : ");
         p_total_panel.add(jlb);
+        
+        // 중앙 상단에 
+        // 제목
+        JLabel lblTitle = new JLabel("[발주 내역 조회]");
+        lblTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
+        lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT); // 가운데 정렬
+        lblTitle.setHorizontalAlignment(JLabel.CENTER); // 텍스트도 가운데
+        lblTitle.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+        
+        JLabel lblContent = new JLabel("조회할 날짜를 선택해주세요");
+        lblTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
+        lblContent.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        lblContent.setAlignmentX(Component.CENTER_ALIGNMENT); // 가운데 정렬
+        lblTitle.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+
+        // 중앙 상단 패널에 제목을 먼저 추가
+        p_center_top.add(lblTitle);
+        p_center_top.add(lblContent);
+        
+
+        
         
         // 중앙 상단 패널에 각 패널 추가
         p_center_top.add(p_date_panel);
@@ -315,7 +336,7 @@ public class TotalOrdersProductGUI extends JFrame {
         }
         
         // 프레임 설정
-        setTitle("무인편의점 키오스크");
+        setTitle("OSTK 편의점 - 발주 상품 현황");
         setSize(375, 660);
         setLocationRelativeTo(null);
         setVisible(true);

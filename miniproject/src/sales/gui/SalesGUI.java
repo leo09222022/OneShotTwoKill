@@ -177,7 +177,7 @@ public class SalesGUI extends JFrame {
 		});
 
 		// 프레임 설정
-		setTitle("무인편의점 키오스크 - 사용자 화면");
+		setTitle("OSTK 편의점");
 		setSize(375, 660);
 		setVisible(true);
 		setResizable(false);

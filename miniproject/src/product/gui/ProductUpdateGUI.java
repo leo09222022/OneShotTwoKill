@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import main.gui.MainGUI;
 import main.gui.ProductManagementGUI;
 import product.database.ProductDAO;
 import product.database.ProductVO;
@@ -37,13 +38,31 @@ public class ProductUpdateGUI extends JFrame {
         JPanel p_top = new JPanel();
         JPanel p_center = new JPanel();
         JPanel p_south = new JPanel();
-        JLabel lblExit = new JLabel("관리자 화면 종료");
+//        JLabel lblExit = new JLabel("메인으로 이동");
         JLabel lblTitle = new JLabel("[상품 수정]");
+        
+        // 메인으로 이동 버튼 기능 추가
+        // 하단 영역 : 공통 버튼( 메인 화면으로 이동)
+        JButton btnExit = new JButton("메인으로 이동");
+ 		p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
+ 		p_south.add(btnExit);
+ 		add(p_south,BorderLayout.SOUTH);
+ 		btnExit.setBorderPainted(false);
+ 		btnExit.setBackground(Color.WHITE);
+ 		btnExit.setForeground(Color.BLACK);
+ 		btnExit.setFocusPainted(false);
+ 		
+ 		btnExit.addActionListener(e -> {
+ 			dispose();
+ 			new MainGUI();
+ 		});
+        
+        
 
         // 제목줄
         lblTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
-        lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTitle.setBorder(new EmptyBorder(20, 0, 10, 0));
+//        lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
+        lblTitle.setBorder(new EmptyBorder(20, 20, 10, 20));
         lblTitle.setBackground(Color.WHITE);
         lblTitle.setOpaque(true);
         lblTitle.setBounds(20, 50, 300, 30);
@@ -65,10 +84,10 @@ public class ProductUpdateGUI extends JFrame {
         add(p_top, BorderLayout.NORTH);
 
         p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
-        p_south.add(lblExit);
+//        p_south.add(lblExit);
         add(p_south, BorderLayout.SOUTH);
 
-        setTitle("상품 수정");
+        setTitle("OSTK 편의점 - 상품수정");
 		setSize(375, 660);
 		setVisible(true);
 		setResizable(false);
@@ -104,6 +123,7 @@ public class ProductUpdateGUI extends JFrame {
         p_center.add(searchPanel, BorderLayout.CENTER);
 
         productPanel = new JPanel();
+        productPanel.setBorder(new EmptyBorder(0, 10, 0, 10));
         productPanel.setLayout(new BoxLayout(productPanel, BoxLayout.Y_AXIS));
         productPanel.setBackground(Color.WHITE);
         

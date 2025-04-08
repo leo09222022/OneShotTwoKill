@@ -1,6 +1,8 @@
 package product.gui;
 
 import javax.swing.*;
+
+import main.gui.MainGUI;
 import main.gui.ProductManagementGUI;
 import product.database.ProductDAO;
 import product.database.ProductVO;
@@ -20,7 +22,22 @@ public class ProductGUI extends JFrame {
         JPanel p_top = new JPanel();        // 상단
         JPanel p_center = new JPanel();     // 컨텐츠 영역
         JPanel p_south = new JPanel();      // 하단
-        JLabel lblExit = new JLabel("관리자 화면 종료");
+//        JLabel lblExit = new JLabel("메인으로 이동");
+        
+        // 하단 영역 : 공통 버튼( 메인 화면으로 이동)
+        JButton btnExit = new JButton("메인으로 이동");
+ 		p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
+ 		p_south.add(btnExit);
+ 		add(p_south,BorderLayout.SOUTH);
+ 		btnExit.setBorderPainted(false);
+ 		btnExit.setBackground(Color.WHITE);
+ 		btnExit.setForeground(Color.BLACK);
+ 		btnExit.setFocusPainted(false);
+ 		
+ 		btnExit.addActionListener(e -> {
+ 			dispose();
+ 			new MainGUI();
+ 		});
         
         // 배경색 흰색으로 수정
         p_top.setBackground(Color.WHITE);
@@ -43,7 +60,7 @@ public class ProductGUI extends JFrame {
 
         // 하단 영역 : 공통 레이블(관리자 화면 종료)
         p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
-        p_south.add(lblExit);
+//        p_south.add(lblExit);
         add(p_south, BorderLayout.SOUTH);
 
         setTitle("신규 상품 등록");
@@ -174,7 +191,7 @@ public class ProductGUI extends JFrame {
         btnPanel.add(btnCancel);
         p_center.add(btnPanel);
 
-    	setTitle("신규 상품 등록");
+    	setTitle("OSTK 편의점 - 신규상품등록");
 		setSize(375, 660);
 	    setVisible(true);
         setLocationRelativeTo(null); // 화면 중앙에 표시
