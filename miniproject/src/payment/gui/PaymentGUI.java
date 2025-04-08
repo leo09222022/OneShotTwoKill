@@ -13,10 +13,12 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import common.gui.Component;
+import main.gui.MainGUI;
 import payment.database.PaymentDAO;
 import product.database.ProductVO;
 import sales.database.SalesProductVO;
 import sales.database.SalesVO;
+import sales.gui.SalesGUI;
 import sales.gui.SalesListGUI;
 
 /*
@@ -52,12 +54,33 @@ public class PaymentGUI extends JFrame {
     public PaymentGUI(Map<ProductVO, Integer> cartMap) {
     	// 레이아웃 구성
     	setLayout(new BorderLayout());
+    	JPanel p_top = new JPanel();
     	JPanel itemListPanel = new JPanel();
     	JPanel p_center = new JPanel();		// 컨텐츠 영역
     	JPanel p_center_top = new JPanel();
     	JPanel p_center_mid = new JPanel();
     	JPanel p_south = new JPanel();		// 하단
 
+    	
+    	
+    	// 상단: 뒤로가기 버튼
+		JButton btnBack = new JButton("< 뒤로가기");
+		p_top.setLayout(new FlowLayout(FlowLayout.LEFT));
+		p_top.setBackground(Color.WHITE);
+		btnBack.setBorderPainted(false);
+		btnBack.setBackground(Color.WHITE);
+		btnBack.setForeground(Color.BLACK);
+		btnBack.setFocusPainted(false);
+		p_top.add(btnBack);
+		add(p_top, BorderLayout.NORTH);
+
+		// 뒤로가기 버튼 액션
+		btnBack.addActionListener(e -> {
+			this.setVisible(false);
+			new SalesGUI();
+		});
+    	
+    	
     	
     	/* [S] 레이아웃 & 컨텐츠 영역 ========================================================== */
     	// 상+하단 영역 : 레이아웃
@@ -80,7 +103,7 @@ public class PaymentGUI extends JFrame {
         // 컨텐츠 영역 : 페이지 타이틀
         JLabel labelTitle = new JLabel("카드 결제");
         labelTitle.setAlignmentX(Component.LEFT_ALIGNMENT);	// 왼쪽정렬
-		labelTitle.setBorder(new EmptyBorder(10, 0, 10, 20)); // 간격넣기
+		labelTitle.setBorder(new EmptyBorder(0, 0, 10, 20)); // 간격넣기
 		labelTitle.setFont(new Font("SansSerif", Font.BOLD, 18));
 		p_center_top_tit.add(labelTitle); // 페이지 타이틀 넣기
 		p_center_top_tit.setBackground(Color.WHITE); // 배경화면 설정
@@ -99,13 +122,14 @@ public class PaymentGUI extends JFrame {
             labels[i].setMaximumSize(new Dimension(350, 28));	// 최대 크기 설정
             labels[i].setAlignmentX(Component.LEFT_ALIGNMENT);	// 왼쪽정렬
             labels[i].setFont(new Font("SansSerif", Font.BOLD, 14));
+            labels[i].setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
             
         	// 인풋영역
         	textFields[i] = new JTextField();
             textFields[i].setPreferredSize(new Dimension(350, 28));	// 크기 설정
             textFields[i].setMaximumSize(new Dimension(350, 28));	// 최대 크기 설정
+            textFields[i].setMinimumSize(new Dimension(350, 28));	// 최소 크기 설정
             textFields[i].setAlignmentX(Component.LEFT_ALIGNMENT);	// 왼쪽정렬
-            
             
             // JTextField에 오늘 날짜 입력
             if(i == 2) {
@@ -170,7 +194,7 @@ public class PaymentGUI extends JFrame {
             itemListPanel.add(label);
             
          
-            // 구매 상품 한 건씩 넣기 
+            // 총 상품 한 건씩 넣기 
             SalesProductVO spv = new SalesProductVO(
                 null,                      	// sales_id
                 product.getProductId(),		// product_id
@@ -184,7 +208,7 @@ public class PaymentGUI extends JFrame {
         
         JLabel totalLabel = new JLabel("총 금액: " + NumberFormat.getInstance().format(totalPrice) + "원", JLabel.CENTER);
         totalLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        totalLabel.setBorder(BorderFactory.createEmptyBorder(50, 0, 10, 0));
+        totalLabel.setBorder(BorderFactory.createEmptyBorder(23, 0, 10, 0));
 
         
         
@@ -269,13 +293,13 @@ public class PaymentGUI extends JFrame {
         p_center.add(p_center_top,BorderLayout.NORTH);
         p_center.add(p_center_mid,BorderLayout.CENTER);
         p_center.add(scrollPane,BorderLayout.SOUTH);
-        add(p_center,BorderLayout.NORTH);
+        add(p_center,BorderLayout.CENTER);
         add(p_south,BorderLayout.SOUTH);
 
         
                 
 		/* [유지] 기본세팅 : 항시 소스 맨 밑에 배치 ====================================================== */
-		setTitle("무인편의점 키오스크 : 카드 결제");
+		setTitle("OSTK 편의점");
 		setSize(375, 660);
 	    setVisible(true);
 	    setResizable(false); // 리사이즈 제어

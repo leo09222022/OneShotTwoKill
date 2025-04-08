@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,12 +16,15 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import main.gui.MainGUI;
 import product.database.ProductVO;
 
 
@@ -48,7 +53,8 @@ public class SalesListGUI extends JFrame{
 		
 		// 공통 컴포넌트 구성 : 버튼
 		JButton btnTypeG = new JButton("영수증 출력");
-		
+		JLabel labelCount = new JLabel("");// 대기문구 영역 추가
+
 		
 		
 		/* [S : 공통] 레이아웃영역  ====================================================== */
@@ -87,7 +93,7 @@ public class SalesListGUI extends JFrame{
 		
      	
         // 컴포넌트 생성
-        JLabel titLabel = new JLabel("코스타 편의점");
+        JLabel titLabel = new JLabel("OSTK 편의점");
         JLabel storeLabel = new JLabel("종각점 #12345");
         JLabel callLabel = new JLabel("012-3456-7890");
         JLabel addressLabel = new JLabel("서울특별시 종로구 우정국로 2길 21 대왕빌딩 7층");
@@ -142,7 +148,7 @@ public class SalesListGUI extends JFrame{
         String now = LocalDateTime.now().format(formatter);
         JLabel saleDateLabel = new JLabel("[판매] " + now);
         titCardLabel.setAlignmentX(SalesListGUI.CENTER_ALIGNMENT);
-        titCardLabel.setBorder(new EmptyBorder(5, 160, 5, 140));
+        titCardLabel.setBorder(new EmptyBorder(0, 160, 5, 140));
         saleDateLabel.setBorder(new EmptyBorder(5, 5, 5, 10));
         titCardLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
         saleDateLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
@@ -240,9 +246,76 @@ public class SalesListGUI extends JFrame{
 		// 컨텐츠 영역 : 버튼
      	p_south_btn.setLayout(new FlowLayout(FlowLayout.CENTER));
         p_south_btn.add(btnTypeG);
+        p_south_btn.add(labelCount);
         p_south_btn.setBackground(Color.WHITE); // 배경화면 설정
 		btnTypeG.setPreferredSize(new Dimension(120, 28)); // 버튼 사이즈 설정
+		
+		
+		/* S : 카운트다운 쓰레드 */ 
+		class MoveHome extends Thread{
+			public void run() {
+				try {
+					for(int i = 0; i < 5; i++){
+						int count = i+1;
+						SwingUtilities.invokeLater(() -> labelCount.setText(count+"초 뒤에 홈화면으로 이동합니다."));
+						Thread.sleep(500); // 초대기
+					}
+					
+					// 영수증 버튼 클릭시 3초 뒤 홈화면으로 이동
+					SwingUtilities.invokeLater(() -> {
+						SalesListGUI.this.setVisible(false);
+						new MainGUI();
+					});
+				} catch (Exception e) {
+					System.out.println("예외처리(이동) : "+e.getMessage());
+				}
+			}
+		}
+		/* E : 카운트다운 쓰레드 */
 
+		
+		
+		/* S : 영수증 출력 이벤트 추가 */
+		btnTypeG.addActionListener(e->{
+			String userHome = System.getProperty("user.home");
+			try {
+				FileWriter fileName = new FileWriter(userHome + "/Desktop/receipt.txt");
+				fileName.write("            구매해 주셔서 감사합니다.          \n");
+				fileName.write("============= 무인편의점 영수증 =============\n");
+				fileName.write("매장명 : OSTK 편의점 종각점 #12345\n");
+				fileName.write("연락처 : 012-3456-7890\n");
+				fileName.write("주소 : 서울특별시 종로구 우정국로 2길 21 대왕빌딩 7층\n");
+				fileName.write("-------------------------------------------------\n");
+				fileName.write("판매수단 : 카드");
+				fileName.write("판매일시 : " + now + "\n");
+				fileName.write("-------------------------------------------------\n");
+				fileName.write("상품명\t\t수량\t금액\n");
+				for (Map.Entry<ProductVO, Integer> entry : cartMap.entrySet()) {
+                    ProductVO product = entry.getKey();
+                    int quantity = entry.getValue();
+                    int price = product.getSalePrice() * quantity;
+                    
+                    fileName.write(product.getProductName()+"\t");
+		            fileName.write(quantity+"\t");
+		            fileName.write(NumberFormat.getInstance().format(price) + "원\n");
+                }
+				fileName.write("-------------------------------------------------\n");
+				fileName.write("총 합계 : "+ NumberFormat.getInstance().format(totalPrice));
+				fileName.close();
+				JOptionPane.showMessageDialog(this, "영수증을 출력하였습니다!");
+				
+				// 카운트 다운 시작
+				Thread count = new MoveHome();
+				count.start();
+			} catch (Exception e1) {
+				System.out.println("예외처리(영수증) : "+e1.getMessage());
+				JOptionPane.showMessageDialog(this, "영수증을 출력에 실패하였습니다.");
+			}
+		});
+		/* E : 영수증 출력 이벤트 추가 */
+		
+		
+		
 		
 		
 		/* [공통] 최상위 부모 패널닫기  ====================================================== */

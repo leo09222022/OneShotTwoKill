@@ -187,7 +187,25 @@ public class TotalSalesProductGUI extends JFrame {
         
         // 기본적으로 날짜 입력 패널은 비어있음 (초기 상태에는 날짜 입력 필드가 보이지 않음)
         
+        
+     // 제목 라벨
+        JLabel lblTitle = new JLabel("[매출 내역 조회]");
+        lblTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
+        lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblTitle.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+
+        // 안내문구 라벨
+        JLabel lblContent = new JLabel("조회할 기간을 선택해주세요");
+        lblContent.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        lblContent.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblContent.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+
+        
+        
         // 중앙 상단 패널에 날짜 패널과 버튼 패널 추가
+        p_center_top.add(lblTitle);
+        p_center_top.add(lblContent);
+
         p_center_top.add(p_date_panel);
         p_center_top.add(p_button_panel);
         
@@ -373,7 +391,7 @@ public class TotalSalesProductGUI extends JFrame {
         }
         
         // 프레임 설정
-        setTitle("무인편의점 키오스크");
+        setTitle("OSTK 편의점 - 매출 현황");
         setSize(375, 660);
         setLocationRelativeTo(null);
         setVisible(true);

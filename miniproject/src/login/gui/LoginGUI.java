@@ -175,7 +175,7 @@ public class LoginGUI extends JFrame{
         add(p_center, BorderLayout.CENTER);    
         
         /* [유지] 기본세팅 : 항시 소스 맨 밑에 배치 ====================================================== */
-        setTitle("무인편의점 키오스크");
+        setTitle("OSTK 편의점 - 관리자로그인");
         setSize(375, 660);
         setVisible(true);
         setLocationRelativeTo(null); // 화면 중앙에 표시
