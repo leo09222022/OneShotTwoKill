@@ -181,7 +181,7 @@ public class ProductEditGUI extends JFrame {
         btnPanel.add(btnCancel);
         p_center.add(btnPanel);
 
-        setTitle("상품수정");
+        setTitle("OSTK 편의점 - 상품수정");
         setSize(375, 660);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

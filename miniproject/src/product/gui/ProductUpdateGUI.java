@@ -87,7 +87,7 @@ public class ProductUpdateGUI extends JFrame {
 //        p_south.add(lblExit);
         add(p_south, BorderLayout.SOUTH);
 
-        setTitle("상품 수정");
+        setTitle("OSTK 편의점 - 상품수정");
 		setSize(375, 660);
 		setVisible(true);
 		setResizable(false);

@@ -336,7 +336,7 @@ public class TotalOrdersProductGUI extends JFrame {
         }
         
         // 프레임 설정
-        setTitle("무인편의점 키오스크");
+        setTitle("OSTK 편의점 - 발주 상품 현황");
         setSize(375, 660);
         setLocationRelativeTo(null);
         setVisible(true);

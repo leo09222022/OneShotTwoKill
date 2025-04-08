@@ -191,7 +191,7 @@ public class ProductGUI extends JFrame {
         btnPanel.add(btnCancel);
         p_center.add(btnPanel);
 
-    	setTitle("신규 상품 등록");
+    	setTitle("OSTK 편의점 - 신규상품등록");
 		setSize(375, 660);
 	    setVisible(true);
         setLocationRelativeTo(null); // 화면 중앙에 표시
