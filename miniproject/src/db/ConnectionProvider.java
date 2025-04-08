@@ -8,9 +8,8 @@ import java.sql.Statement;
 public class ConnectionProvider {
 	public static String driver="oracle.jdbc.driver.OracleDriver";
 	public static String url="jdbc:oracle:thin:@localhost:1521:XE";
-	public static String useranme="c##mini";
-	public static String password="mini";
-	
+	public static String useranme="c##ostkmini";
+	public static String password="ostkmini";	
 	public static Connection getConnection() {
 		Connection conn = null;
 		try {
@@ -21,6 +20,30 @@ public class ConnectionProvider {
 		}
 		return conn;
 	}
+	
+	public static Connection getManagerConnection(String username, String password) {
+		Connection conn = null;
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(url, username, password);
+		}catch (Exception e) {
+			System.out.println("예외발생:"+e.getMessage());
+		}
+		return conn;
+	}
+//	public static String driver="oracle.jdbc.driver.OracleDriver";
+//	public static String url="jdbc:oracle:thin:@localhost:1521:XE";	
+//	public static Connection getConnection(String username, String password) {
+//		Connection conn = null;
+//		try {
+//			Class.forName(driver);
+//			conn = DriverManager.getConnection(url, username, password);
+//		}catch (Exception e) {
+//			System.out.println("예외발생:"+e.getMessage());
+//		}
+//		return conn;
+//	}
+	
 	
 	public static void close(Connection conn, Statement stmt, ResultSet rs) {
 		try {

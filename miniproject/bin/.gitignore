@@ -1,21 +1,9 @@
-<<<<<<< HEAD
 *.class
-/.gitignore
-/orders/
-=======
-<<<<<<< HEAD
-=======
-/category/
-/common/
 /db/
-/kioskMain/
-/login/
->>>>>>> branch 'jiewan' of https://github.com/leo09222022/OneShotTwoKill.git
-/main/
 /orders/
 /payment/
->>>>>>> refs/remotes/origin/jiewan
 /product/
 /sales/
 /totalordersproduct/
 /totalsalesproduct/
+/kioskMain/
