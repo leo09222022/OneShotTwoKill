@@ -21,8 +21,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import main.gui.MainGUI;
 import product.database.ProductVO;
 
 
@@ -51,7 +53,8 @@ public class SalesListGUI extends JFrame{
 		
 		// 공통 컴포넌트 구성 : 버튼
 		JButton btnTypeG = new JButton("영수증 출력");
-		
+		JLabel labelCount = new JLabel("");// 대기문구 영역 추가
+
 		
 		
 		/* [S : 공통] 레이아웃영역  ====================================================== */
@@ -145,7 +148,7 @@ public class SalesListGUI extends JFrame{
         String now = LocalDateTime.now().format(formatter);
         JLabel saleDateLabel = new JLabel("[판매] " + now);
         titCardLabel.setAlignmentX(SalesListGUI.CENTER_ALIGNMENT);
-        titCardLabel.setBorder(new EmptyBorder(5, 160, 5, 140));
+        titCardLabel.setBorder(new EmptyBorder(0, 160, 5, 140));
         saleDateLabel.setBorder(new EmptyBorder(5, 5, 5, 10));
         titCardLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
         saleDateLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
@@ -243,8 +246,34 @@ public class SalesListGUI extends JFrame{
 		// 컨텐츠 영역 : 버튼
      	p_south_btn.setLayout(new FlowLayout(FlowLayout.CENTER));
         p_south_btn.add(btnTypeG);
+        p_south_btn.add(labelCount);
         p_south_btn.setBackground(Color.WHITE); // 배경화면 설정
 		btnTypeG.setPreferredSize(new Dimension(120, 28)); // 버튼 사이즈 설정
+		
+		
+		/* S : 카운트다운 쓰레드 */ 
+		class MoveHome extends Thread{
+			public void run() {
+				try {
+					for(int i = 0; i < 5; i++){
+						int count = i+1;
+						SwingUtilities.invokeLater(() -> labelCount.setText(count+"초 뒤에 홈화면으로 이동합니다."));
+						Thread.sleep(500); // 초대기
+					}
+					
+					// 영수증 버튼 클릭시 3초 뒤 홈화면으로 이동
+					SwingUtilities.invokeLater(() -> {
+						SalesListGUI.this.setVisible(false);
+						new MainGUI();
+					});
+				} catch (Exception e) {
+					System.out.println("예외처리(이동) : "+e.getMessage());
+				}
+			}
+		}
+		/* E : 카운트다운 쓰레드 */
+
+		
 		
 		/* S : 영수증 출력 이벤트 추가 */
 		btnTypeG.addActionListener(e->{
@@ -274,6 +303,10 @@ public class SalesListGUI extends JFrame{
 				fileName.write("총 합계 : "+ NumberFormat.getInstance().format(totalPrice));
 				fileName.close();
 				JOptionPane.showMessageDialog(this, "영수증을 출력하였습니다!");
+				
+				// 카운트 다운 시작
+				Thread count = new MoveHome();
+				count.start();
 			} catch (Exception e1) {
 				System.out.println("예외처리(영수증) : "+e1.getMessage());
 				JOptionPane.showMessageDialog(this, "영수증을 출력에 실패하였습니다.");
@@ -298,7 +331,7 @@ public class SalesListGUI extends JFrame{
 	
 		
 		/* [유지] 기본세팅 : 항시 소스 맨 밑에 배치 ====================================================== */
-		setTitle("OSTK 편의점");
+		setTitle("무인편의점 키오스크 : 영수증");
 		setSize(375, 660);
 	    setVisible(true);
 	    setResizable(false); // 리사이즈 제어
