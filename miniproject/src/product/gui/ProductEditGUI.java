@@ -120,7 +120,7 @@ public class ProductEditGUI extends JFrame {
         btnPanel.add(btnCancel);
         p_center.add(btnPanel);
 
-    	setTitle("신규상품등록");
+    	setTitle("상품수정");
 		setSize(375, 660);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
