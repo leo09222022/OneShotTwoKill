@@ -281,14 +281,14 @@ public class SalesListGUI extends JFrame{
 			try {
 				FileWriter fileName = new FileWriter(userHome + "/Desktop/receipt.txt");
 				fileName.write("            구매해 주셔서 감사합니다.          \n");
-				fileName.write("============= 무인편의점 영수증 =============\n");
+				fileName.write("============= OSTK 편의점 영수증 =============\n");
 				fileName.write("매장명 : OSTK 편의점 종각점 #12345\n");
 				fileName.write("연락처 : 012-3456-7890\n");
 				fileName.write("주소 : 서울특별시 종로구 우정국로 2길 21 대왕빌딩 7층\n");
-				fileName.write("-------------------------------------------------\n");
+				fileName.write("-----------------------------------------------------------\n");
 				fileName.write("판매수단 : 카드");
 				fileName.write("판매일시 : " + now + "\n");
-				fileName.write("-------------------------------------------------\n");
+				fileName.write("-----------------------------------------------------------\n");
 				fileName.write("상품명\t\t수량\t금액\n");
 				for (Map.Entry<ProductVO, Integer> entry : cartMap.entrySet()) {
                     ProductVO product = entry.getKey();
@@ -299,7 +299,7 @@ public class SalesListGUI extends JFrame{
 		            fileName.write(quantity+"\t");
 		            fileName.write(NumberFormat.getInstance().format(price) + "원\n");
                 }
-				fileName.write("-------------------------------------------------\n");
+				fileName.write("-----------------------------------------------------------\n");
 				fileName.write("총 합계 : "+ NumberFormat.getInstance().format(totalPrice));
 				fileName.close();
 				JOptionPane.showMessageDialog(this, "영수증을 출력하였습니다!");
@@ -331,7 +331,7 @@ public class SalesListGUI extends JFrame{
 	
 		
 		/* [유지] 기본세팅 : 항시 소스 맨 밑에 배치 ====================================================== */
-		setTitle("무인편의점 키오스크 : 영수증");
+		setTitle("OSTK 편의점 : 영수증");
 		setSize(375, 660);
 	    setVisible(true);
 	    setResizable(false); // 리사이즈 제어
