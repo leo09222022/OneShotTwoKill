@@ -24,6 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import main.gui.MainGUI;
+import payment.gui.CardInfoGUI;
 import payment.gui.PaymentGUI;
 import product.database.ProductVO;
 import sales.database.SalesDAO;
@@ -83,7 +84,7 @@ public class SalesGUI extends JFrame {
 		// 결제 버튼 클릭 시 장바구니 출력 (샘플 처리)
 		payButton.addActionListener(e -> {
 			this.setVisible(false);
-			new PaymentGUI(cartMap); // ← 넘겨주는 부분!
+			new CardInfoGUI(cartMap); // ← 넘겨주는 부분!
 		});
 
 		p_south.setLayout(new BoxLayout(p_south, BoxLayout.Y_AXIS));

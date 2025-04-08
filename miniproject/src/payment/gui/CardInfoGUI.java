@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.time.format.DateTimeParseException;
 
 import javax.swing.*;
@@ -36,25 +37,27 @@ import sales.gui.SalesListGUI;
 영수증 화면에 뿌리기
 */
 
-public class PaymentGUI extends JFrame {
+// 카드 정보
+public class CardInfoGUI extends JFrame {
+	Map<String, String> cardInfoMap = new HashMap<>(); // 카드정보를 Map으로 저장 및 전달	
 	PaymentDAO dao = new PaymentDAO();
     
-	// 카드 승인번호 랜덤 출력 
-	double random = Math.random();
-	int cardVerInt = 10000000 + (int)(random * 90000000); // 8자리 출력
-	String cardVer = String.valueOf(cardVerInt);
+	// 카드번호 랜덤 출력 
+	long cardNumberLong = 1000000000000000L + (long)(Math.random() * 9000000000000000L); // 16자리 출력
+	String cardNumFin = String.valueOf(cardNumberLong);
 	
-	// 구매 날짜 변환  
+	// 카드 유효기간 랜덤 출력   
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-	// 총합계 : 지역 변수로 사용시 내부에서 자유롭게 사용하기 어려움이 있어, 맴버변수로 변환 
-    int totalPrice = 0;
+	int randomYear = 1 + (int)(Math.random() * 5);
+	LocalDate cardLimitDate = LocalDate.now().plusYears(randomYear); 	// 오늘 날짜 + 랜덤 년도
+	String cardLimitDateFin = cardLimitDate.format(formatter); 			// 오늘 날짜를 포매팅
 	
-    public PaymentGUI(Map<ProductVO, Integer> cartMap, Map<String, String> cardInfoMap) {
+	
+	
+    public CardInfoGUI(Map<ProductVO, Integer> cartMap) {
     	// 레이아웃 구성
     	setLayout(new BorderLayout());
     	JPanel p_top = new JPanel();
-    	JPanel itemListPanel = new JPanel();
     	JPanel p_center = new JPanel();		// 컨텐츠 영역
     	JPanel p_center_top = new JPanel();
     	JPanel p_center_mid = new JPanel();
@@ -92,15 +95,12 @@ public class PaymentGUI extends JFrame {
 		
 		
     	// 컨텐츠 영역 : 관련 패널 생성
-    	itemListPanel.setLayout(new BoxLayout(itemListPanel, BoxLayout.Y_AXIS));
-        JScrollPane scrollPane = new JScrollPane(itemListPanel);
-    	
         JPanel p_center_top_tit = new JPanel(); // 패널 생성
         p_center_top_tit.setLayout(new FlowLayout(FlowLayout.LEFT)); // 정렬은 되지만 한줄을 넘어가면 안보임
 
         
         // 컨텐츠 영역 : 페이지 타이틀
-        JLabel labelTitle = new JLabel("카드 결제");
+        JLabel labelTitle = new JLabel("결제 진행");
         labelTitle.setAlignmentX(Component.LEFT_ALIGNMENT);	// 왼쪽정렬
 		labelTitle.setBorder(new EmptyBorder(0, 0, 10, 20)); // 간격넣기
 		labelTitle.setFont(new Font("SansSerif", Font.BOLD, 18));
@@ -109,12 +109,11 @@ public class PaymentGUI extends JFrame {
 		
 		
 		// 컨텐츠 영역 : 라벨 + 인풋
-        JTextField[] textFields = new JTextField[3];
-        JLabel[] labels = new JLabel[3];
+        JTextField[] textFields = new JTextField[2];
+        JLabel[] labels = new JLabel[2];
         
         // 라벨 텍스트 배열
-        String[] labelTexts = {"카드번호", "유효기간", "판매일자"}; // "판매금액",
-        String[] cardKeys = {"cardNum", "expirationDate", null}; // 카드키
+        String[] labelTexts = {"카드번호", "유효기간"};
         for (int i = 0; i < labelTexts.length; i++) {
             // 라벨영역
         	labels[i] = new JLabel(labelTexts[i]);
@@ -131,23 +130,22 @@ public class PaymentGUI extends JFrame {
             textFields[i].setMinimumSize(new Dimension(350, 28));	// 최소 크기 설정
             textFields[i].setAlignmentX(Component.LEFT_ALIGNMENT);	// 왼쪽정렬
             
-            // 카드 정보 매핑
-            if (cardKeys[i] != null && cardInfoMap.containsKey(cardKeys[i])) {
-                textFields[i].setText(cardInfoMap.get(cardKeys[i]));
-                textFields[i].setEditable(false); // 입력방지
+            // JTextField에 카드 번호 무작위 생성
+            if(i == 0) {
+            	textFields[i].setText(cardNumFin);
+            	textFields[i].setEditable(false); // 입력방지
             }
             
-            
-            // JTextField에 오늘 날짜 입력
-            if(i == 2) {
-            	textFields[i].setText(LocalDate.now().format(formatter));
+            // JTextField에 유효기간 무작위 생성
+            if(i == 1) {
+            	textFields[i].setText(cardLimitDateFin);
             	textFields[i].setEditable(false); // 입력방지
             }
         }
         
 		
         p_center_mid.setLayout(new BoxLayout(p_center_mid, BoxLayout.Y_AXIS));
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 2; i++) {
 			p_center_mid.add(labels[i]);
 		    p_center_mid.add(textFields[i]);
 		}
@@ -178,113 +176,20 @@ public class PaymentGUI extends JFrame {
         
         
         
-        JLabel labelListTit = new JLabel("구매 상세내역 ------------------------ ");
-        labelListTit.setFont(new Font("SansSerif", Font.BOLD, 14));
-        scrollPane.setBackground(Color.WHITE);
-        scrollPane.getViewport().setBackground(Color.WHITE);
-        scrollPane.setPreferredSize(new Dimension(330, 195));
         
-        itemListPanel.setBackground(Color.WHITE);
-        itemListPanel.add(labelListTit);
-
-        
-        List<SalesProductVO> spvList = new ArrayList<>();
-        for (Map.Entry<ProductVO, Integer> entry : cartMap.entrySet()) {
-            ProductVO product = entry.getKey();
-            int quantity = entry.getValue();
-            int price = product.getSalePrice() * quantity;
-            totalPrice += price;
-
-            JLabel label = new JLabel(product.getProductName() + " - " + quantity + "개 / " +
-                    NumberFormat.getInstance().format(price) + "원");
-            label.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-            itemListPanel.add(label);
-            
-         
-            // 총 상품 한 건씩 넣기 
-            SalesProductVO spv = new SalesProductVO(
-                null,                      	// sales_id
-                product.getProductId(),		// product_id
-                quantity,					// sales_quantity
-                product.getSalePrice(),		// sale_price_at
-                product.getCostPrice()		// cost_price_at
-            );
-            spvList.add(spv);
-        }
-        
-        
-        JLabel totalLabel = new JLabel("총 금액: " + NumberFormat.getInstance().format(totalPrice) + "원", JLabel.CENTER);
-        totalLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        totalLabel.setBorder(BorderFactory.createEmptyBorder(23, 0, 10, 0));
-
-        
-        
-        // 결제 버튼 클릭 시 장바구니 내역 전달 
+        // 결제 버튼 클릭 시 카드정보 전달 
     	btnPrint.addActionListener(e -> {
-            // S : textFields 입력값가져오기 
-            for (int i = 0; i < textFields.length; i++) {
-                String value = textFields[i].getText();
-                System.out.println("TextField[" + i + "] 값: " + value);
-            }
-            String cardNum = textFields[0].getText();
-            java.sql.Date expirationDate;       
-            // E : textFields 입력값가져오기 
+            // 카드 입력값 수집 (생성자 영역에 있으면 빈값으로 넘어감)
+        	String mapCardNum = textFields[0].getText().trim();	// 카드 번호
+        	String mapCardDate = textFields[1].getText().trim();	// 카드 유효기간
             
-            // 카드번호 길이 유효성 검사 
-            if (cardNum.length() != 16) {
-                JOptionPane.showMessageDialog(this, "카드 번호를 확인해 주세요 (16자리 입력)");
-                return;
-            }
-            
-            // 카드 유효일자 유효성 검사 (과거 날짜 방지) 
-            try {
-            	String inputDate = textFields[1].getText().trim();
-            	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            	LocalDate parsedDate = LocalDate.parse(inputDate, formatter);
-	        	
-            	// 과거 날짜 방지 
-	            if(parsedDate.isBefore(LocalDate.now())) {
-	            	JOptionPane.showMessageDialog(this, "카드 유효일자는 오늘 이후의 날짜로 입력해 주세요.");
-	                return;	
-	            }
-	            
-	            expirationDate = java.sql.Date.valueOf(parsedDate); // DB용 변환
-	        	// expirationDate = java.sql.Date.valueOf(textFields[1].getText().trim()); 
-            } catch (DateTimeParseException ex) {
-                JOptionPane.showMessageDialog(this, "카드 유효일자를 올바른 형식(yyyy-mm-dd)으로 입력해 주세요.");
-                return;
-            }
-            
-            
-            // VO객체 생성
-            SalesVO sv =  new SalesVO(
-            		null,				// sales_id
-            		null,				// sales_date
-            		totalPrice, 		// sales_total
-            		cardNum, 			// card_num
-            		expirationDate, 	// expiration_date
-            		cardVer);			// card_ver
-           
-            // 구매내역 인서트 &  salesId 받기 
-            int salesId = dao.insertCardInfo(sv);
-
-            // salesId 받기 실패시 (= 저장실패시)  
-            if (salesId <= 0) {
-                JOptionPane.showMessageDialog(this, "결제 저장 실패");
-                return;
-            }
-            
-            // 판매 ID를 판매상품 VO에 넣어주기
-            for (SalesProductVO spv : spvList) {
-                spv.setSalesId(salesId);
-            }
-            
-            // 구매내역의 아이템별 정보 인서트 
-            dao.insertCardProduct(spvList);
+            // 카드정보 전달
+        	cardInfoMap.put("cardNum", mapCardNum);
+        	cardInfoMap.put("expirationDate", mapCardDate);
             
             // 모든 처리 완료 후 
             this.setVisible(false);
-            new SalesListGUI(cartMap); // ← 넘겨주는 부분!
+            new PaymentGUI(cartMap, cardInfoMap); // ← 넘겨주는 부분!
         });
         
         
@@ -296,10 +201,9 @@ public class PaymentGUI extends JFrame {
         p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         
-        p_center_mid.add(totalLabel);
+        // p_center_mid.add(totalLabel);
         p_center.add(p_center_top,BorderLayout.NORTH);
         p_center.add(p_center_mid,BorderLayout.CENTER);
-        p_center.add(scrollPane,BorderLayout.SOUTH);
         add(p_center,BorderLayout.CENTER);
         add(p_south,BorderLayout.SOUTH);
 
