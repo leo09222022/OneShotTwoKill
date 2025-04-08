@@ -1,6 +1,8 @@
 package product.gui;
 
 import javax.swing.*;
+
+import main.gui.MainGUI;
 import main.gui.ProductManagementGUI;
 import product.database.ProductDAO;
 import product.database.ProductVO;
@@ -20,7 +22,22 @@ public class ProductGUI extends JFrame {
         JPanel p_top = new JPanel();        // 상단
         JPanel p_center = new JPanel();     // 컨텐츠 영역
         JPanel p_south = new JPanel();      // 하단
-        JLabel lblExit = new JLabel("관리자 화면 종료");
+//        JLabel lblExit = new JLabel("메인으로 이동");
+        
+        // 하단 영역 : 공통 버튼( 메인 화면으로 이동)
+        JButton btnExit = new JButton("메인으로 이동");
+ 		p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
+ 		p_south.add(btnExit);
+ 		add(p_south,BorderLayout.SOUTH);
+ 		btnExit.setBorderPainted(false);
+ 		btnExit.setBackground(Color.WHITE);
+ 		btnExit.setForeground(Color.BLACK);
+ 		btnExit.setFocusPainted(false);
+ 		
+ 		btnExit.addActionListener(e -> {
+ 			dispose();
+ 			new MainGUI();
+ 		});
         
         // 배경색 흰색으로 수정
         p_top.setBackground(Color.WHITE);
@@ -43,7 +60,7 @@ public class ProductGUI extends JFrame {
 
         // 하단 영역 : 공통 레이블(관리자 화면 종료)
         p_south.setLayout(new FlowLayout(FlowLayout.CENTER));
-        p_south.add(lblExit);
+//        p_south.add(lblExit);
         add(p_south, BorderLayout.SOUTH);
 
         setTitle("신규 상품 등록");
@@ -174,7 +191,7 @@ public class ProductGUI extends JFrame {
         btnPanel.add(btnCancel);
         p_center.add(btnPanel);
 
-    	setTitle("신규 상품 등록");
+    	setTitle("OSTK 편의점 - 신규상품등록");
 		setSize(375, 660);
 	    setVisible(true);
         setLocationRelativeTo(null); // 화면 중앙에 표시
@@ -185,12 +202,33 @@ public class ProductGUI extends JFrame {
     }
 
     private void registerProduct() {
-        String productId = generateRandomProductId();
-        String productName = txtProductName.getText();
-        int costPrice = Integer.parseInt(txtCostPrice.getText());
-        int optimalStock = Integer.parseInt(txtOptimalStock.getText());
-        int salePrice = Integer.parseInt(txtSalePrice.getText());
+    	
+    	String productName = txtProductName.getText().trim();
+        String costPriceStr = txtCostPrice.getText().trim();
+        String optimalStockStr = txtOptimalStock.getText().trim();
+        String salePriceStr = txtSalePrice.getText().trim();
+
+        // 공백 검증
+        if (productName.isEmpty() || costPriceStr.isEmpty() || 
+            optimalStockStr.isEmpty() || salePriceStr.isEmpty() || 
+            !(chkBeverage.isSelected() || chkSnack.isSelected() || chkCategory1.isSelected() || 
+              chkCategory2.isSelected() || chkEtc.isSelected())) {
+            
+            JOptionPane.showMessageDialog(this, "상품정보를 모두 올바르게 설정해주십시오.", "입력 오류", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // 파싱
+        int costPrice = Integer.parseInt(costPriceStr);
+        int optimalStock = Integer.parseInt(optimalStockStr);
+        int salePrice = Integer.parseInt(salePriceStr);
         int stock = 0;
+        
+        String productId = generateRandomProductId();
+        productName = txtProductName.getText();
+        costPrice = Integer.parseInt(txtCostPrice.getText());
+        optimalStock = Integer.parseInt(txtOptimalStock.getText());
+        salePrice = Integer.parseInt(txtSalePrice.getText());
 
         // 카테고리 선택
         String categoryName = "";

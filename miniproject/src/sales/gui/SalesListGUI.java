@@ -298,7 +298,7 @@ public class SalesListGUI extends JFrame{
 	
 		
 		/* [유지] 기본세팅 : 항시 소스 맨 밑에 배치 ====================================================== */
-		setTitle("무인편의점 키오스크 : 영수증");
+		setTitle("OSTK 편의점");
 		setSize(375, 660);
 	    setVisible(true);
 	    setResizable(false); // 리사이즈 제어

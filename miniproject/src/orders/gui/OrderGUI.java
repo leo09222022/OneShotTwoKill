@@ -311,7 +311,7 @@ public class OrderGUI extends JFrame {
          dispose();
      });
 
-     setTitle("무인편의점 키오스크");
+     setTitle("OSTK 편의점 - 상품발주");
      setSize(375, 660);
      setVisible(true);
      setLocationRelativeTo(null);

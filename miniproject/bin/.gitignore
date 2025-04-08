@@ -1,12 +1,10 @@
 *.class
 /.gitignore
-/common/
-/kioskMain/
 /login/
 /main/
 /orders/
 /payment/
+/product/
 /sales/
 /totalordersproduct/
 /totalsalesproduct/
-/product/

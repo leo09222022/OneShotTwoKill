@@ -100,7 +100,7 @@ public class OrderReceiptGUI extends JFrame {
         add(p_center, BorderLayout.CENTER);
 
         /* [유지] 기본 세팅 ====================================================== */
-        setTitle("무인편의점 키오스크");
+        setTitle("OSTK 편의점 - 발주영수증");
         setSize(400, 600);
         setVisible(true);
         setLocationRelativeTo(null); // 화면 중앙 정렬
