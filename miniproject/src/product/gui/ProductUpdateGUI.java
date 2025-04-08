@@ -155,6 +155,9 @@ public class ProductUpdateGUI extends JFrame {
         btnEdit.setFocusPainted(false);
         btnEdit.setBorderPainted(false);
         btnEdit.setMargin(new Insets(2, 4, 2, 4)); 
+        btnEdit.setOpaque(true);
+        btnEdit.setContentAreaFilled(true);
+        btnEdit.setBorderPainted(false);
 
 
         btnDelete.setPreferredSize(new Dimension(20, 20));
