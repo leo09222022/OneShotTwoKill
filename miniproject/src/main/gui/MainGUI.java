@@ -59,7 +59,7 @@ public class MainGUI extends JFrame{
 		
 		// 공통 컴포넌트 구성 : 버튼
 		JButton btnTypeG = new JButton("시작하기");
-		JButton btnExit = new JButton("관리자화면");
+		JButton btnExit = new JButton("관리자로그인");
 		
 		// 버튼 스타일
 		btnTypeG.setPreferredSize(new Dimension(120, 40));
