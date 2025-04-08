@@ -261,7 +261,7 @@ public class SalesListGUI extends JFrame{
 						Thread.sleep(500); // 초대기
 					}
 					
-					// 영수증 버튼 클릭시 3초 뒤 홈화면으로 이동
+					// 영수증 버튼 클릭시 N초 뒤 홈화면으로 이동
 					SwingUtilities.invokeLater(() -> {
 						SalesListGUI.this.setVisible(false);
 						new MainGUI();
