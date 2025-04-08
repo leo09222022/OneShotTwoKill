@@ -255,8 +255,8 @@ public class SalesListGUI extends JFrame{
 		class MoveHome extends Thread{
 			public void run() {
 				try {
-					for(int i = 0; i < 5; i++){
-						int count = i+1;
+					for(int i = 5; i >= 1; i--){
+						int count = i;
 						SwingUtilities.invokeLater(() -> labelCount.setText(count+"초 뒤에 홈화면으로 이동합니다."));
 						Thread.sleep(500); // 초대기
 					}
@@ -335,6 +335,7 @@ public class SalesListGUI extends JFrame{
 		setSize(375, 660);
 	    setVisible(true);
 	    setResizable(false); // 리사이즈 제어
+	    setLocationRelativeTo(null); // 화면 정중앙 배치
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }
