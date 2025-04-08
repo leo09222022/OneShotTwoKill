@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,6 +18,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -100,7 +103,7 @@ public class SalesListGUI extends JFrame{
 		
      	
         // 컴포넌트 생성
-        JLabel titLabel = new JLabel("코스타 편의점");
+        JLabel titLabel = new JLabel("OSTK 편의점");
         JLabel storeLabel = new JLabel("종각점 #12345");
         JLabel callLabel = new JLabel("012-3456-7890");
         
@@ -272,7 +275,44 @@ public class SalesListGUI extends JFrame{
         p_south_btn.add(btnTypeG);
         p_south_btn.setBackground(Color.WHITE); // 배경화면 설정
 		btnTypeG.setPreferredSize(new Dimension(120, 28)); // 버튼 사이즈 설정
-
+		
+		/* S : 영수증 출력 이벤트 추가 */
+		btnTypeG.addActionListener(e->{
+			String userHome = System.getProperty("user.home");
+			try {
+				FileWriter fileName = new FileWriter(userHome + "/Desktop/receipt.txt");
+				fileName.write("            구매해 주셔서 감사합니다.          \n");
+				fileName.write("============= 무인편의점 영수증 =============\n");
+				fileName.write("매장명 : OSTK 편의점 종각점 #12345\n");
+				fileName.write("연락처 : 012-3456-7890\n");
+				fileName.write("주소 : 서울특별시 종로구 우정국로 2길 21 대왕빌딩 7층\n");
+				fileName.write("-------------------------------------------------\n");
+				fileName.write("판매수단 : 카드");
+				fileName.write("판매일시 : " + now + "\n");
+				fileName.write("-------------------------------------------------\n");
+				fileName.write("상품명\t\t수량\t금액\n");
+				for (Map.Entry<ProductVO, Integer> entry : cartMap.entrySet()) {
+                    ProductVO product = entry.getKey();
+                    int quantity = entry.getValue();
+                    int price = product.getSalePrice() * quantity;
+                    
+                    fileName.write(product.getProductName()+"\t");
+		            fileName.write(quantity+"\t");
+		            fileName.write(NumberFormat.getInstance().format(price) + "원\n");
+                }
+				fileName.write("-------------------------------------------------\n");
+				fileName.write("총 합계 : "+ NumberFormat.getInstance().format(totalPrice));
+				fileName.close();
+				JOptionPane.showMessageDialog(this, "영수증을 출력하였습니다!");
+			} catch (Exception e1) {
+				System.out.println("예외처리(영수증) : "+e1.getMessage());
+				JOptionPane.showMessageDialog(this, "영수증을 출력에 실패하였습니다.");
+			}
+		});
+		/* E : 영수증 출력 이벤트 추가 */
+		
+		
+		
 		
 		
 		/* [공통] 최상위 부모 패널닫기  ====================================================== */
