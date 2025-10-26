@@ -1,32 +1,38 @@
-## **OSTK 편의점**
-> KOSTA FULL-STACK 개발 웹 애플리케이션 실무 과정 - 1차 프로젝트  
+## **OSTK 편의점** (OSTK Convenience Store) 
+> KOSTA FULL-STACK 개발 웹 애플리케이션 실무 과정 - 1차 프로젝트  (KOSTA FULL-STACK Web Application - 1st Group Project) 
 > 프로젝트 GitHub 링크: https://github.com/leo09222022/OneShotTwoKill
 
 
 ---
-## 팀원 소개 - 일석이조
-공통 역할 : 기획/ 테스터
+## 팀원 소개 - 일석이조 (Killing Two Birds with One Stone) 
+공통 역할 (Shared Duties): 기획/ 테스터 (Planning / Testing) 
 
-| 이름   | 역할             | GitHub 링크                           |
+| 이름 (Name)  | 역할 (Roles)           | GitHub 링크 (GitHub Link)                        |
 |--------|------------------|----------------------------------------|
 | 임연수 | 팀장, 백엔드 개발 | [leo09222022](https://github.com/leo09222022) |
-| 홍지완 | 백엔드 개발       | [jiewan02](https://github.com/jiewan02) |
+| 홍지완(Jiewan Hong) | 백엔드 개발  (Backend Developer)     | [jiewan02](https://github.com/jiewan02) |
 | 남세나 | 풀스택 개발       | [SenaNam](https://github.com/SenaNam) |
 | 전희재 | DB 설계, 공통 개발 | [jeonhj1015](https://github.com/jeonhj1015) |
 | 왕시은 | 풀스택 개발       | [alo-wang](https://github.com/alo-wang) |
 
 ---
-## :calendar: 프로젝트 기간
+## :calendar: 프로젝트 기간 (Project Duration)
 - **2025.03.20 ~ 2025.04.09** (총 3주)
 
 ---
-## 🧾 프로젝트 개요
+## 🧾 프로젝트 개요 (Project Introduction) 
 무인 편의점을 운영하면서 필요한 필수 기능들을 [Admin]  시스템으로 통합 관리하여 제공하고,
 편의점을 이용하는 고객들이 보다 간편하게 사용할 수 있도록 간편한 Front 시스템을 구축하여
 보다 편리한 B2C(Business to Consumer) 시스템과 B2B(Business to Business) 시스템을 제공합니다.
 
+The [Admin] system integrates and provides essential functions necessary while 
+operating an unmanned convenience store. 
+We built a Front System designed to make it easier for customers to purchase items 
+in a convenience store. 
+It is designed to provide more convenient B2C and B2B systems. 
+
 ---
-## 🔧 사용 기술 스택
+## 🔧 사용 기술 스택 (Applied Technologies) 
 ### Backend
 - Java 21 (Module system 기반 설정)
 - Oracle DB 연동 (ojdbc8 라이브러리 사용)
@@ -40,28 +46,28 @@
 - Google docs, ERDcloud (문서 및 DB 설계)
 
 ---
-## 🖥️ 주요 기능
+## 🖥️ 주요 기능 (Main Functions) 
 - 🧍 사용자 기능 (User)
-  • 상품 검색  
-  • 카드 결제  
-  • 영수증 발급  
+  • 상품 검색  (Item Search) 
+  • 카드 결제  (Purchase with Card) 
+  • 영수증 발급  (Receipt) 
 - 🧑‍💼 관리자 기능 (Admin)
-  • 로그인  
-  • 상품 관리(등록, 수정, 발주, 내역 조회)  
-  • 매출 관리
+  • 로그인  (Login)
+  • 상품 관리(등록, 수정, 발주, 내역 조회)  (Item Management (Register, Modify, Order, Breakdown)
+  • 매출 관리 (Sales Management) 
   
 ---
-## 🖼️ 서비스 화면
-> **사용자 화면**  
-: 고객이 상품을 검색하고 결제하는 무인 키오스크 인터페이스
+## 🖼️ 서비스 화면 (Service Screen) 
+> **사용자 화면** (User Screen) 
+: 고객이 상품을 검색하고 결제하는 무인 키오스크 인터페이스 (Unmanned Kiosk Interface where customers search and pay for products) 
 > 
 ![image](https://github.com/user-attachments/assets/b0442b13-6b26-418c-b6ef-7c1c12d1f9e0)  
 
 
 >
 >
-> **관리자 화면**  
-: 상품 등록, 발주 관리, 매출 확인 등을 할 수 있는 통합 관리자 시스템
+> **관리자 화면**  (Admin Screen) 
+: 상품 등록, 발주 관리, 매출 확인 등을 할 수 있는 통합 관리자 시스템 (Integrated manager system for product registration, order management, sales verification, etc.)
 >
 ![image](https://github.com/user-attachments/assets/3afbd647-cb5f-479d-9fcf-16cf36162fa6)
 
@@ -122,9 +128,9 @@ miniproject/
 ``` 
 ---
 
-## 🗂 DB 설계
+## 🗂 DB 설계 (DB Structure) 
 
-📌 [ERDcloud로 작성]  
+📌 [ERDcloud로 작성]  (Written with ERDcloud)
 
 ![image](https://github.com/user-attachments/assets/5aa03dae-c592-476e-9486-a5c3f8a75d34)
 
